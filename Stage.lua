@@ -6,6 +6,13 @@ Stage = {}
 	white is empti
 ]]--
 
+physics = {}
+physics.const = {
+	g = 9.8
+}
+
+
+
 
 Stage.textures = {}
 Stage.bMap = {}
@@ -25,23 +32,43 @@ function Stage.addEntitie(entitie)
 	table.insert(entities, entitie)
 end
 
+function chekColor(r, g, b)
+	if r == 0 and g == 0 and b == 0 then
+		return 'black'
+	elseif r == 255 and g == 255 and b == 255 then
+		return 'white'
+	elseif r == 255 and g == 0 and b == 0 then
+		return 'red'
+	end
+end
+
 function Stage.fill()
 	local bMapData = Stage.bImgMap:getData()
 	local fMapData = Stage.fImgMap:getData()
 	
+	local way = nil
+
 	for i = 1, Stage.width do
 		Stage.bMap[i - 1] = {}
 		Stage.fMap[i - 1] = {}
 		for j = 1, Stage.height do
 			br, bg, bb, ba = bMapData:getPixel(i - 1, j - 1)
 			fr, fg, fb, fa = fMapData:getPixel(i - 1, j - 1)
-			if br == black.r and bg == black.g and bb == black.b then
+			local bColor = chekColor(br, bg, bb)
+			local fColor = chekColor(fr, fg, fb)
+
+			if bColor == 'black' then
 				Stage.bMap[i - 1][j - 1] = 1
-			elseif br == white.r and bg == white.g and bb == white.b then
+			elseif bColor == 'white' then
 				Stage.bMap[i - 1][j - 1] = 0
+			end
+
+			if fColor == 'red' then
+				way = unit*scale*(i - 1)
 			end
 		end
 	end
+	return way
 end
 
 function getImageScaleForNewDimensions(image, newWidth, newHeight )
@@ -55,12 +82,13 @@ function Stage.load(bFileName, fFileName, description)
 	Stage.fImgMap = love.graphics.newImage(fFileName)
 	
 	Stage.width, Stage.height = Stage.bImgMap:getDimensions()
-	Stage.fill()
-
-	-- local player = require('Player')
-	-- player.load(200, 200, 450)
+	
 	entities['player'] = require('Player')
-	entities['player'].load(200, 200, 450) -- Взять из дескрипшина
+
+	way = Stage.fill()
+	
+	local x = 640/2 - Player.width/2
+	entities['player'].load(x, 200, way) -- Взять из дескрипшина
 end
 
 
@@ -76,6 +104,7 @@ end
 
 function Stage.draw(x, y)
 	local l = Player.way
+
 	if(l < 320) then
 		l = 320
 	elseif(l > unit*scale*Stage.width - 320) then
@@ -95,7 +124,7 @@ function Stage.draw(x, y)
 			end
 		end
 	end 
-
+--------------------------------------------------->
 	for _, entitie in pairs(entities) do
 		entitie.draw()
 	end

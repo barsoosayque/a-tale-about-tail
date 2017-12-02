@@ -18,7 +18,6 @@ function love.load()
 
     drawMainMenu()
 
-    player.load('dat/gph/fox.png')
     stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
     stage.newTexture('dat/img/block.png', 'block')
     stage.newTexture('dat/img/empti.png', 'empti')
@@ -27,13 +26,11 @@ end
 function love.update(dt)
     gui:update(dt)
     stage.update(dt)
-     player.update(dt)
 end
 
 function love.draw()
     gui:draw()
     stage.draw(0, 150)
-    -- player.draw()
 end
 
 function love.mousepressed(x, y, button)
