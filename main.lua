@@ -13,7 +13,7 @@ love.load = function()
     love.graphics.setColor(255, 192, 0, 128)
 
     sound = love.audio.newSource("/dat/snd/sheltur.xm", "static")
-    sound:play()
+    -- sound:play()
     
     local btnStart = gui:button('Start', {x = 256, y = 32, w = 128, h = gui.style.unit})
     local btnOption = gui:button('Option', {x = 256, y = 64, w = 128, h = gui.style.unit})
