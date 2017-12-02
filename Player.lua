@@ -14,9 +14,9 @@ local anim8 = require("lib/anim8")
 
 local scale = 2
 local speed = 2
-local standAnim = nil
+local standAnim
 
-local image = nil
+local image
 local animations = {}
 
 
@@ -34,21 +34,21 @@ function Player.load(x, y, l)
 	Player.x = l
 	Player.y = y
 
-	image = love.graphics.newImage('dat/gph/fox.png') 
+    image = love.graphics.newImage('dat/gph/fox.png')
 
 	Player.addAnim('stand', 18, 18, 0, 0, 4, 0.1)
 	Player.addAnim('runL', 18, 18, 0, 18, 4, 0.1)
 	Player.addAnim('runR', 18, 18, 0, 36, 4, 0.1)
 
-	-- img = love.graphics.newImage(pathToStand)
-	-- local g = anim8.newGrid(18, 18, img:getWidth(), img:getHeight())
-	-- standAnim = anim8.newAnimation(g('1-4',1), 0.2)
+    -- img = love.graphics.newImage(pathToStand)
+    -- local g = anim8.newGrid(18, 18, img:getWidth(), img:getHeight())
+    -- standAnim = anim8.newAnimation(g('1-4',1), 0.2)
 end
 
 function Player.addAnim(name, width, height, left, top, n, time)
-	local g = anim8.newGrid(width, height, image:getWidth(), image:getHeight(), left, top)
-	local str = '1-'..tostring(n)
-	animations[name] = anim8.newAnimation(g(str,1), time)
+    local g = anim8.newGrid(width, height, image:getWidth(), image:getHeight(), left, top)
+    local str = '1-' .. tostring(n)
+    animations[name] = anim8.newAnimation(g(str, 1), time)
 end
 
 function Player.animationUpdate(dt)
@@ -108,14 +108,5 @@ function Player.draw(x, y)
 	love.graphics.points(Player.x - 640/2 + Player.width/2, y + Player.y)
 	love.graphics.setColor(255, 255, 255)
 end
-
-
-
-
-
-
-
-
-
 
 return Player

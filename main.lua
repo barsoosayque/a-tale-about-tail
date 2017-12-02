@@ -9,28 +9,24 @@ SCREEN_HEIGHT = 640
 font = love.graphics.newFont(192)
 
 function love.load()
-	love.graphics.setDefaultFilter("nearest", "nearest")
+    love.graphics.setDefaultFilter("nearest", "nearest")
     love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT)
     love.graphics.setFont(font)
     love.graphics.setBackgroundColor(128, 256, 256, 0)
 
-    local sound = love.audio.newSource("/dat/snd/sheltur.xm", "static")
+    local music = love.audio.newSource("/dat/snd/sheltur.xm", "static")
+    music:setLooping(true)
+    music:play()
 
     drawMainMenu()
-
-    stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
-    stage.newTexture('dat/img/block.png', 'block')
-    stage.newTexture('dat/img/empti.png', 'empti')
 end
 
 function love.update(dt)
     gui:update(dt)
-    stage.update(dt)
 end
 
 function love.draw()
     gui:draw()
-    stage.draw(0, 150)
 end
 
 function love.mousepressed(x, y, button)
