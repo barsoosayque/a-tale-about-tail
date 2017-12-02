@@ -139,34 +139,73 @@ end
 function Stage.checkCollisionsWithMap(entitie)
 	local r = entitie.width/2
 
-	-- local lb = {x = entitie.x, y = entitie.y + entitie.height}
-	-- local rb = {x = entitie.x + entitie.width, y = entitie.y + entitie.height}
-	-- local lt = {x = entitie.x, y = entitie.y}
-	-- local rt = {x = entitie.x + entitie.width, y = entitie.y}
+	local bl = {x = math.floor((entitie.x + 5)/32), y = math.floor((entitie.y + entitie.height)/32)}
+	local br = {x = math.floor((entitie.x + entitie.width - 5)/32), y = math.floor((entitie.y + entitie.height)/32)}
+	
+	local lt = {x = math.floor((entitie.x)/32), y = math.floor((entitie.y + 5)/32)}
+	local lb = {x = math.floor((entitie.x)/32), y = math.floor((entitie.y + entitie.height - 5)/32)}
 
-	-- local x = math.floor((entitie.x + entitie.width/2)/32) - 1 -- А нужно ли?
-	local y = math.floor((entitie.y + entitie.height)/32)	
-	-- local bottomBlock = Stage.bMap[x][y]
-	-- print("x:"..tostring(x).." y:"..tostring(y).." value:"..bottomBlock)
-	-- if bottomBlock == 1 then
-		-- entitie.land = true
-		-- entitie.speedY = 0
-	-- end
+	local rt = {x = math.floor((entitie.x + entitie.width)/32), y = math.floor((entitie.y + 5)/32)}
+	local rb = {x = math.floor((entitie.x + entitie.width)/32), y = math.floor((entitie.y + entitie.height - 5)/32)}
 
-	local x = math.floor((entitie.x )/32)
-	local bottomBlock = Stage.bMap[x][y]
-	print("x:"..tostring(x).." y:"..tostring(y).." value:"..bottomBlock)
-	if bottomBlock == 1 then
+	local tl = {x = math.floor((entitie.x + 5)/32), y = math.floor((entitie.y)/32)}
+	local tr = {x = math.floor((entitie.x + entitie.width - 5)/32), y = math.floor((entitie.y)/32)}
+
+	if entitie.supaFlag then
+		bl.x = math.floor((entitie.x - entitie.width/2 + 5)/32)
+		br.x = math.floor((entitie.x + entitie.width/2 - 5)/32)
+		-- bl.y = math.floor((entitie.y + entitie.height - 5)/32)
+		-- br.y = math.floor((entitie.x + entitie.height - 5)/32)
+		
+		lt.x = math.floor((entitie.x - entitie.width/2 + 5)/32)
+		lt.y = math.floor((entitie.y - 15)/32)
+		lb.x = math.floor((entitie.x - entitie.width/2 + 5)/32)
+
+		rt.x = math.floor((entitie.x + entitie.width/2 - 5)/32)
+		rb.x = math.floor((entitie.x + entitie.width/2 - 5)/32)
+
+		tl.x = math.floor((entitie.x + 5 - entitie.width)/32)
+		tr.x = math.floor((entitie.x - 5 + entitie.width)/32)
+	end
+
+
+	local bottomLeftBlock = Stage.bMap[bl.x][bl.y]
+	local bottomRightBlock = Stage.bMap[br.x][br.y]
+	if bottomLeftBlock == 1 or bottomRightBlock == 1 then
 		entitie.land = true
 		entitie.speedY = 0
+		entitie.y = bl.y*32 - entitie.height
 	end
-	-- local x = math.floor((entitie.x + entitie.width)/32)
-	-- local bottomBlock = Stage.bMap[x][y]
-	-- print("x:"..tostring(x).." y:"..tostring(y).." value:"..bottomBlock)
-	-- if bottomBlock == 1 then
-	-- 	entitie.land = true
-	-- 	entitie.speedY = 0
-	-- end
+
+	local leftTopBlock = Stage.bMap[lt.x][lt.y]
+	local leftTopBlock = Stage.bMap[lb.x][lb.y]
+	if leftTopBlock == 1  or leftBottomBlock == 1 then
+		entitie.left = true
+		entitie.speedX = 0
+		-- entitie.x = lt.x*32 + 47
+	else
+		entitie.left = false
+	end
+
+	local rightTopBlock = Stage.bMap[rt.x][rt.y]
+	local rightBottomBlock = Stage.bMap[rb.x][rb.y]
+	if rightTopBlock == 1  or rightBottomBlock == 1 then
+		-- entitie.land = true
+		entitie.right = true
+		entitie.speedX = 0
+		-- entitie.x = rb.x*32 - entitie.width + 18
+	else
+		entitie.right = false
+	end
+
+	local topLeftBlock = Stage.bMap[tl.x][tl.y]
+	local topRightBlock = Stage.bMap[tr.x][tr.y]
+	if topLeftBlock == 1 or topRightBlock == 1 then
+		entitie.land = true
+		entitie.speedY = 1
+		-- entitie.y = tl.y*32
+	end
+
 
 end
 

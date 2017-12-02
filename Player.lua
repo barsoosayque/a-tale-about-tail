@@ -5,6 +5,9 @@ Player.y = 0
 Player.speedX = 0
 Player.speedY = 0
 Player.land = false
+Player.supaFlag = true
+Player.left = nil
+Player.right = nil
 
 Player.width = 18*2
 Player.height = 18*2
@@ -63,12 +66,18 @@ end
 
 function Player.update(dt)
 	if love.keyboard.isDown('right') then
-		-- Player.x = Player.x + Player.speedX
-		Player.speedX = speed
+		if Player.right ~= true then 
+			Player.speedX = speed 
+		else
+			Player.speedX = 0
+		end
 		state = 1
 	elseif love.keyboard.isDown('left') then
-		-- Player.x = Player.x - Player.speedX
-		Player.speedX = -speed
+		if Player.left ~= true then 
+			Player.speedX = -speed 
+		else
+			Player.speedX = 0
+		end
 		state = -1
 	else
 		Player.speedX = 0
@@ -78,14 +87,15 @@ function Player.update(dt)
 		fly = true
 		land = false
 		Player.speedY = -3
+	elseif Player.land == true then
+		fly = false
 	end
+
 	Player.x = Player.x + Player.speedX
 	Player.y = Player.y + Player.speedY
 
 
-	if Player.land == true then
-		fly = false
-	end
+	
 
 	Player.animationUpdate(dt)
 end

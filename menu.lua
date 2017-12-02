@@ -1,4 +1,4 @@
-local STATE_SOUND = true
+local STATE_SOUND = false
 local startGameCallback
 
 

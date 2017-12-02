@@ -16,7 +16,7 @@ function love.load()
 
     local music = love.audio.newSource("/dat/snd/sheltur.xm", "static")
     music:setLooping(true)
-    music:play()
+    -- music:play()
 
     drawMainMenu()
 end
