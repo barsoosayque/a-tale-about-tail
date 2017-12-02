@@ -5,8 +5,8 @@ stage = require('Stage')
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 640
-
 font = love.graphics.newFont(192)
+music = love.audio.newSource("/dat/snd/sheltur.xm", "static")
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -14,15 +14,39 @@ function love.load()
     love.graphics.setFont(font)
     love.graphics.setBackgroundColor(128, 256, 256, 0)
 
-    local music = love.audio.newSource("/dat/snd/sheltur.xm", "static")
+    Menu.drawMainMenu()
+    Menu.startGameCallback = function()
+        stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
+        stage.newTexture('dat/img/block.png', 'block')
+        stage.newTexture('dat/img/empti.png', 'empti')
+
+        love.update = function(dt)
+            stage.update(dt)
+        end
+
+        love.draw = function()
+            stage.draw(0, 150)
+        end
+    end
+end
+
+function enableMusic()
     music:setLooping(true)
     music:play()
-
-    drawMainMenu()
 end
+
+function disableMusic()
+    music:stop()
+end
+
 
 function love.update(dt)
     gui:update(dt)
+    if menu.STATE_SOUND then
+        enableMusic()
+    else
+        disableMusic()
+    end
 end
 
 function love.draw()
