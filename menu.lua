@@ -1,13 +1,18 @@
+STATE_SOUND = true
+
 function drawOptionsMenu()
     local cbSound = gui:checkbox(nul, { x = 255, y = 32, r = 8 })
+    cbSound.value = STATE_SOUND
     cbSound.style.labelfg = cbSound.style.fg
     cbSound.click = function(this)
         gui[this.elementtype].click(this)
 
+        STATE_SOUND = this.value
+
         if this.value then
-            this.style.fg = { 255, 128, 0, 255 }
-        else
             this.style.fg = { 255, 255, 255, 255 }
+        else
+            this.style.fg = { 128, 128, 128, 255 }
         end
     end
 
