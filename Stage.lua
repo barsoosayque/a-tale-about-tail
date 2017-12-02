@@ -10,8 +10,9 @@ Stage = {}
 Stage.textures = {}
 Stage.bMap = {}
 Stage.fMap = {}
+Stage.description = nil
 
-
+local entities = {}
 
 local unit = 16
 local scale = 2
@@ -19,6 +20,10 @@ local scale = 2
 local black = {r = 0, g = 0, b = 0}
 local white = {r = 255, g = 255, b = 255}
 	
+
+function Stage.addEntitie(entitie)
+	table.insert(entities, entitie)
+end
 
 function Stage.fill()
 	local bMapData = Stage.bImgMap:getData()
@@ -45,12 +50,17 @@ function getImageScaleForNewDimensions(image, newWidth, newHeight )
 end
 
 
-function Stage.load(bFileName, fFileName)
+function Stage.load(bFileName, fFileName, description)
 	Stage.bImgMap = love.graphics.newImage(bFileName)
 	Stage.fImgMap = love.graphics.newImage(fFileName)
 	
 	Stage.width, Stage.height = Stage.bImgMap:getDimensions()
 	Stage.fill()
+
+	-- local player = require('Player')
+	-- player.load(200, 200, 450)
+	entities['player'] = require('Player')
+	entities['player'].load(200, 200, 450) -- Взять из дескрипшина
 end
 
 
@@ -64,8 +74,8 @@ function Stage.drawTile(x, y, texture)
 	
 end
 
-function Stage.draw(x, y, l)
-	
+function Stage.draw(x, y)
+	local l = Player.way
 	if(l < 320) then
 		l = 320
 	elseif(l > unit*scale*Stage.width - 320) then
@@ -85,6 +95,16 @@ function Stage.draw(x, y, l)
 			end
 		end
 	end 
+
+	for _, entitie in pairs(entities) do
+		entitie.draw()
+	end
+end
+
+function Stage.update(dt)
+	for _, entitie in pairs(entities) do
+		entitie.update(dt)
+	end
 end
 
 return Stage
