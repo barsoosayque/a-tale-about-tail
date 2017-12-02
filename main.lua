@@ -1,3 +1,4 @@
+--> Долой ЕГОРА 
 function play_music()
 --> TODO 
 end
