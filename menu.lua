@@ -1,22 +1,38 @@
 Menu = {}
-Menu.STATE_SOUND = true
 Menu.startGameCallback = nul
+
+Menu.backupFile = io.open('./config.ini', 'a+')
+io.input(Menu.backupFile)
+if io.read() == "1" then
+    Menu.stateSound = true
+else
+    Menu.stateSound = false
+end
+
+function saveToFile(value)
+    io.open('./config.ini', 'w+')
+    io.output(Menu.backupFile)
+    io.write(value)
+    io.close()
+end
 
 function Menu.drawOptionsMenu()
     local cbSound = gui:checkbox(nul, { x = 255, y = 32, r = 8 })
     local btnBack = gui:button('Back', { x = 256, y = 64, w = 128, h = gui.style.unit })
 
-    cbSound.value = Menu.STATE_SOUND
+    cbSound.value = Menu.stateSound
     cbSound.style.labelfg = cbSound.style.fg
     cbSound.click = function(this)
         gui[this.elementtype].click(this)
 
-        Menu.STATE_SOUND = this.value
+        Menu.stateSound = this.value
 
         if this.value then
             this.style.fg = { 255, 255, 255, 255 }
+            saveToFile(1)
         else
             this.style.fg = { 128, 128, 128, 255 }
+            saveToFile(0)
         end
     end
 

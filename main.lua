@@ -42,7 +42,7 @@ end
 
 function love.update(dt)
     gui:update(dt)
-    if menu.STATE_SOUND then
+    if menu.stateSound then
         enableMusic()
     else
         disableMusic()
