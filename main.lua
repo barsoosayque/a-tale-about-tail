@@ -1,43 +1,34 @@
 gui = require('Gspot')
 player = require('Player')
+menu = require('menu')
 
-
-SCREEN_WIDTH = 640 
-SCREEN_HEIGHT = 640 
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 640
 
 font = love.graphics.newFont(192)
 
 love.load = function()
     love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT)
     love.graphics.setFont(font)
-    -- love.graphics.setColor(255, 192, 0, 128)
+    love.graphics.setBackgroundColor(128, 256, 256, 0)
 
-    sound = love.audio.newSource("/dat/snd/sheltur.xm", "static")
-    -- sound:play()
-    
-    local btnStart = gui:button('Start', {x = 256, y = 32, w = 128, h = gui.style.unit})
-    local btnOption = gui:button('Option', {x = 256, y = 64, w = 128, h = gui.style.unit})
-    local btnExit = gui:button('Exit', {x = 256, y = 96, w = 128, h = gui.style.unit})
-    btnExit.click = function ()
-        gui:feedback('Clicky')
-        love.event.quit() 
-    end
+    local sound = love.audio.newSource("/dat/snd/sheltur.xm", "static")
 
+    drawMainMenu()
 
     player.load('dat/gph/fox.png')
+end
 
-end 
-
-love.update = function(dt) 
+love.update = function(dt)
     gui:update(dt)
     player.update(dt)
-end 
+end
 
-love.draw = function() 
+love.draw = function()
     gui:draw()
     player.draw()
 end
 
-love.mousepressed = function(x, y, button) 
+love.mousepressed = function(x, y, button)
     gui:mousepress(x, y, button)
 end
