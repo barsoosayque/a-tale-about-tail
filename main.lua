@@ -1,4 +1,6 @@
 gui = require('Gspot')
+player = require('Player')
+
 
 SCREEN_WIDTH = 640 
 SCREEN_HEIGHT = 640 
@@ -20,14 +22,20 @@ love.load = function()
         gui:feedback('Clicky')
         love.event.quit() 
     end
+
+
+    player.load('dat/gph/fox.png')
+
 end 
 
 love.update = function(dt) 
     gui:update(dt)
+    player.update(dt)
 end 
 
 love.draw = function() 
     gui:draw()
+    player.draw()
 end
 
 love.mousepressed = function(x, y, button) 
