@@ -105,7 +105,6 @@ function Player.draw(x, y)
 
 	love.graphics.setColor(255, 0, 0)
 	love.graphics.rectangle("line", 640/2 - Player.width/2, y + Player.y, Player.width, Player.height )
-	love.graphics.points(Player.x - 640/2 + Player.width/2, y + Player.y)
 	love.graphics.setColor(255, 255, 255)
 end
 
