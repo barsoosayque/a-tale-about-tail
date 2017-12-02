@@ -28,6 +28,21 @@ local black = {r = 0, g = 0, b = 0}
 local white = {r = 255, g = 255, b = 255}
 	
 
+function Stage.load(bFileName, fFileName, description)
+	Stage.bImgMap = love.graphics.newImage(bFileName)
+	Stage.fImgMap = love.graphics.newImage(fFileName)
+	
+	Stage.width, Stage.height = Stage.bImgMap:getDimensions()
+	
+	entities['player'] = require('Player')
+
+	x, y = Stage.fill()
+	
+	entities['player'].load(640/2 - Player.width/2, y, x - Player.width/2) -- Взять из дескрипшина
+end
+
+
+
 function Stage.addEntitie(entitie)
 	table.insert(entities, entitie)
 end
@@ -64,11 +79,12 @@ function Stage.fill()
 			end
 
 			if fColor == 'red' then
-				way = unit*scale*(i - 1)
+				x = unit*scale*(i - 1)
+				y = unit*scale*(j - 1)
 			end
 		end
 	end
-	return way
+	return x, y
 end
 
 function getImageScaleForNewDimensions(image, newWidth, newHeight )
@@ -77,19 +93,7 @@ function getImageScaleForNewDimensions(image, newWidth, newHeight )
 end
 
 
-function Stage.load(bFileName, fFileName, description)
-	Stage.bImgMap = love.graphics.newImage(bFileName)
-	Stage.fImgMap = love.graphics.newImage(fFileName)
-	
-	Stage.width, Stage.height = Stage.bImgMap:getDimensions()
-	
-	entities['player'] = require('Player')
 
-	way = Stage.fill()
-	
-	local x = 640/2 - Player.width/2
-	entities['player'].load(x, 200, way) -- Взять из дескрипшина
-end
 
 
 function Stage.newTexture(fileName, textureName)
@@ -103,7 +107,7 @@ function Stage.drawTile(x, y, texture)
 end
 
 function Stage.draw(x, y)
-	local l = Player.way
+	local l = Player.x
 
 	if(l < 320) then
 		l = 320
@@ -117,6 +121,8 @@ function Stage.draw(x, y)
 		for j = 0, Stage.height - 1 do 
 			nx = x + i*unit*scale
 			ny = y + j*unit*scale
+			-- love.graphics.setColor(255, 255, 255)
+			-- love.graphics.print("("..tostring(i)..","..tostring(j)..")", nx - dl, ny)
 			if(Stage.bMap[i][j] == 1) then
 				Stage.drawTile(nx - dl, ny, "block")
 			elseif (Stage.bMap[i][j] == 0) then
@@ -126,12 +132,49 @@ function Stage.draw(x, y)
 	end 
 --------------------------------------------------->
 	for _, entitie in pairs(entities) do
-		entitie.draw()
+		entitie.draw(x, y)
 	end
 end
 
+function Stage.checkCollisionsWithMap(entitie)
+	local r = entitie.width/2
+
+	-- local lb = {x = entitie.x, y = entitie.y + entitie.height}
+	-- local rb = {x = entitie.x + entitie.width, y = entitie.y + entitie.height}
+	-- local lt = {x = entitie.x, y = entitie.y}
+	-- local rt = {x = entitie.x + entitie.width, y = entitie.y}
+
+	-- local x = math.floor((entitie.x + entitie.width/2)/32) - 1 -- А нужно ли?
+	local y = math.floor((entitie.y + entitie.height)/32)	
+	-- local bottomBlock = Stage.bMap[x][y]
+	-- print("x:"..tostring(x).." y:"..tostring(y).." value:"..bottomBlock)
+	-- if bottomBlock == 1 then
+		-- entitie.land = true
+		-- entitie.speedY = 0
+	-- end
+
+	local x = math.floor((entitie.x )/32)
+	local bottomBlock = Stage.bMap[x][y]
+	print("x:"..tostring(x).." y:"..tostring(y).." value:"..bottomBlock)
+	if bottomBlock == 1 then
+		entitie.land = true
+		entitie.speedY = 0
+	end
+	-- local x = math.floor((entitie.x + entitie.width)/32)
+	-- local bottomBlock = Stage.bMap[x][y]
+	-- print("x:"..tostring(x).." y:"..tostring(y).." value:"..bottomBlock)
+	-- if bottomBlock == 1 then
+	-- 	entitie.land = true
+	-- 	entitie.speedY = 0
+	-- end
+
+end
+
 function Stage.update(dt)
+	-- Stage.checkCollisions()
 	for _, entitie in pairs(entities) do
+		entitie.speedY = entitie.speedY + physics.const.g*dt
+		Stage.checkCollisionsWithMap(entitie)
 		entitie.update(dt)
 	end
 end
