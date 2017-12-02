@@ -1,13 +1,15 @@
-gui = require('Gspot')
+gui = require('lib/Gspot')
 player = require('Player')
 menu = require('menu')
+stage = require('Stage')
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 640
 
 font = love.graphics.newFont(192)
 
-love.load = function()
+function love.load()
+	love.graphics.setDefaultFilter("nearest", "nearest")
     love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT)
     love.graphics.setFont(font)
     love.graphics.setBackgroundColor(128, 256, 256, 0)
@@ -17,18 +19,23 @@ love.load = function()
     drawMainMenu()
 
     player.load('dat/gph/fox.png')
+    stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
+    stage.newTexture('dat/img/block.png', 'block')
+    stage.newTexture('dat/img/empti.png', 'empti')
 end
 
-love.update = function(dt)
+function love.update(dt)
     gui:update(dt)
-    player.update(dt)
+    stage.update(dt)
+     player.update(dt)
 end
 
-love.draw = function()
+function love.draw()
     gui:draw()
-    player.draw()
+    stage.draw(0, 150)
+    -- player.draw()
 end
 
-love.mousepressed = function(x, y, button)
+function love.mousepressed(x, y, button)
     gui:mousepress(x, y, button)
 end
