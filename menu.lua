@@ -1,13 +1,7 @@
-<<<<<<< HEAD
-local STATE_SOUND = false
-local startGameCallback
-=======
 Menu = {}
 Menu.startGameCallback = nul
->>>>>>> 169694189d954ee6a07ec0873ddc5329c09ef7d8
 
-Menu.backupFile = io.open('./config.ini', 'a+')
-io.input(Menu.backupFile)
+io.input(io.open('./config.ini', 'r'))
 if io.read() == "1" then
     Menu.stateSound = true
 else
@@ -15,8 +9,7 @@ else
 end
 
 function saveToFile(value)
-    io.open('./config.ini', 'w+')
-    io.output(Menu.backupFile)
+    io.output(io.open('./config.ini', 'w+'))
     io.write(value)
     io.close()
 end

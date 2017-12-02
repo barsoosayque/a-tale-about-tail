@@ -32,12 +32,8 @@ end
 
 function enableMusic()
     music:setLooping(true)
-<<<<<<< HEAD
-    -- music:play()
-=======
     music:play()
 end
->>>>>>> 169694189d954ee6a07ec0873ddc5329c09ef7d8
 
 function disableMusic()
     music:stop()
