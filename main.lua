@@ -1,7 +1,7 @@
 gui = require('lib/Gspot')
-player = require('Player')
+-- player = require('player')
 menu = require('menu')
-stage = require('Stage')
+stage = require('stage')
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 640
@@ -18,7 +18,7 @@ function love.load()
     Menu.startGameCallback = function()
         stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
         stage.newTexture('dat/img/block.png', 'block')
-        stage.newTexture('dat/img/empti.png', 'empti')
+        stage.newTexture('dat/img/empty.png', 'empty')
 
         love.update = function(dt)
             stage.update(dt)
