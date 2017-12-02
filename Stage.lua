@@ -1,16 +1,13 @@
 Stage = {}
 
---[[
-	map is H:L img
-	black is block
-	white is empti
-]]--
 
 physics = {}
 physics.const = {
 	g = 9.8
 }
 
+
+local bump = require('lib/bump')
 
 
 
