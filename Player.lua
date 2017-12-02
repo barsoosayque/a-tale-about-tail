@@ -9,7 +9,7 @@ Player.way = 0
 local anim8 = require("lib/anim8")
 
 local scale = 2
-local speed = 1
+local speed = 2
 local standAnim = nil
 
 local image = nil
@@ -29,8 +29,8 @@ function Player.load(x, y, l)
 
 	image = love.graphics.newImage('dat/gph/fox.png') 
 
-	Player.addAnim('stand', 18, 18, 0, 0, 4, 0.2)
-	Player.addAnim('run', 18, 18, 0, 18, 4, 0.2)
+	Player.addAnim('stand', 18, 18, 0, 0, 4, 0.1)
+	Player.addAnim('run', 18, 18, 0, 18, 4, 0.1)
 
 	-- img = love.graphics.newImage(pathToStand)
 	-- local g = anim8.newGrid(18, 18, img:getWidth(), img:getHeight())
