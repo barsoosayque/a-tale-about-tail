@@ -14,6 +14,7 @@ local standAnim = nil
 local state = 0
 
 function Player.load(pathToStand)
+	love.graphics.setDefaultFilter("nearest", "nearest")
 	img = love.graphics.newImage(pathToStand)
 	local g = anim8.newGrid(18, 18, img:getWidth(), img:getHeight())
 	standAnim = anim8.newAnimation(g('1-4',1), 0.2)
@@ -39,7 +40,10 @@ function Player.draw()
 
 
 	if state == 0 then
-		standAnim:draw(img, 300, 500, 0, 2, 2)
+		local x = math.floor(250 + 0.5)
+		local y = math.floor(400 + 0.5)
+		-- love.graphics.draw(player.image, x, y)
+		standAnim:draw(img, x, y, 0, 10, 10)
 	end
 end
 

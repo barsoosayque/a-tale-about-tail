@@ -10,7 +10,7 @@ font = love.graphics.newFont(192)
 love.load = function()
     love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT)
     love.graphics.setFont(font)
-    love.graphics.setColor(255, 192, 0, 128)
+    -- love.graphics.setColor(255, 192, 0, 128)
 
     sound = love.audio.newSource("/dat/snd/sheltur.xm", "static")
     -- sound:play()
