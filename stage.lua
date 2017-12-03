@@ -166,7 +166,6 @@ function Stage.drawMap(X, Y)
             nx = nx - camera.x
             ny = ny - camera.y
 
-
             local tileName = fgMap[x][y].name
             if fgMap[x][y].name == 'stone' or fgMap[x][y].name == 'dirt' or fgMap[x][y].name == 'wood' then
                 tileName = tileName..'_'..fgMap[x][y].type
@@ -232,7 +231,6 @@ function chekColor(r, g, b)
     end
 end
 
-
 function Stage.buildMap(bImg, fImg)
     local bData = bImg:getData()
     local fData = fImg:getData()
@@ -282,8 +280,6 @@ function Stage.calculateCorners()
         for y = 0, Stage.height - 1 do
             local blockType = fgMap[x][y].name
             if blockType == 'stone' or blockType == 'wood' or blockType == 'dirt' then
-                -- if str == 'block'   then str = 'blo' 
-                --                     else str = 'box' end
 
                 local str = string.sub(blockType, 1, 3)
 
@@ -350,58 +346,6 @@ function Stage.calculateCorners()
                 else
                     fgMap[x][y].type = 'cu'
                 end
-
-
-                --[[if fgMap[x - 1] ~= nil then
-                    local neighbor = string.sub(fgMap[x - 1][y].name, 1, 3)
-                    if str == neighbor then
-                        env.l = 1
-                    end
-                else
-                    env.l = 1
-                end
-                if fgMap[x + 1] ~= nil then
-                    local neighbor = string.sub(fgMap[x + 1][y].name, 1, 3)
-                    if str == neighbor then
-                        env.r = 1
-                    end
-                else
-                    env.r = 1
-                end
-                if fgMap[x][y - 1] ~= nil then
-
-                    local neighbor = string.sub(fgMap[x][y - 1].name, 1, 3)
-                    if str == neighbor then
-                        env.u = 1
-                    end
-                else
-                    env.u = 1
-                end
-                if fgMap[x][y + 1] ~= nil then
-                    local neighbor = string.sub(fgMap[x][y + 1].name, 1, 3)
-                    if str == neighbor then
-                        env.d = 1
-                    end
-                else
-                    env.d = 1
-                end
-
-                -- if env.l == 1 and env.r == 1 then
-                --     fgMap[x][y].name = 'block_c'
-                -- elseif env.r == 1 and env.l == 0 then
-                --     fgMap[x][y].name = 'block_l'
-                -- elseif env.r == 0 and env.l == 1 then
-                --     fgMap[x][y].name = 'block_r'
-                -- elseif env.u == 1 then
-                --     fgMap[x][y].name = 'block_c'
-                -- else
-                --     fgMap[x][y].name = 'block_c'
-                -- end
-                -- if env.d == 1 then
-                --     fgMap[x][y].name = 'block_a'
-                -- end]]
-                -- fgMap[x][y].name = blockType..getCorner(env)
-
             end
         end
     end

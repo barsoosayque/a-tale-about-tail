@@ -26,7 +26,7 @@ function Player.load(x, y, length)
     Player.x = x
     Player.y = y
     Player.width = 36 - 10
-    Player.height = 36 - 5
+    Player.height = 36 - 15
     width = length
 
     img = love.graphics.newImage('dat/gph/fox.png')
@@ -68,7 +68,11 @@ function Player.draw(x, y)
     elseif run == 1 and side == -1 then
         anim = animations['runL']
     end
-    anim:draw(img, x, y, 0, scale, scale)
+    local dtx = imgD*scale/2 - math.floor(Player.width/2)
+    -- local dty = imgD*scale/2 - math.floor(Player.height/2)
+    local dty = imgD*scale - Player.height
+    anim:draw(img, x - dtx , y - dty, 0, scale, scale)
+    -- anim:draw(img, x , y, 0, scale, scale)
 end
 
 function Player.land()
