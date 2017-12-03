@@ -149,7 +149,7 @@ end
 function Player.keypressed(key, scancode, isrepeat)
     if key == 'up' and (fly == false or dj == false) then
     	jump = true
-        Player.speedY = -175
+        Player.speedY = -500
         dj = fly
         fly = true
         t = 0

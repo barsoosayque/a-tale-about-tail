@@ -108,7 +108,7 @@ function Stage.update(dt)
     for _, entitie in pairs(entities) do
         entitie.update(dt)
 
-        entitie.speedY = entitie.speedY + 300 * dt
+        entitie.speedY = entitie.speedY + 1800 * dt --300
 
         local goalX = entitie.x + entitie.speedX * dt
         local goalY = entitie.y + entitie.speedY * dt
