@@ -6,7 +6,8 @@ stage = require('stage')
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 640
 font = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 32)
-music = love.audio.newSource("/dat/snd/menu.xm", "static")
+music_01 = love.audio.newSource("/dat/snd/menu.xm", "static")
+music_02 = love.audio.newSource("/dat/snd/shadow.xm", "static")
 bgImage = love.graphics.newImage("dat/gph/menu_bg.png")
 bg = love.graphics.newCanvas(SCREEN_WIDTH + 64, SCREEN_HEIGHT + 64)
 bgAnimation = 0
@@ -34,6 +35,10 @@ function love.load()
     Menu.startGameCallback = function()
         stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
 
+        if Menu.stateSound then
+            music_02.play()
+        end
+
         love.update = function(dt)
             stage.update(dt)
         end
@@ -45,12 +50,15 @@ function love.load()
 end
 
 function enableMusic()
-    music:setLooping(true)
-    music:play()
+    music_01:setLooping(true)
+    music_02:setLooping(true)
+    music_02:stop()
+    music_01:play()
 end
 
 function disableMusic()
-    music:stop()
+    music_01:stop()
+    music_02:stop()
 end
 
 
