@@ -26,7 +26,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     -- camera = gamera.new(0, 0, Stage.width*16, Stage.height*16)
     camera:setWorld(0, 0, Stage.width*16, Stage.height*16)
     camera:setWindow(0, 0, 640, 640)
-    
+
     local playerX, playerY = Stage.buildMap(bgImg, fgImg)
 
     entities['player'] = require('player')
@@ -38,16 +38,16 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     entities[enemy_key].load(playerX - 150, playerY - 120, Stage.width)
     world:add(entities[enemy_key], playerX - 150, playerY - 320, 30, 30)
 
-    
+
     -- camera:setScale(2)
 
 
     Stage.loadTextures()
 
 
-    local cx = playerX - (640 / 2 - entities['player'].width / 2)
-    local cy = playerY - (640 / 2 - entities['player'].height / 2)
-    camera:setPosition(cx, cy)
+    -- local cx = playerX - (640 / 2 - entities['player'].width / 2)
+    -- local cy = playerY - (640 / 2 - entities['player'].height / 2)
+    camera:setPosition(playerX, playerY)
 
 
 end
@@ -118,58 +118,20 @@ function Stage.update(dt)
         entitie.y = actualY
     end
 
-    -- camera.x = entities['player'].x - (camera.width / 2 - entities['player'].width / 2)
-    -- camera.y = entities['player'].y - (camera.height / 2 - entities['player'].height / 2)
-
-    -- local cx = entities['player'].x - (640 / 2 - entities['player'].width / 2)
-    -- local cy = entities['player'].y - (640 / 2 - entities['player'].height / 2)
     local cx = entities['player'].x + entities['player'].width / 2
     local cy = entities['player'].y + entities['player'].height / 2
-    
-
-    -- if cx < 0 then
-    --     cx = 0
-    -- end
-    -- if cy < 0 then
-    --     cy = 0
-    -- end
-
-    -- if cx > Stage.width*16 - 640 then
-    --     cx = Stage.width*16 - 640
-    -- end
-    -- if cy > Stage.height*16 - 640 then
-    --     cy = Stage.height*16 - 640
-    -- end
 
     camera:setPosition(cx, cy)
-
-    -- print('camera:\n\tx:'..tostring(camera.x)..' y:'..tostring(camera.y))
-    print('player: x:'..tostring(entities['player'].x)..' y:'..tostring(entities['player'].y))
-    print('camera: x:'..tostring(cx)..' y:'..tostring(cy))
 end
-
-
-
-
--- function Stage.draw(x, y)
---     Stage.drawMap(x, y)
-
---     for _, entitie in pairs(entities) do
---         entitie.draw(entitie.x - camera.x, entitie.y - camera.y)
-
---     end
--- end
 
 function Stage.draw(x, y)
     -- love.graphics.scale(2, 2)
-    -- camera:setScale(2.0)
+    camera:setScale(2.0)
 
     camera:draw(function(l, t, w, h)
-        print('l:'..tostring(l)..' t:'..tostring(t)..' w:'..tostring(w)..' h:'..tostring(h))
-        local cx, cy = camera:getPosition()
-        Stage.drawMap(cx - 320, cy - 320)
+        Stage.drawMap(0, 0)
         for _, entitie in pairs(entities) do
-            entitie.draw(entitie.x - cx + 320, entitie.y - cy + 320)
+            entitie.draw(entitie.x, entitie.y)
         end
     end)
 end
@@ -199,7 +161,7 @@ function Stage.drawMap(X, Y)
             local tileName = fgMap[x][y].name
             if fgMap[x][y].name == 'stone' or fgMap[x][y].name == 'dirt' or fgMap[x][y].name == 'wood' then
                 tileName = tileName..'_'..fgMap[x][y].type
-            end 
+            end
             -- if nx > 16*2*(-2) or ny > 16*(-2) then
                 Stage.drawTile(tileName, nx - X, ny - Y)
             -- end
