@@ -104,7 +104,6 @@ function Player.filter(intem, other)
 	end
 end
 
-
 function Player.keypressed(key, scancode, isrepeat)
 	if key == 'up' and (fly == false or dj == false)  then
 		Player.speedY = -175
