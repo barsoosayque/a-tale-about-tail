@@ -22,9 +22,9 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     entities['player'].load(playerX, playerY, Stage.width)
     world:add(entities['player'], playerX, playerY, entities['player'].width, entities['player'].height)
 
-    entities['enemy'] = require('enemy')
-    entities['enemy'].load(playerX + 20, playerY + 20, Stage.width)
-    world:add(entities['enemy'], playerX + 20, playerY + 20, entities['enemy'].width, entities['enemy'].height)
+    -- entities['enemy'] = require('enemy')
+    -- entities['enemy'].load(playerX + 20, playerY + 20, Stage.width)
+    -- world:add(entities['enemy'], playerX + 20, playerY + 20, entities['enemy'].width, entities['enemy'].height)
 
     Stage.newTexture('dat/gph/tiles_bg.png', 'background')
     Stage.newTexture('dat/gph/tiles_fg.png', 'foreground')
@@ -134,6 +134,7 @@ function Stage.drawTile(name, x, y)
     -- print('x:'..tostring(x)..' y:'..tostring(y)..' dtaw tile:'..tostring(name))local tile = tiles[name]
     -- print('drawTile:'..name..'\n\ttexture:'..tile.texture..' tile:'..tostring(tile.tile))
     -- print('\t'..tostring(textures[tile.texture]))
+    local tile = tiles[name]
     local nw, nh = textures[tile.texture]:getDimensions()
 
     -- print(tostring(nw)..'|'..tostring(nh))
@@ -185,7 +186,7 @@ function Stage.buildMap(bImg, fImg)
             -->fMap
             r, g, b = fData:getPixel(x, y)
             color = chekColor(r, g, b)
-            if color == 'block_a' or color == 'block_c' or color == 'block_l' or color == 'block_r' or color == 'box' then
+            if color == 'block' or color == 'box' then
                 fgMap[x][y] = { name = color }
                 world:add(fgMap[x][y], x * 16 * 2, y * 16 * 2, 16 * 2, 16 * 2)
             elseif color == 'empty' then
@@ -197,46 +198,47 @@ function Stage.buildMap(bImg, fImg)
             end
         end
     end
+    Stage.calculateCorners()
     return pX, pY
 end
 
 function Stage.calculateCorners()
     for x = 0, Stage.width - 1 do
         for y = 0, Stage.height - 1 do
-            local str = fMap[x][y].name
             -- print('x:'..tostring(x)..' y:'..tostring(y))
+            local str = fgMap[x][y].name
             -- print(str)
             if str == 'block' then
 
                 local env = { l = 0, u = 0, d = 0, r = 0 }
 
-                if fMap[x - 1] ~= nil then
-                    local str = string.sub(fMap[x - 1][y].name, 1, 3)
+                if fgMap[x - 1] ~= nil then
+                    local str = string.sub(fgMap[x - 1][y].name, 1, 3)
                     if str == 'blo' or str == 'box' then
                         env.l = 1
                     end
                 else
                     env.l = 1
                 end
-                if fMap[x + 1] ~= nil then
-                    local str = string.sub(fMap[x + 1][y].name, 1, 3)
+                if fgMap[x + 1] ~= nil then
+                    local str = string.sub(fgMap[x + 1][y].name, 1, 3)
                     if str == 'blo' or str == 'box' then
                         env.r = 1
                     end
                 else
                     env.r = 1
                 end
-                if fMap[x][y - 1] ~= nil then
+                if fgMap[x][y - 1] ~= nil then
 
-                    local str = string.sub(fMap[x][y - 1].name, 1, 3)
+                    local str = string.sub(fgMap[x][y - 1].name, 1, 3)
                     if str == 'blo' or str == 'box' then
                         env.u = 1
                     end
                 else
                     env.u = 1
                 end
-                if fMap[x][y + 1] ~= nil then
-                    local str = string.sub(fMap[x][y + 1].name, 1, 3)
+                if fgMap[x][y + 1] ~= nil then
+                    local str = string.sub(fgMap[x][y + 1].name, 1, 3)
                     if str == 'blo' or str == 'box' then
                         env.d = 1
                     end
@@ -245,18 +247,18 @@ function Stage.calculateCorners()
                 end
 
                 if env.l == 1 and env.r == 1 then
-                    fMap[x][y].name = 'block_c'
+                    fgMap[x][y].name = 'block_c'
                 elseif env.r == 1 and env.l == 0 then
-                    fMap[x][y].name = 'block_l'
+                    fgMap[x][y].name = 'block_l'
                 elseif env.r == 0 and env.l == 1 then
-                    fMap[x][y].name = 'block_r'
+                    fgMap[x][y].name = 'block_r'
                 elseif env.u == 1 then
-                    fMap[x][y].name = 'block_c'
+                    fgMap[x][y].name = 'block_c'
                 else
-                    fMap[x][y].name = 'block_c'
+                    fgMap[x][y].name = 'block_c'
                 end
                 if env.d == 1 then
-                    fMap[x][y].name = 'block_a'
+                    fgMap[x][y].name = 'block_a'
                 end
             end
         end
