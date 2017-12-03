@@ -12,9 +12,9 @@ Enemy.STEP_LIMIT = 175
 local anim8 = require('lib/anim8')
 local img
 
-local imgD = { w = 28, h = 30 } -- dimenson texture
+local imgD = { w = 30, h = 30 } -- dimenson texture
 
-local scale = 2
+local scale = 1
 local animations = {}
 
 
@@ -30,8 +30,8 @@ local t = 0
 function Enemy.load(x, y, length)
     Enemy.x = x
     Enemy.y = y
-    Enemy.width = 56
-    Enemy.height = 60
+    Enemy.width = 30
+    Enemy.height = 30
     width = length
 
     img = love.graphics.newImage('dat/gph/grandpa.png')
