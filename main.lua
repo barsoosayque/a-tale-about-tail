@@ -25,7 +25,10 @@ function love.load()
         end
 
         love.draw = function()
+    		-- love.graphics.scale(2, 2)
+        
             stage.draw(0, 0)
+
         end
     end
 end

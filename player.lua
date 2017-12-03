@@ -28,8 +28,8 @@ local t = 0
 function Player.load(x, y, length)
     Player.x = x
     Player.y = y
-    Player.width = 36 - 10
-    Player.height = 36 - 15
+    Player.width = imgD - 5
+    Player.height = imgD - 7
     width = length
 
     img = love.graphics.newImage('dat/gph/fox.png')
@@ -76,8 +76,10 @@ function Player.draw(x, y)
         anim = animations['runL']
     end
 
-    local dtx = math.ceil(imgD*scale/2 - (Player.width/2))
-    local dty = math.ceil(imgD*scale - Player.height)
+    -- local dtx = math.floor(imgD*scale/2 - (Player.width/2))
+    -- local dty = math.floor(imgD*scale - Player.height)
+    local dtx = math.floor(imgD/2 - Player.width/2)
+    local dty = math.floor(imgD - Player.height)
 
 
 
@@ -90,7 +92,7 @@ function Player.draw(x, y)
     end
 
 
-    anim:draw(img, x - dtx , y - dty, 0, scale, scale)
+    anim:draw(img, x - dtx , y - dty)
 end
 
 function Player.land()

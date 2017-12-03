@@ -1,5 +1,6 @@
 Stage = {}
 
+local gamera = require('lib/gamera')
 local bump = require('lib/bump')
 local world = bump.newWorld(16)
 
@@ -14,13 +15,18 @@ local entities = {}
 local bgMap = {} -- background map
 local fgMap = {} -- foreground map
 
-local camera = { x = 0, y = 0, width = 640, height = 640 }
+-- local camera = { x = 0, y = 0, width = 640, height = 640 }
+local camera = gamera.new(0, 0, 640, 640)
 
 function Stage.load(bgImgFileName, fgImgFileName, description)
     local bgImg = love.graphics.newImage(bgImgFileName)
     local fgImg = love.graphics.newImage(fgImgFileName)
 
     Stage.width, Stage.height = fgImg:getDimensions()
+    -- camera = gamera.new(0, 0, Stage.width*16, Stage.height*16)
+    camera:setWorld(0, 0, Stage.width*16, Stage.height*16)
+    camera:setWindow(0, 0, 640, 640)
+    
     local playerX, playerY = Stage.buildMap(bgImg, fgImg)
 
     entities['player'] = require('player')
@@ -30,12 +36,20 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     local enemy_key = 'enemy'
     entities[enemy_key] = require('enemy')
     entities[enemy_key].load(playerX - 150, playerY - 120, Stage.width)
-    world:add(entities[enemy_key], playerX - 150, playerY - 320, 56, 60)
+    world:add(entities[enemy_key], playerX - 150, playerY - 320, 30, 30)
 
-    camera.x = playerX - (camera.width / 2 - entities['player'].width / 2)
-    camera.y = playerY - (camera.height / 2 - entities['player'].height / 2)
+    
+    -- camera:setScale(2)
+
 
     Stage.loadTextures()
+
+
+    local cx = playerX - (640 / 2 - entities['player'].width / 2)
+    local cy = playerY - (640 / 2 - entities['player'].height / 2)
+    camera:setPosition(cx, cy)
+
+
 end
 
 
@@ -104,35 +118,60 @@ function Stage.update(dt)
         entitie.y = actualY
     end
 
-    camera.x = entities['player'].x - (camera.width / 2 - entities['player'].width / 2)
-    camera.y = entities['player'].y - (camera.height / 2 - entities['player'].height / 2)
+    -- camera.x = entities['player'].x - (camera.width / 2 - entities['player'].width / 2)
+    -- camera.y = entities['player'].y - (camera.height / 2 - entities['player'].height / 2)
 
-    if camera.x < 0 then
-        camera.x = 0
-    end
-    if camera.y < 0 then
-        camera.y = 0
-    end
+    -- local cx = entities['player'].x - (640 / 2 - entities['player'].width / 2)
+    -- local cy = entities['player'].y - (640 / 2 - entities['player'].height / 2)
+    local cx = entities['player'].x + entities['player'].width / 2
+    local cy = entities['player'].y + entities['player'].height / 2
+    
 
-    if camera.x > Stage.width*16*2 - camera.width then
-        camera.x = Stage.width*16*2 - camera.width
-    end
-    if camera.y > Stage.height*16*2 - camera.height then
-        camera.y = Stage.height*16*2 - camera.height
-    end
+    -- if cx < 0 then
+    --     cx = 0
+    -- end
+    -- if cy < 0 then
+    --     cy = 0
+    -- end
 
+    -- if cx > Stage.width*16 - 640 then
+    --     cx = Stage.width*16 - 640
+    -- end
+    -- if cy > Stage.height*16 - 640 then
+    --     cy = Stage.height*16 - 640
+    -- end
+
+    camera:setPosition(cx, cy)
 
     -- print('camera:\n\tx:'..tostring(camera.x)..' y:'..tostring(camera.y))
-    -- print('player:\n\tx:'..tostring(entities['player'].x)..' y:'..tostring(entities['player'].y))
-
+    print('player: x:'..tostring(entities['player'].x)..' y:'..tostring(entities['player'].y))
+    print('camera: x:'..tostring(cx)..' y:'..tostring(cy))
 end
 
-function Stage.draw(x, y)
-    Stage.drawMap(x, y)
 
-    for _, entitie in pairs(entities) do
-        entitie.draw(entitie.x - camera.x, entitie.y - camera.y)
-    end
+
+
+-- function Stage.draw(x, y)
+--     Stage.drawMap(x, y)
+
+--     for _, entitie in pairs(entities) do
+--         entitie.draw(entitie.x - camera.x, entitie.y - camera.y)
+
+--     end
+-- end
+
+function Stage.draw(x, y)
+    -- love.graphics.scale(2, 2)
+    -- camera:setScale(2.0)
+
+    camera:draw(function(l, t, w, h)
+        print('l:'..tostring(l)..' t:'..tostring(t)..' w:'..tostring(w)..' h:'..tostring(h))
+        local cx, cy = camera:getPosition()
+        Stage.drawMap(cx - 320, cy - 320)
+        for _, entitie in pairs(entities) do
+            entitie.draw(entitie.x - cx + 320, entitie.y - cy + 320)
+        end
+    end)
 end
 
 function Stage.newTexture(fileName, textureName)
@@ -149,11 +188,11 @@ end
 function Stage.drawMap(X, Y)
     for x = 0, Stage.width - 1 do
         for y = 0, Stage.height - 1 do
-            local nx = x * 16 * 2
-            local ny = y * 16 * 2
+            local nx = x * 16
+            local ny = y * 16
 
-            nx = nx - camera.x
-            ny = ny - camera.y
+            -- nx = nx - camera.x
+            -- ny = ny - camera.y
 
 
 
@@ -161,9 +200,9 @@ function Stage.drawMap(X, Y)
             if fgMap[x][y].name == 'stone' or fgMap[x][y].name == 'dirt' or fgMap[x][y].name == 'wood' then
                 tileName = tileName..'_'..fgMap[x][y].type
             end 
-            if nx > 16*2*(-2) or ny > 16*2*(-2) then
-                Stage.drawTile(tileName, nx, ny)
-            end
+            -- if nx > 16*2*(-2) or ny > 16*(-2) then
+                Stage.drawTile(tileName, nx - X, ny - Y)
+            -- end
         end
     end
 end
@@ -172,10 +211,11 @@ function Stage.drawTile(name, x, y)
     local tile = tiles[name]
     local nw, nh = textures[tile.texture]:getDimensions()
 
-    nw, nh = 2 * nw, 2 * nh
+    -- nw, nh = 2 * nw, 2 * nh
 
-    local scaleX, scaleY = getImageScaleForNewDimensions(textures[tile.texture], nw, nh)
-    love.graphics.draw(textures[tile.texture], tile.tile, x, y, 0, scaleX, scaleY)
+    -- local scaleX, scaleY = getImageScaleForNewDimensions(textures[tile.texture], nw, nh)
+    -- love.graphics.draw(textures[tile.texture], tile.tile, x, y, 0, scaleX, scaleY)
+    love.graphics.draw(textures[tile.texture], tile.tile, x, y)
 end
 
 
@@ -209,25 +249,26 @@ function Stage.buildMap(bImg, fImg)
 
             -->fMap
             r, g, b = fData:getPixel(x, y)
-            print('x:'..tostring(x)..' y:'..tostring(y))
-            print('r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b))
+            -- print('x:'..tostring(x)..' y:'..tostring(y))
+            -- print('r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b))
             color = chekColor(r, g, b)
             if color == 'dirt' or color == 'wood' or color == 'stone' then
                 fgMap[x][y] = { name = color }
-                world:add(fgMap[x][y], x * 16 * 2, y * 16 * 2, 16 * 2, 16 * 2)
+                world:add(fgMap[x][y], x * 16, y * 16, 16, 16)
             elseif color == 'air' then
                 fgMap[x][y] = { name = color }
             end
             if color == 'fox' then
                 fgMap[x][y] = { name = 'air' }
-                pX, pY = x * 16 * 2, y * 16 * 2
+                pX, pY = x * 16, y * 16
+                -- pX, pY = x * 16 * 2, y * 16 * 2
             end
         end
     end
     Stage.calculateCorners()
 
-    world:add(leftWall, -16, 0, 16, Stage.height * 16 * 2)
-    world:add(rightWall, Stage.width * 16 * 2 - 32, 0, 16, Stage.height * 2 * 16 + 32)
+    world:add(leftWall, -16, 0, 16, Stage.height * 16)
+    world:add(rightWall, Stage.width * 16, 0, 16, Stage.height * 16)
     return pX, pY
 end
 
