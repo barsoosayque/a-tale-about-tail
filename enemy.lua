@@ -10,14 +10,14 @@ Enemy.speedY = 0
 local anim8 = require('lib/anim8')
 local img
 
-local imgD = {w = 28, h = 30} -- dimenson texture
+local imgD = { w = 28, h = 30 } -- dimenson texture
 
 local scale = 2
 local animations = {}
 
 
-local run = 0 -- 0 stand 1 - run
-local side = -1 -- 1 left 1 rigth
+local run = 1 -- 0 stand 1 - run
+local side = -1 -- -1 left 1 rigth
 local jump = false
 
 local width = 0
@@ -33,28 +33,16 @@ function Enemy.load(x, y, length)
     width = length
 
     img = love.graphics.newImage('dat/gph/grandpa.png')
-    Enemy.addAnim('standL', 28, 30,   0,  0,    4, 0.1)
-    Enemy.addAnim('standR', 28, 30,   0,  30,   4, 0.1)
-    Enemy.addAnim('runL',   28, 30,   0,  60,   4, 0.1)
-    Enemy.addAnim('runR', 	28, 30,   0,  90,   4, 0.1)
-
+    Enemy.addAnim('standL', 28, 30, 0, 0, 4, 0.1)
+    Enemy.addAnim('standR', 28, 30, 0, 30, 4, 0.1)
+    Enemy.addAnim('runL', 28, 30, 0, 60, 4, 0.1)
+    Enemy.addAnim('runR', 28, 30, 0, 90, 4, 0.1)
 end
 
-local _ = Enemy.x
-local _ = Enemy.x + 10
+local patrolStartX = Enemy.x
+local patrolEndX = Enemy.x + 10
 
 function Enemy.update(dt)
---    if Enemy.x == patrolStartX then
---        state = -1
---    elseif Enemy.x == patrolEndX then
---        state = 0
---    end
---
---    if state == -1 then
---        Enemy.speedX = -speed
---    end
---        Enemy.speedY = speed
-
     Enemy.animationUpdate(dt)
 end
 
@@ -71,15 +59,10 @@ function Enemy.draw(x, y)
         anim = animations['runL']
     end
 
-    local dtx = imgD.w*scale/2 - math.floor(Enemy.width/2)
-    local dty = imgD.h*scale - Enemy.height
+    local dtx = imgD.w * scale / 2 - math.floor(Enemy.width / 2)
+    local dty = imgD.h * scale - Enemy.height
 
-    -- if fly == true and jump == true then
-    --     if side == -1 then anim = animations['jumpL']
-    --     else anim = animations['jumpR'] end
-    -- end
-
-    anim:draw(img, x - dtx , y - dty, 0, scale, scale)
+    anim:draw(img, x - dtx, y - dty, 0, scale, scale)
 end
 
 function Enemy.land()
@@ -97,34 +80,13 @@ function Enemy.addAnim(name, w, h, left, top, n, time)
 end
 
 function Enemy.animationUpdate(dt)
-    if run == 0 and fly == false then
-        if side == -1 then
-            animations['standL']:update(dt)
-        else
-            animations['standR']:update(dt)
-        end
-    elseif run == 1 and side == 1 and fly == false then
-        animations['runR']:update(dt)
-    elseif run == 1 and side == -1 and fly == false then
+    if side == -1 then
+        Enemy.speedX = -speed
         animations['runL']:update(dt)
     else
-        t = t + dt
+        Enemy.speedY = speed
+        animations['runR']:update(dt)
     end
-
-
-    -- if t < 0.18 and fly == true then
-    --     if side == -1 then
-    --         animations['jumpL']:gotoFrame(1)
-    --     else
-    --         animations['jumpR']:gotoFrame(1)
-    --     end
-    -- else
-    --     if side == -1 then
-    --         animations['jumpL']:gotoFrame(2)
-    --     else
-    --         animations['jumpR']:gotoFrame(2)
-    --     end
-    -- end
 end
 
 function Enemy.filter(intem, other)
