@@ -29,8 +29,8 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
 
     local enemy_key = 'enemy'
     entities[enemy_key] = require('enemy')
-    entities[enemy_key].load(playerX, playerY, Stage.width)
-    world:add(entities[enemy_key], playerX, playerY, entities[enemy_key].width, entities[enemy_key].height)
+    entities[enemy_key].load(playerX - 150, playerY - 120, Stage.width)
+    world:add(entities[enemy_key], playerX - 150, playerY - 320, 56, 60)
 
     camera.x = playerX - (camera.width / 2 - entities['player'].width / 2)
     camera.y = playerY - (camera.height / 2 - entities['player'].height / 2)
