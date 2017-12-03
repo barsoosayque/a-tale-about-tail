@@ -48,8 +48,6 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     -- local cx = playerX - (640 / 2 - entities['player'].width / 2)
     -- local cy = playerY - (640 / 2 - entities['player'].height / 2)
     camera:setPosition(playerX, playerY)
-
-
 end
 
 
@@ -69,30 +67,41 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'dirt_cd', 64, 32, 16, 16)
     Stage.newTile('foreground', 'dirt_rd', 80, 32, 16, 16)
 
-    Stage.newTile('foreground', 'stone_lu', 96, 0, 16, 16)
+    Stage.newTile('foreground', 'stone_lu', 96,  0, 16, 16)
     Stage.newTile('foreground', 'stone_cu', 112, 0, 16, 16)
     Stage.newTile('foreground', 'stone_ru', 128, 0, 16, 16)
 
-    Stage.newTile('foreground', 'stone_lc', 96, 16, 16, 16)
+    Stage.newTile('foreground', 'stone_lc', 96,  16, 16, 16)
     Stage.newTile('foreground', 'stone_cc', 112, 16, 16, 16)
     Stage.newTile('foreground', 'stone_rc', 128, 16, 16, 16)
 
-    Stage.newTile('foreground', 'stone_ld', 96, 32, 16, 16)
+    Stage.newTile('foreground', 'stone_ld', 96,  32, 16, 16)
     Stage.newTile('foreground', 'stone_cd', 112, 32, 16, 16)
     Stage.newTile('foreground', 'stone_rd', 128, 32, 16, 16)
 
 
     Stage.newTile('foreground', 'wood_lu', 144, 0, 16, 16)
     Stage.newTile('foreground', 'wood_cu', 160, 0, 16, 16)
-    Stage.newTile('foreground', 'wood_ru', 186, 0, 16, 16)
+    Stage.newTile('foreground', 'wood_ru', 176, 0, 16, 16)
 
     Stage.newTile('foreground', 'wood_lc', 144, 16, 16, 16)
     Stage.newTile('foreground', 'wood_cc', 160, 16, 16, 16)
-    Stage.newTile('foreground', 'wood_rc', 186, 16, 16, 16)
+    Stage.newTile('foreground', 'wood_rc', 176, 16, 16, 16)
 
     Stage.newTile('foreground', 'wood_ld', 144, 32, 16, 16)
     Stage.newTile('foreground', 'wood_cd', 160, 32, 16, 16)
-    Stage.newTile('foreground', 'wood_rd', 186, 32, 16, 16)
+    Stage.newTile('foreground', 'wood_rd', 176, 32, 16, 16)
+
+
+    Stage.newTile('foreground', 'roof_lu',  0, 0, 16, 16)
+    Stage.newTile('foreground', 'roof_cu', 16, 0, 16, 16)
+    Stage.newTile('foreground', 'roof_ru', 32, 0, 16, 16)
+
+    Stage.newTile('foreground', 'roof_ld',  0, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_cd', 16, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
+
+
 
     Stage.newTile('foreground', 'air', 32, 32, 16, 16)
 end
@@ -162,7 +171,7 @@ function Stage.drawMap(X, Y)
 
 
             local tileName = fgMap[x][y].name
-            if fgMap[x][y].name == 'stone' or fgMap[x][y].name == 'dirt' or fgMap[x][y].name == 'wood' then
+            if tileName == 'stone' or tileName == 'dirt' or tileName == 'wood' or tileName == 'roof' then
                 tileName = tileName..'_'..fgMap[x][y].type
             end
             -- if nx > 16*2*(-2) or ny > 16*(-2) then
@@ -195,6 +204,8 @@ function chekColor(r, g, b)
         return 'fox'
     elseif r == 255 and g == 255 and b == 0 then
         return 'wood'
+    elseif r == 255 and g == 0 and b == 255 then
+        return 'roof'
     end
 end
 
@@ -217,7 +228,7 @@ function Stage.buildMap(bImg, fImg)
             -- print('x:'..tostring(x)..' y:'..tostring(y))
             -- print('r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b))
             color = chekColor(r, g, b)
-            if color == 'dirt' or color == 'wood' or color == 'stone' then
+            if color == 'dirt' or color == 'wood' or color == 'stone' or color == 'roof' then
                 fgMap[x][y] = { name = color }
                 world:add(fgMap[x][y], x * 16, y * 16, 16, 16)
             elseif color == 'air' then
@@ -241,69 +252,87 @@ function Stage.calculateCorners()
     for x = 0, Stage.width - 1 do
         for y = 0, Stage.height - 1 do
             local blockType = fgMap[x][y].name
-            if blockType == 'stone' or blockType == 'wood' or blockType == 'dirt' then
+            
+            local str = string.sub(blockType, 1, 3)
 
-                local str = string.sub(blockType, 1, 3)
+            local env = { l = 0, u = 0, d = 0, r = 0 }
 
-                local env = { l = 0, u = 0, d = 0, r = 0 }
-
-                if fgMap[x - 1] ~= nil then
-                    local t = fgMap[x - 1][y].name
-                    if t == 'stone' or t == 'wood' or t == 'dirt' then
-                        env.l = 1
-                    end
-
-                else
+            if fgMap[x - 1] ~= nil then
+                local t = fgMap[x - 1][y].name
+                if t == 'stone' or t == 'wood' or t == 'dirt' or t == 'roof' then
                     env.l = 1
                 end
 
-                if fgMap[x + 1] ~= nil then
-                    local t = fgMap[x + 1][y].name
-                    if t == 'stone' or t == 'wood' or t == 'dirt' then
-                        env.r = 1
-                    end
+            else
+                env.l = 1
+            end
 
-                else
+            if fgMap[x + 1] ~= nil then
+                local t = fgMap[x + 1][y].name
+                if t == 'stone' or t == 'wood' or t == 'dirt' or t == 'roof' then
                     env.r = 1
                 end
 
-                if fgMap[x][y - 1] ~= nil then
-                    local t = fgMap[x][y - 1].name
-                    if t == 'stone' or t == 'wood' or t == 'dirt' then
-                        env.u = 1
-                    end
+            else
+                env.r = 1
+            end
 
-                else
+            if fgMap[x][y - 1] ~= nil then
+                local t = fgMap[x][y - 1].name
+                if t == 'stone' or t == 'wood' or t == 'dirt' or t == 'roof' then
                     env.u = 1
                 end
 
-                if fgMap[x][y + 1] ~= nil then
-                    local t = fgMap[x][y + 1].name
-                    if t == 'stone' or t == 'wood' or t == 'dirt' then
-                        env.d = 1
-                    end
+            else
+                env.u = 1
+            end
 
-                else
+            if fgMap[x][y + 1] ~= nil then
+                local t = fgMap[x][y + 1].name
+                if t == 'stone' or t == 'wood' or t == 'dirt' or t == 'roof' then
                     env.d = 1
                 end
 
-                if equal(env, 0, 0, 1, 1) then
+            else
+                env.d = 1
+            end
+
+            if blockType == 'stone' or blockType == 'wood' or blockType == 'dirt' then  
+                if equal(env, 0, 0, 1, 1) or equal(env, 0, 0, 0, 1) then
                     fgMap[x][y].type = 'lu'
                 elseif equal(env, 1, 0, 1, 1) or equal(env, 0, 0, 1, 0) then
                     fgMap[x][y].type = 'cu'
-                elseif equal(env, 1, 0, 1, 0) then
+                elseif equal(env, 1, 0, 1, 0) or equal(env, 1, 0, 0, 0) then
                     fgMap[x][y].type = 'ru'
-                elseif equal(env, 0, 1, 1, 1) or equal(env, 0, 0, 0, 1) then
+                elseif equal(env, 0, 1, 1, 1) then
                     fgMap[x][y].type = 'lc'
                 elseif equal(env, 1, 1, 1, 1) or equal(env, 0, 1, 1, 0) then
                     fgMap[x][y].type = 'cc'
-                elseif equal(env, 1, 1, 1, 0) or equal(env, 1, 0, 0, 0) then
+                elseif equal(env, 1, 1, 1, 0) then
                     fgMap[x][y].type = 'rc'
                 elseif equal(env, 0, 1, 0, 1) then
                     fgMap[x][y].type = 'ld'
                 elseif equal(env, 1, 1, 0, 1) or equal(env, 0, 1, 0, 0) then
                     fgMap[x][y].type = 'cd'
                 elseif equal(env, 1, 1, 0, 0) then
+                    fgMap[x][y].type = 'rd'
+                else
+                    fgMap[x][y].type = 'cu'
+                end
+            end
+
+            if blockType == 'roof' then
+                if equal(env, 0, 0, 1, 1) then
+                    fgMap[x][y].type = 'lu'
+                elseif equal(env, 1, 0, 1, 1) then
+                    fgMap[x][y].type = 'cu' 
+                elseif equal(env, 1, 0, 1, 0) then
+                    fgMap[x][y].type = 'ru'
+                elseif equal(env, 0, 1, 1, 1) then
+                    fgMap[x][y].type = 'ld'
+                elseif equal(env, 1, 1, 1, 1) then
+                    fgMap[x][y].type = 'cd'
+                elseif equal(env, 1, 1, 1, 0) then
                     fgMap[x][y].type = 'rd'
                 else
                     fgMap[x][y].type = 'cu'
