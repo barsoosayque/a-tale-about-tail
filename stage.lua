@@ -117,6 +117,8 @@ function Stage.update(dt)
         if actualY == entitie.y then
             entitie.speedY = 0
             entitie.land()
+        else
+            entitie.fly()
         end
 
         entitie.x = actualX

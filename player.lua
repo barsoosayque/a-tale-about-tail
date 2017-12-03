@@ -80,6 +80,10 @@ function Player.land()
     dj = false
 end
 
+function Player.fly()
+	fly = true
+end
+
 function Player.addAnim(name, w, h, left, top, n, time)
     local g = anim8.newGrid(w, h, img:getWidth(), img:getHeight(), left, top)
     local str = '1-' .. tostring(n)
