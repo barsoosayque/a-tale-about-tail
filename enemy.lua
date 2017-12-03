@@ -33,10 +33,10 @@ function Enemy.load(x, y, length)
     width = length
 
     img = love.graphics.newImage('dat/gph/grandpa.png')
-    Enemy.addAnim('standL', 28, 30, 0, 0, 4, 0.1)
-    Enemy.addAnim('standR', 28, 30, 0, 30, 4, 0.1)
-    Enemy.addAnim('runL', 28, 30, 0, 60, 4, 0.1)
-    Enemy.addAnim('runR', 28, 30, 0, 90, 4, 0.1)
+    Enemy.addAnim('standL', 30, 30, 0, 0, 4, 0.1)
+    Enemy.addAnim('standR', 30, 30, 0, 30, 4, 0.1)
+    Enemy.addAnim('runL',   30, 30, 0, 60, 4, 0.1)
+    Enemy.addAnim('runR',   30, 30, 0, 90, 4, 0.1)
 end
 
 local patrolStartX = Enemy.x
