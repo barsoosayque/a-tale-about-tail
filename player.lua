@@ -139,7 +139,6 @@ function Player.animationUpdate(dt)
     		animations['jumpR']:gotoFrame(2)
     	end
     end
-
 end
 
 function Player.filter(intem, other)
