@@ -6,7 +6,7 @@ stage = require('stage')
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 640
 font = love.graphics.newFont(192)
-music = love.audio.newSource("/dat/snd/sheltur.xm", "static")
+music = love.audio.newSource("/dat/snd/menu.xm", "static")
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
