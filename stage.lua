@@ -94,13 +94,16 @@ function Stage.drawMap(X, Y)
 	-- end
 	-- love.timer.sleep(1)
 
-	local l = entities['player'].x + entities['player'].width/2	
 	-- if entities['player'].x < 640/2 - entities['player'].width/2 then
 	-- 	l = entities['player'].x
 	-- end
+
+	local l = entities['player'].x + entities['player'].width/2	
+ 	-- local px = entities['player'].x
+ 	-- local pw = entities['player'].width
 	local dl = 0
-	-- print('l:'..tostring(l))
-	if l < 640/2 then
+	if l < 640/2 then 
+	-- if px < 640/2 - pw/2
 		dl = 0
 	elseif l > Stage.width*16*2 - 320 then
 		dl = Stage.width*16*2 - 640   -->??????
@@ -199,7 +202,9 @@ function getImageScaleForNewDimensions(image, newWidth, newHeight )
 end
 
 function Stage.keypressed(key, scancode, isrepeat)
-	entities['player'].keypressed(key, scancode, isrepeat)
+	if entities['player'] then
+		entities['player'].keypressed(key, scancode, isrepeat)
+	end
 end
 
 return Stage
