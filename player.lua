@@ -42,8 +42,7 @@ function Player.load(x, y, length)
 end
 
 function Player.update(dt)
-	print('fly:'..tostring(fly)..' jump:'..tostring(jump)..'\ntime:'..tostring(t))
-
+	-- print('fly:'..tostring(fly)..' jump:'..tostring(jump)..'\ntime:'..tostring(t))
 
     if love.keyboard.isDown('left') then
         Player.speedX = -speed
@@ -77,8 +76,11 @@ function Player.draw(x, y)
         anim = animations['runL']
     end
 
-    local dtx = imgD*scale/2 - math.floor(Player.width/2)
-    local dty = imgD*scale - Player.height
+    local dtx = math.ceil(imgD*scale/2 - (Player.width/2))
+    local dty = math.ceil(imgD*scale - Player.height)
+
+
+
     if fly == true and jump == true then
 		if side == -1 then
 			anim = animations['jumpL']
@@ -124,13 +126,13 @@ function Player.animationUpdate(dt)
     end
 
 
-    if t < 0.18 and fly == true then
+    if t < 0.09 and fly == true and jump == true then
     	if side == -1 then
     		animations['jumpL']:gotoFrame(1)
     	else
     		animations['jumpR']:gotoFrame(1)
     	end
-    else
+    elseif t > 0.09 or fly == true then
     	if side == -1 then
     		animations['jumpL']:gotoFrame(2)
     	else

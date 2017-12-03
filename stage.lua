@@ -20,7 +20,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     local bgImg = love.graphics.newImage(bgImgFileName)
     local fgImg = love.graphics.newImage(fgImgFileName)
 
-    Stage.width, Stage.height = bgImg:getDimensions()
+    Stage.width, Stage.height = fgImg:getDimensions()
     local playerX, playerY = Stage.buildMap(bgImg, fgImg)
 
     entities['player'] = require('player')
@@ -132,6 +132,13 @@ function Stage.update(dt)
     end
     if camera.y < 0 then
         camera.y = 0
+    end
+
+    if camera.x > Stage.width*16*2 - camera.width then
+        camera.x = Stage.width*16*2 - camera.width
+    end
+    if camera.y > Stage.height*16*2 - camera.height then
+        camera.y = Stage.height*16*2 - camera.height
     end
 
 
@@ -249,6 +256,8 @@ function Stage.buildMap(bImg, fImg)
 
             -->fMap
             r, g, b = fData:getPixel(x, y)
+            print('x:'..tostring(x)..' y:'..tostring(y))
+            print('r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b))
             color = chekColor(r, g, b)
             if color == 'dirt' or color == 'wood' or color == 'stone' then
                 fgMap[x][y] = { name = color }
