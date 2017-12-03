@@ -74,7 +74,7 @@ function Enemy.addAnim(name, w, h, left, top, n, time)
 end
 
 function Enemy.update(dt)
-    print(side)
+    -- print(side)
     if Enemy.stepTick == Enemy.STEP_LIMIT then
         side = -side
         Enemy.stepTick = 0

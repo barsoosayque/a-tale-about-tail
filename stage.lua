@@ -26,7 +26,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     -- camera = gamera.new(0, 0, Stage.width*16, Stage.height*16)
     camera:setWorld(0, 0, Stage.width*16, Stage.height*16)
     camera:setWindow(0, 0, 640, 640)
-    
+
     local playerX, playerY = Stage.buildMap(bgImg, fgImg)
 
     entities['player'] = require('player')
@@ -38,16 +38,16 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     entities[enemy_key].load(playerX - 150, playerY - 120, Stage.width)
     world:add(entities[enemy_key], playerX - 150, playerY - 320, 30, 30)
 
-    
+
     -- camera:setScale(2)
 
 
     Stage.loadTextures()
 
 
-    local cx = playerX - (640 / 2 - entities['player'].width / 2)
-    local cy = playerY - (640 / 2 - entities['player'].height / 2)
-    camera:setPosition(cx, cy)
+    -- local cx = playerX - (640 / 2 - entities['player'].width / 2)
+    -- local cy = playerY - (640 / 2 - entities['player'].height / 2)
+    camera:setPosition(playerX, playerY)
 
 
 end
@@ -164,7 +164,7 @@ function Stage.drawMap(X, Y)
             local tileName = fgMap[x][y].name
             if fgMap[x][y].name == 'stone' or fgMap[x][y].name == 'dirt' or fgMap[x][y].name == 'wood' then
                 tileName = tileName..'_'..fgMap[x][y].type
-            end 
+            end
             -- if nx > 16*2*(-2) or ny > 16*(-2) then
                 Stage.drawTile(tileName, nx - X, ny - Y)
             -- end
