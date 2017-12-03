@@ -122,13 +122,27 @@ function Stage.update(dt)
         entitie.x = actualX
         entitie.y = actualY
     end
+    camera.x = entities['player'].x - (camera.width/2 - entities['player'].width/2)
+    camera.y = entities['player'].y - (camera.height/2 - entities['player'].height/2)
+
+    if camera.x < 0 then
+        camera.x = 0
+    end
+    if camera.y < 0 then
+        camera.y = 0
+    end
+
+
+    print('camera:\n\tx:'..tostring(camera.x)..' y:'..tostring(camera.y))
+    print('player:\n\tx:'..tostring(entities['player'].x)..' y:'..tostring(entities['player'].y))
+
 end
 
 function Stage.draw(x, y)
     Stage.drawMap(x, y)
 
     for _, entitie in pairs(entities) do
-        entitie.draw(x, y)
+        entitie.draw(entitie.x - camera.x,entitie.y - camera.y)
     end
 end
 
@@ -142,7 +156,27 @@ function Stage.newTile(textureName, tileName, x, y, w, h)
     tiles[tileName].texture = textureName
 end
 
+
 function Stage.drawMap(X, Y)
+    for x = 0, Stage.width - 1 do
+        for y = 0, Stage.height - 1 do
+            local nx = x * 16 * 2
+            local ny = y * 16 * 2
+                
+            nx = nx - camera.x
+            ny = ny - camera.y
+
+
+            local tileName = fgMap[x][y].name
+            if fgMap[x][y].name == 'stone' or fgMap[x][y].name == 'dirt' or fgMap[x][y].name == 'wood' then
+                tileName = tileName..'_'..fgMap[x][y].type
+            end 
+            Stage.drawTile(tileName, nx, ny)
+        end
+    end
+end
+
+--[[function Stage.drawMap(X, Y)
 
     local l = entities['player'].x + entities['player'].width / 2
     local px = entities['player'].x
@@ -171,7 +205,7 @@ function Stage.drawMap(X, Y)
             Stage.drawTile(tileName, X + nx - dl, Y + ny)
         end
     end
-end
+end]]
 
 function Stage.drawTile(name, x, y)
     local tile = tiles[name]
@@ -182,7 +216,6 @@ function Stage.drawTile(name, x, y)
     local scaleX, scaleY = getImageScaleForNewDimensions(textures[tile.texture], nw, nh)
     love.graphics.draw(textures[tile.texture], tile.tile, x, y, 0, scaleX, scaleY)
 end
-
 
 
 function chekColor(r, g, b)
@@ -243,11 +276,6 @@ function Stage.buildMap(bImg, fImg)
     world:add(rightWall, Stage.width*16*2 - 32 , 0, 16, Stage.height*2*16 + 32)
     return pX, pY
 end
-
-
-
-
-
 
 function Stage.calculateCorners()
     for x = 0, Stage.width - 1 do
@@ -319,6 +347,8 @@ function Stage.calculateCorners()
                     fgMap[x][y].type = 'cd'
                 elseif equal(env, 1, 1, 0, 0) then
                     fgMap[x][y].type = 'rd'
+                else
+                    fgMap[x][y].type = 'cu'
                 end
 
 
@@ -383,10 +413,6 @@ function equal(env, l, u, d, r)
     else
         return false
     end  
-end
-
-function getCorner(env)
-    
 end
 
 function getImageScaleForNewDimensions(image, newWidth, newHeight)

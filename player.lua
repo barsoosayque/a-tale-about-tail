@@ -54,7 +54,6 @@ function Player.update(dt)
     end
 
 
-    -- print('fly:' .. tostring(fly) .. ' dj:' .. tostring(dj))
     Player.animationUpdate(dt)
 end
 
@@ -69,16 +68,7 @@ function Player.draw(x, y)
     elseif run == 1 and side == -1 then
         anim = animations['runL']
     end
-
-    if Player.x < 640 / 2 - Player.width / 2 then
-        anim:draw(img, x + Player.x - ((imgD / 2) * scale - (Player.width / 2) * scale), y + Player.y - (imgD * scale - Player.height),
-            0, scale, scale)
-    elseif Player.x > width * 16 * 2 - 640 / 2 - Player.width / 2 then
-        anim:draw(img, x + Player.x - (width * 16 * 2 - 640) - ((imgD / 2) * scale - (Player.width / 2) * scale), y + Player.y - (imgD * scale - Player.height), 0, scale, scale)
-    else
-        anim:draw(img, 640 / 2 - imgD * scale / 2, y + Player.y - (imgD * scale - Player.height), 0, scale, scale)
-    end
-    -- anim:draw
+    anim:draw(img, x, y, 0, scale, scale)
 end
 
 function Player.land()

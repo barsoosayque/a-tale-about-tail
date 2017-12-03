@@ -25,7 +25,7 @@ function love.load()
         end
 
         love.draw = function()
-            stage.draw(0, 150)
+            stage.draw(0, 0)
         end
     end
 end
