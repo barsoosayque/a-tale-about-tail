@@ -9,7 +9,9 @@ Enemy.speedY = 0
 
 local anim8 = require('lib/anim8')
 local img
-local imgD = 30 -- dimenson texture
+
+local imgD = {w = 28, h = 30} -- dimenson texture
+
 local scale = 2
 local animations = {}
 
@@ -35,8 +37,7 @@ function Enemy.load(x, y, length)
     Enemy.addAnim('standR', 28, 30,   0,  30,   4, 0.1)
     Enemy.addAnim('runL',   28, 30,   0,  60,   4, 0.1)
     Enemy.addAnim('runR', 	28, 30,   0,  90,   4, 0.1)
-    Enemy.addAnim('jumpL',  28, 30,   0,  120,   2,   1)
-    Enemy.addAnim('jumpR',  28, 30,   56, 150,   2,   1)
+
 end
 
 local _ = Enemy.x
@@ -70,13 +71,13 @@ function Enemy.draw(x, y)
         anim = animations['runL']
     end
 
-    local dtx = imgD*scale/2 - math.floor(Enemy.width/2)
-    local dty = imgD*scale - Enemy.height
+    local dtx = imgD.w*scale/2 - math.floor(Enemy.width/2)
+    local dty = imgD.h*scale - Enemy.height
 
-    if fly == true and jump == true then
-        if side == -1 then anim = animations['jumpL']
-        else anim = animations['jumpR'] end
-    end
+    -- if fly == true and jump == true then
+    --     if side == -1 then anim = animations['jumpL']
+    --     else anim = animations['jumpR'] end
+    -- end
 
     anim:draw(img, x - dtx , y - dty, 0, scale, scale)
 end
@@ -111,19 +112,19 @@ function Enemy.animationUpdate(dt)
     end
 
 
-    if t < 0.18 and fly == true then
-        if side == -1 then
-            animations['jumpL']:gotoFrame(1)
-        else
-            animations['jumpR']:gotoFrame(1)
-        end
-    else
-        if side == -1 then
-            animations['jumpL']:gotoFrame(2)
-        else
-            animations['jumpR']:gotoFrame(2)
-        end
-    end
+    -- if t < 0.18 and fly == true then
+    --     if side == -1 then
+    --         animations['jumpL']:gotoFrame(1)
+    --     else
+    --         animations['jumpR']:gotoFrame(1)
+    --     end
+    -- else
+    --     if side == -1 then
+    --         animations['jumpL']:gotoFrame(2)
+    --     else
+    --         animations['jumpR']:gotoFrame(2)
+    --     end
+    -- end
 end
 
 function Enemy.filter(intem, other)
