@@ -22,6 +22,8 @@ local jump = false
 local width = 0
 local speed = 200/2
 
+local inventory
+
 local t = 0 
 
 function Player.load(x, y, length)
@@ -128,20 +130,21 @@ function Player.animationUpdate(dt)
 
 
     --------> whaaaat <--------
-    if fly == true and jump == false then
-        print('fly jump')
-        if side == -1 then
-            animations['jumpL']:gotoFrame(2)
-        else
-            animations['jumpR']:gotoFrame(2)
-        end
-    elseif t < 0.09 and fly == true and jump == true then
+    -- if fly == true and jump == false then
+    --     print('fly jump')
+    --     if side == -1 then
+    --         animations['jumpL']:gotoFrame(2)
+    --     else
+    --         animations['jumpR']:gotoFrame(2)
+    --     end
+    -- else
+    if t < 0.1 and fly == true  then
         if side == -1 then
             animations['jumpL']:gotoFrame(1)
         else
             animations['jumpR']:gotoFrame(1)
         end
-    elseif t > 0.09 or fly == true then
+    elseif t > 0.1 or fly == true then
         if side == -1 then
             animations['jumpL']:gotoFrame(2)
         else
