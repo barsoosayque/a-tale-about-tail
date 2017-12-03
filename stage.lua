@@ -124,9 +124,11 @@ function Stage.update(dt)
         local goalY = entitie.y + entitie.speedY * dt
         local actualX, actualY, cols, len = world:move(entitie, goalX, goalY, entitie.filter)
 
-        if actualY == entitie.y and entitie.speedY > 0 then
+        if actualY == entitie.y then
+            if entitie.speedY > 0 then
+                entitie.land()
+            end
             entitie.speedY = 0
-            entitie.land()
         else
             entitie.fly()
         end
