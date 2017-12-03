@@ -9,7 +9,9 @@ Enemy.speedY = 0
 
 local anim8 = require('lib/anim8')
 local img
+
 local imgD = {w = 28, h = 30} -- dimenson texture
+
 local scale = 2
 local animations = {}
 
@@ -35,8 +37,7 @@ function Enemy.load(x, y, length)
     Enemy.addAnim('standR', 28, 30,   0,  30,   4, 0.1)
     Enemy.addAnim('runL',   28, 30,   0,  60,   4, 0.1)
     Enemy.addAnim('runR', 	28, 30,   0,  90,   4, 0.1)
-    -- Enemy.addAnim('jumpL',  28, 30,   0,  72,   2,   1)
-    -- Enemy.addAnim('jumpR',  28, 30,   36, 72,   2,   1)
+
 end
 
 local _ = Enemy.x
