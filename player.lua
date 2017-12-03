@@ -78,6 +78,7 @@ function Player.draw(x, y)
     else
         anim:draw(img, 640 / 2 - imgD * scale / 2, y + Player.y - (imgD * scale - Player.height), 0, scale, scale)
     end
+    -- anim:draw
 end
 
 function Player.land()
@@ -106,7 +107,7 @@ function Player.animationUpdate(dt)
 end
 
 function Player.filter(intem, other)
-    if other.name == 'block_a' or other.name == 'block_c' or other.name == 'block_l' or other.name == 'block_r' or other.name == 'box' then
+    if other.name == 'stone' or other.name == 'dirt' or other.name == 'wood' or other.name == 'wall' then
         return 'slide'
     end
 end
