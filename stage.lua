@@ -175,11 +175,15 @@ function Stage.drawMap(X, Y)
             nx = nx - camera.x
             ny = ny - camera.y
 
+
+
             local tileName = fgMap[x][y].name
             if fgMap[x][y].name == 'stone' or fgMap[x][y].name == 'dirt' or fgMap[x][y].name == 'wood' then
                 tileName = tileName..'_'..fgMap[x][y].type
             end 
-            Stage.drawTile(tileName, nx, ny)
+            if nx > 16*2*(-2) or ny > 16*2*(-2) then
+                Stage.drawTile(tileName, nx, ny)
+            end
         end
     end
 end
@@ -272,14 +276,6 @@ function Stage.buildMap(bImg, fImg)
         end
     end
     Stage.calculateCorners()
-
-    -- for x = 0, Stage.width - 1 do
-    --     for y = 0, Stage.height - 1 do
-    --         if fgMap[x][y].name == 'dirt' or fgMap[x][y].name == 'wood' or fgMap[x][y].name == 'stone' then
-    --             world:add(fgMap[x][y], x * 16 * 2, y * 16 * 2, 16 * 2, 16 * 2)
-    --         end
-    --     end
-    -- end
 
     world:add(leftWall, -16, 0, 16, Stage.height*16*2)
     world:add(rightWall, Stage.width*16*2 - 32 , 0, 16, Stage.height*2*16 + 32)
