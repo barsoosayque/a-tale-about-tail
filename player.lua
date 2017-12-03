@@ -11,7 +11,6 @@ Player.speedY = 0
 local anim8 = require('lib/anim8')
 local img
 local imgD = 18
-local scale = 2
 local animations = {}
 
 local run = 0 -- 0 stand 1 - run
@@ -21,7 +20,7 @@ local dj = false
 local jump = false
 
 local width = 0
-local speed = 200
+local speed = 200/2
 
 local t = 0 
 
@@ -57,7 +56,8 @@ function Player.update(dt)
         run = 0
     end
     if fly == true and Player.speedX ~= 0 then
-        Player.speedX = Player.speedX / 1.15
+        -- Player.speedX = Player.speedX / 1.15
+        Player.speedX = Player.speedX
     end
 
 
@@ -76,8 +76,6 @@ function Player.draw(x, y)
         anim = animations['runL']
     end
 
-    -- local dtx = math.floor(imgD*scale/2 - (Player.width/2))
-    -- local dty = math.floor(imgD*scale - Player.height)
     local dtx = math.floor(imgD/2 - Player.width/2)
     local dty = math.floor(imgD - Player.height)
 
@@ -152,7 +150,7 @@ end
 function Player.keypressed(key, scancode, isrepeat)
     if key == 'up' and (fly == false or dj == false) then
     	jump = true
-        Player.speedY = -500
+        Player.speedY = -400-- -500
         dj = fly
         fly = true
         t = 0
