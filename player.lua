@@ -16,6 +16,7 @@ local animations = {}
 
 local state = 0
 local fly = false
+local dj = false
 
 local width = 0
 local speed = 200
@@ -48,14 +49,11 @@ function Player.update(dt)
 		state = 0
 	end
 	if fly == true and Player.speedX ~= 0 then
-		Player.speedX = Player.speedX/2
+		Player.speedX = Player.speedX/1.5
 	end
 
-	if love.keyboard.isDown('up') and fly == false then
-		Player.speedY = -150
-		fly = true
-	end
-
+	
+	print('fly:'..tostring(fly)..' dj:'..tostring(dj))
 	Player.animationUpdate(dt)
 end
 
@@ -81,6 +79,7 @@ end
 
 function Player.land()
 	fly = false
+	dj = false
 end
 
 function Player.addAnim(name, w, h, left, top, n, time)
@@ -100,10 +99,18 @@ function Player.animationUpdate(dt)
 end
 
 function Player.filter(intem, other)
-	if other.name == 'block' then
+	if other.name == 'block_a' or other.name == 'block_c' or other.name == 'block_l' or other.name == 'block_r' or other.name == 'box' then
 		return 'slide'
 	end
 end
 
+
+function Player.keypressed(key, scancode, isrepeat)
+	if key == 'up' and (fly == false or dj == false)  then
+		Player.speedY = -175
+		dj = fly
+		fly = true
+	end
+end
 
 return Player

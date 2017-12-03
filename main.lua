@@ -56,3 +56,7 @@ end
 function love.mousepressed(x, y, button)
     gui:mousepress(x, y, button)
 end
+
+function love.keypressed(key, scancode, isrepeat)
+	Stage.keypressed(key, scancode, isrepeat)
+end
