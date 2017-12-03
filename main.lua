@@ -5,30 +5,41 @@ stage = require('stage')
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 640
-font = love.graphics.newFont(192)
+font = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 32)
 music = love.audio.newSource("/dat/snd/menu.xm", "static")
+bgImage = love.graphics.newImage("dat/gph/menu_bg.png")
+bg = love.graphics.newCanvas(SCREEN_WIDTH + 64, SCREEN_HEIGHT + 64)
+bgAnimation = 0
+bgDelta = 0
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT)
-    love.graphics.setFont(font)
     love.graphics.setBackgroundColor(128, 256, 256, 0)
+
+    love.graphics.setFont(font)
+    gui.style.font = font
+    gui.style.unit = 64
+
+    love.graphics.setCanvas(bg)
+        love.graphics.clear()
+        for x=0,11 do
+            for y=0,11 do
+                love.graphics.draw(bgImage, 64 * x, 64 * y)
+            end
+        end
+    love.graphics.setCanvas()
 
     Menu.drawMainMenu()
     Menu.startGameCallback = function()
         stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
-        -- stage.newTexture('dat/img/block.png', 'block')
-        -- stage.newTexture('dat/img/empty.png', 'empty')
 
         love.update = function(dt)
             stage.update(dt)
         end
 
         love.draw = function()
-    		-- love.graphics.scale(2, 2)
-        
             stage.draw(0, 0)
-
         end
     end
 end
@@ -50,9 +61,18 @@ function love.update(dt)
     else
         disableMusic()
     end
+    bgDelta = bgDelta + dt
+    if bgDelta >= 0.03 then
+        bgAnimation = bgAnimation + 1
+        bgDelta = 0
+        if bgAnimation >= 64 then
+            bgAnimation = 0
+        end
+    end
 end
 
 function love.draw()
+    love.graphics.draw(bg, bgAnimation - 64, bgAnimation - 64)
     gui:draw()
 end
 

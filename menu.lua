@@ -15,8 +15,9 @@ function saveToFile(value)
 end
 
 function Menu.drawOptionsMenu()
-    local cbSound = gui:checkbox(nul, { x = 255, y = 32, r = 8 })
-    local btnBack = gui:button('Back', { x = 256, y = 64, w = 128, h = gui.style.unit })
+    local cbSound = gui:checkbox(nul, { x = 200, y = gui.style.unit * 5, r = 16 })
+    cbSound.shape = 'rect'
+    local btnBack = gui:button('Back', { x = 160, y = gui.style.unit * 7, w = 320, h = gui.style.unit })
 
     cbSound.value = Menu.stateSound
     cbSound.style.labelfg = cbSound.style.fg
@@ -34,7 +35,7 @@ function Menu.drawOptionsMenu()
         end
     end
 
-    local cblSound = gui:text("Sound on/off", { x = 32 }, cbSound, true)
+    local cblSound = gui:text("Sound on/off", { x = 32, y = -24 }, cbSound, true)
     cblSound.click = function(this)
         this.parent:click()
     end
@@ -48,9 +49,12 @@ function Menu.drawOptionsMenu()
 end
 
 function Menu.drawMainMenu()
-    local btnStart = gui:button('Start', { x = 256, y = 32, w = 128, h = gui.style.unit })
-    local btnOptions = gui:button('Options', { x = 256, y = 64, w = 128, h = gui.style.unit })
-    local btnExit = gui:button('Exit', { x = 256, y = 96, w = 128, h = gui.style.unit })
+    local btnStart = gui:button('Start', { x = 160, y = gui.style.unit * 5, w = 320, h = gui.style.unit })
+    local btnOptions = gui:button('Options', { x = 160, y = gui.style.unit * 6.25, w = 320, h = gui.style.unit })
+    local btnExit = gui:button('Exit', { x = 160, y = gui.style.unit * 8, w = 320, h = gui.style.unit })
+    local imgTitle = gui:image(nil, { x = 0, y = 0 }, nil, "dat/gph/title.png")
+
+    -- imgTitle.rect({ x = 32, y = 32, w = 640, h = 256 })
 
     local function clearMainMenu()
         gui:rem(btnStart)
