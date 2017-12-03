@@ -328,7 +328,7 @@ function Stage.calculateCorners()
                     fgMap[x][y].type = 'cu' 
                 elseif equal(env, 1, 0, 1, 0) then
                     fgMap[x][y].type = 'ru'
-                elseif equal(env, 0, 1, 1, 1) then
+                elseif equal(env, 0, 1, 1, 1) or equal(env, 0, 1, 0, 1) then
                     fgMap[x][y].type = 'ld'
                 elseif equal(env, 1, 1, 1, 1) then
                     fgMap[x][y].type = 'cd'
