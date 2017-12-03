@@ -8,6 +8,8 @@ Player.height = 0
 Player.speedX = 0
 Player.speedY = 0
 
+Player.bag = 0
+
 local anim8 = require('lib/anim8')
 local img
 local imgD = 18
@@ -153,9 +155,12 @@ function Player.animationUpdate(dt)
     end
 end
 
-function Player.filter(intem, other)
-    if other.name == 'stone' or other.name == 'dirt' or other.name == 'wood' or other.name == 'wall' then
+function Player.filter(item, other)
+    local name = other.name
+    if name == 'stone' or name == 'dirt' or name == 'wood' or name == 'wall' or name == 'roof' then
         return 'slide'
+    elseif name == 'chest' or name == 'table' or name == 'cup' then
+        return 'cross'
     end
 end
 

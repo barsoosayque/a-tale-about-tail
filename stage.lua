@@ -2,6 +2,8 @@ Stage = {}
 
 local gamera = require('lib/gamera')
 local bump = require('lib/bump')
+local objects = require('objects')
+
 local world = bump.newWorld(16)
 
 local canvas
@@ -61,6 +63,7 @@ end
 function Stage.loadTextures()
     Stage.newTexture('dat/gph/tiles_bg.png', 'background')
     Stage.newTexture('dat/gph/tiles_fg.png', 'foreground')
+    Stage.newTexture('dat/gph/objects.png' ,    'objects')
 
     Stage.newTile('foreground', 'dirt_lu', 48, 0, 16, 16)
     Stage.newTile('foreground', 'dirt_cu', 64, 0, 16, 16)
@@ -108,11 +111,25 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'roof_cd', 16, 16, 16, 16)
     Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
 
+    Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
+
+
     Stage.newTile('background', 'wall_u',   16,   0, 16, 16)
     Stage.newTile('background', 'wall_d',   16,  16, 16, 16)
     Stage.newTile('background', 'wall_c',   32,   0, 16, 16)
 
     Stage.newTile('background', 'fence', 0, 16, 16, 16)
+
+
+    Stage.newTile('objects', 'chest_f',  0,  0, 16, 16)
+    Stage.newTile('objects', 'chest_e', 16,  0, 16, 16)
+    Stage.newTile('objects', 'table_f',  0, 16, 16, 16)
+    Stage.newTile('objects', 'table_e', 16, 16, 16, 16)
+    Stage.newTile('objects',   'cup_f',  0, 32, 16, 16)
+    Stage.newTile('objects',   'cup_e', 16, 32, 16, 16)
+
 
 
     Stage.newTile('foreground', 'air', 32, 32, 16, 16)
@@ -127,6 +144,30 @@ function Stage.update(dt)
         local goalX = entitie.x + entitie.speedX * dt
         local goalY = entitie.y + entitie.speedY * dt
         local actualX, actualY, cols, len = world:move(entitie, goalX, goalY, entitie.filter)
+
+
+        for i = 1, len do
+            local other = cols[i].other
+            local name = other.name
+            if name == 'chest' or name == 'table' or name == 'cup' and entitie.name == 'player' then
+                other.obj.full = false
+                world:remove(other)
+
+                local cost
+                if name == 'chest' then cost = 10
+                elseif name == 'table' then cost = 5
+                elseif name == 'cup' then cost = 1 end
+                entitie.bag = entitie.bag + cost 
+
+
+                love.graphics.setCanvas(canvas)
+                Stage.drawMap(0, 0)
+                love.graphics.setCanvas()
+
+            end
+
+        end
+
 
         if actualY == entitie.y then
             if entitie.speedY > 0 then
@@ -190,21 +231,29 @@ function Stage.drawMap(X, Y)
             if fgTileName == 'stone' or fgTileName == 'dirt' or fgTileName == 'wood' or fgTileName == 'roof' then
                 fgTileName = fgTileName..'_'..fgMap[x][y].type
             end
+            if fgTileName == 'chest' or fgTileName == 'table' or fgTileName == 'cup' then
+                if fgMap[x][y].obj.full then
+                    fgTileName = fgTileName..'_f'
+                else
+                    fgTileName = fgTileName..'_e'
+                end
+            end
+
             if bgTileName == 'wall' then
                 bgTileName = bgTileName..'_'..bgMap[x][y].type
             end
             -- if nx > 16*2*(-2) or ny > 16*(-2) then
-                Stage.drawTile(fgTileName, nx - X, ny - Y)
                 Stage.drawTile(bgTileName, nx - X, ny - Y)
+                Stage.drawTile(fgTileName, nx - X, ny - Y)
             -- end
         end
     end
 end
 
 function Stage.drawTile(name, x, y)
-    print(name)
+    -- print(name)
     local tile = tiles[name]
-    print(tile)
+    -- print(tile)
     local nw, nh = textures[tile.texture]:getDimensions()
 
     -- nw, nh = 2 * nw, 2 * nh
@@ -224,7 +273,7 @@ function chekColor(r, g, b, a)
         return 'air'
     elseif r == 255 and g == 0 and b == 0 then
         return 'fox'
-    elseif r == 255 and g == 255 and b == 0 then
+    elseif r == 255 and g == 150 and b == 0 then
         return 'wood'
     elseif r == 255 and g == 0 and b == 255 then
         return 'roof'
@@ -232,6 +281,12 @@ function chekColor(r, g, b, a)
         return 'fence'
     elseif r == 100 and g == 50 and b == 50 then
         return 'wall'
+    elseif r == 255 and g == 255 and b == 0 then
+        return 'chest'
+    elseif r == 255 and g == 220 and b == 0 then
+        return 'table'
+    elseif r == 255 and g == 200 and b == 0 then
+        return 'cup'
     end
 end
 
@@ -253,25 +308,27 @@ function Stage.buildMap(bImg, fImg)
                 color = 'air'
             end
             bgMap[x][y] = {name = color}
-            -- print('color:'..color..' r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b)..' a:'..tostring(a))
 
 
             -->fMap
             r, g, b = fData:getPixel(x, y)
-            -- print('x:'..tostring(x)..' y:'..tostring(y))
             -- print('r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b))
             color = chekColor(r, g, b, a)
+            print('color:'..color..' r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b)..' a:'..tostring(a))
             
             if color == 'dirt' or color == 'wood' or color == 'stone' or color == 'roof' then
                 fgMap[x][y] = { name = color }
                 world:add(fgMap[x][y], x * 16, y * 16, 16, 16)
             elseif color == 'air' then
                 fgMap[x][y] = { name = color }
+            elseif color == 'chest' or color == 'table' or color == 'cup' then
+                local obj = objects.newObject(color, x*unit, y*unit, unit, unit)
+                fgMap[x][y] = {name = color, obj = obj}
+                world:add(fgMap[x][y], x*unit, y*unit, unit, unit)
             end
             if color == 'fox' then
                 fgMap[x][y] = { name = 'air' }
                 pX, pY = x * 16, y * 16
-                -- pX, pY = x * 16 * 2, y * 16 * 2
             end
         end
     end
@@ -285,6 +342,8 @@ end
 function Stage.calculateCorners()
     for x = 0, Stage.width - 1 do
         for y = 0, Stage.height - 1 do
+
+            -- print('x:'..tostring(x)..' y:'..tostring(y))
             local fBlockType = fgMap[x][y].name
             local bBlockType = bgMap[x][y].name 
             
