@@ -6,6 +6,8 @@ Enemy.width = 0
 Enemy.height = 0
 Enemy.speedX = 0
 Enemy.speedY = 0
+Enemy.stepTick = 0
+Enemy.STEP_LIMIT = 175
 
 local anim8 = require('lib/anim8')
 local img
@@ -38,14 +40,6 @@ function Enemy.load(x, y, length)
     Enemy.addAnim('runL',   30, 30, 0, 60, 4, 0.1)
     Enemy.addAnim('runR',   30, 30, 0, 90, 4, 0.1)
 end
-
-local patrolStartX = Enemy.x
-local patrolEndX = Enemy.x + 10
-
-function Enemy.update(dt)
-    Enemy.animationUpdate(dt)
-end
-
 function Enemy.draw(x, y)
     local anim
 
@@ -79,12 +73,22 @@ function Enemy.addAnim(name, w, h, left, top, n, time)
     animations[name] = anim8.newAnimation(g(str, 1), time)
 end
 
+function Enemy.update(dt)
+    print(side)
+    if Enemy.stepTick == Enemy.STEP_LIMIT then
+        side = -side
+        Enemy.stepTick = 0
+    end
+    Enemy.stepTick = Enemy.stepTick + 1
+    Enemy.animationUpdate(dt)
+end
+
 function Enemy.animationUpdate(dt)
     if side == -1 then
         Enemy.speedX = -speed
         animations['runL']:update(dt)
     else
-        Enemy.speedY = speed
+        Enemy.speedX = speed
         animations['runR']:update(dt)
     end
 end
