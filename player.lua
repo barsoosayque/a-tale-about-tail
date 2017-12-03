@@ -50,7 +50,7 @@ function Player.update(dt)
         run = 0
     end
     if fly == true and Player.speedX ~= 0 then
-        Player.speedX = Player.speedX / 1.5
+        Player.speedX = Player.speedX / 1.15
     end
 
 
