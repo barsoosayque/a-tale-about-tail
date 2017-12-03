@@ -6,15 +6,15 @@ local world = bump.newWorld(16)
 local textures = {}
 local tiles = {}
 
-local leftWall = {name = 'wall', side = 'left'}
-local rightWall = {name = 'wall', side = 'right'}
+local leftWall = { name = 'wall', side = 'left' }
+local rightWall = { name = 'wall', side = 'right' }
 
 local entities = {}
 
 local bgMap = {} -- background map
 local fgMap = {} -- foreground map
 
-local camera = {x = 0, y = 0, width = 640, height = 640}
+local camera = { x = 0, y = 0, width = 640, height = 640 }
 
 function Stage.load(bgImgFileName, fgImgFileName, description)
     local bgImg = love.graphics.newImage(bgImgFileName)
@@ -26,9 +26,14 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     entities['player'] = require('player')
     entities['player'].load(playerX, playerY, Stage.width)
     world:add(entities['player'], playerX, playerY, entities['player'].width, entities['player'].height)
-    
-    camera.x = playerX - (camera.width/2 - entities['player'].width/2)
-    camera.y = playerY - (camera.height/2 - entities['player'].height/2)
+
+    local enemy_key = 'enemy'
+    entities[enemy_key] = require('enemy')
+    entities[enemy_key].load(playerX, playerY, Stage.width)
+    world:add(entities[enemy_key], playerX, playerY, entities[enemy_key].width, entities[enemy_key].height)
+
+    camera.x = playerX - (camera.width / 2 - entities['player'].width / 2)
+    camera.y = playerY - (camera.height / 2 - entities['player'].height / 2)
 
     Stage.loadTextures()
 end
@@ -41,32 +46,19 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'dirt_lu', 48, 0, 16, 16)
     Stage.newTile('foreground', 'dirt_cu', 64, 0, 16, 16)
     Stage.newTile('foreground', 'dirt_ru', 80, 0, 16, 16)
-    -- Stage.setTileRule('foreground', 'block_lu_h', {l = 0, u = 0, d = 1, r = 1, h = 1})
-    -- Stage.setTileRule('foreground', 'block_cu_h', {l = 1, u = 0, d = -1, r = 1, h = 1})
-    -- Stage.setTileRule('foreground', 'block_ru_h', {l = 1, u = 0, d = 1, r = 0, h = 1})
-    
+
     Stage.newTile('foreground', 'dirt_lc', 48, 16, 16, 16)
     Stage.newTile('foreground', 'dirt_cc', 64, 16, 16, 16)
     Stage.newTile('foreground', 'dirt_rc', 80, 16, 16, 16)
-    -- Stage.setTileRule('foreground', 'block_lc_h', {l = 0, u = 1, d = 1, r = -1, h = 1})
-    -- -- Stage.setTileRule('foreground', 'empty', {l = -1, u = -1, d = 1, r = 1})
-    -- Stage.setTileRule('foreground', 'block_rc_h', {l = -1, u = 1, d = 1, r = 0, h = 1})
 
     Stage.newTile('foreground', 'dirt_ld', 48, 32, 16, 16)
     Stage.newTile('foreground', 'dirt_cd', 64, 32, 16, 16)
     Stage.newTile('foreground', 'dirt_rd', 80, 32, 16, 16)
-    -- Stage.setTileRule('foreground', 'block_ld_h', {l = 0, u = 1, d = 0, r = 1, h = 1})
-    -- Stage.setTileRule('foreground', 'block_cd_h', {l = 1, u = -1, d = 0, r = 1, h = 1})
-    -- Stage.setTileRule('foreground', 'block_rd_h', {l = 1, u = 1, d = 0, r = 0, h = 1})
-
 
     Stage.newTile('foreground', 'stone_lu', 96, 0, 16, 16)
     Stage.newTile('foreground', 'stone_cu', 112, 0, 16, 16)
     Stage.newTile('foreground', 'stone_ru', 128, 0, 16, 16)
-    -- Stage.setTileRule('foreground', 'block_lu', {l = 0, u = 0, d = 1, r = 1, h = 0})
-    -- Stage.setTileRule('foreground', 'block_cu', {l = 1, u = 0, d = -1, r = 1, h = 0})
-    -- Stage.setTileRule('foreground', 'block_ru', {l = 1, u = 0, d = 1, r = 0, h = 0})
-    
+
     Stage.newTile('foreground', 'stone_lc', 96, 16, 16, 16)
     Stage.newTile('foreground', 'stone_cc', 112, 16, 16, 16)
     Stage.newTile('foreground', 'stone_rc', 128, 16, 16, 16)
@@ -79,7 +71,7 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'wood_lu', 144, 0, 16, 16)
     Stage.newTile('foreground', 'wood_cu', 160, 0, 16, 16)
     Stage.newTile('foreground', 'wood_ru', 186, 0, 16, 16)
-    
+
     Stage.newTile('foreground', 'wood_lc', 144, 16, 16, 16)
     Stage.newTile('foreground', 'wood_cc', 160, 16, 16, 16)
     Stage.newTile('foreground', 'wood_rc', 186, 16, 16, 16)
@@ -88,20 +80,7 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'wood_cd', 160, 32, 16, 16)
     Stage.newTile('foreground', 'wood_rd', 186, 32, 16, 16)
 
-    -- Stage.newTile('foreground', 'block_lu', 48, 0, 16, 16)
-    -- Stage.newTile('foreground', 'block_l', 64, 16, 16, 16)
-    -- Stage.newTile('foreground', 'block_r', 48, 16, 16, 16)
-    -- Stage.newTile('foreground', 'block_c', 64, 0, 16, 16)
-    -- Stage.newTile('foreground', 'box', 80, 16, 16, 16)
-    -- Stage.newTile('foreground', 'empty', 80, 0, 16, 16)
-    -- Stage.newTile('foreground', 'roof_lu', 0, 0, 16, 16)
-    -- Stage.newTile('foreground', 'roof_cu', 16, 0, 16, 16)
-    -- Stage.newTile('foreground', 'roof_ru', 32, 0, 16, 16)
-    -- Stage.newTile('foreground', 'roof_ld', 0, 16, 16, 16)
-    -- Stage.newTile('foreground', 'roof_cd', 16, 16, 16, 16)
-    -- Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
     Stage.newTile('foreground', 'air', 32, 32, 16, 16)
-
 end
 
 function Stage.update(dt)
@@ -124,8 +103,9 @@ function Stage.update(dt)
         entitie.x = actualX
         entitie.y = actualY
     end
-    camera.x = entities['player'].x - (camera.width/2 - entities['player'].width/2)
-    camera.y = entities['player'].y - (camera.height/2 - entities['player'].height/2)
+
+    camera.x = entities['player'].x - (camera.width / 2 - entities['player'].width / 2)
+    camera.y = entities['player'].y - (camera.height / 2 - entities['player'].height / 2)
 
     if camera.x < 0 then
         camera.x = 0
@@ -151,7 +131,7 @@ function Stage.draw(x, y)
     Stage.drawMap(x, y)
 
     for _, entitie in pairs(entities) do
-        entitie.draw(entitie.x - camera.x,entitie.y - camera.y)
+        entitie.draw(entitie.x - camera.x, entitie.y - camera.y)
     end
 end
 
@@ -171,7 +151,7 @@ function Stage.drawMap(X, Y)
         for y = 0, Stage.height - 1 do
             local nx = x * 16 * 2
             local ny = y * 16 * 2
-                
+
             nx = nx - camera.x
             ny = ny - camera.y
 
@@ -187,37 +167,6 @@ function Stage.drawMap(X, Y)
         end
     end
 end
-
---[[function Stage.drawMap(X, Y)
-
-    local l = entities['player'].x + entities['player'].width / 2
-    local px = entities['player'].x
-    local pw = entities['player'].width
-    local dl = 0
-    --if l < 640/2 then
-    if px < 640 / 2 - pw / 2 then
-        dl = 0
-    elseif l > Stage.width * 16 * 2 - 320 then
-        dl = Stage.width * 16 * 2 - 640 -->??????
-    else
-        dl = l - 320
-    end
-
-    for x = 0, Stage.width - 1 do
-        for y = 0, Stage.height - 1 do
-            local nx = x * 16 * 2
-            local ny = y * 16 * 2
-            -- print('x:'..tostring(x)..' y:'..tostring(y))
-            local tileName = fgMap[x][y].name
-            if fgMap[x][y].name == 'stone' or fgMap[x][y].name == 'dirt' or fgMap[x][y].name == 'wood' then
-                tileName = tileName..'_'..fgMap[x][y].type
-            end 
-            -- print(tileName)
-
-            Stage.drawTile(tileName, X + nx - dl, Y + ny)
-        end
-    end
-end]]
 
 function Stage.drawTile(name, x, y)
     local tile = tiles[name]
@@ -277,8 +226,8 @@ function Stage.buildMap(bImg, fImg)
     end
     Stage.calculateCorners()
 
-    world:add(leftWall, -16, 0, 16, Stage.height*16*2)
-    world:add(rightWall, Stage.width*16*2 - 32 , 0, 16, Stage.height*2*16 + 32)
+    world:add(leftWall, -16, 0, 16, Stage.height * 16 * 2)
+    world:add(rightWall, Stage.width * 16 * 2 - 32, 0, 16, Stage.height * 2 * 16 + 32)
     return pX, pY
 end
 
@@ -290,7 +239,7 @@ function Stage.calculateCorners()
 
                 local str = string.sub(blockType, 1, 3)
 
-                local env = {l = 0, u = 0, d = 0, r = 0}
+                local env = { l = 0, u = 0, d = 0, r = 0 }
 
                 if fgMap[x - 1] ~= nil then
                     local t = fgMap[x - 1][y].name
@@ -359,11 +308,8 @@ function Stage.calculateCorners()
 end
 
 function equal(env, l, u, d, r)
-    if env.l == l and env.u == u and env.d == d and env.r == r then
-        return true
-    else
-        return false
-    end  
+    if env.l == l and env.u == u and env.d == d and env.r == r then return true
+    else return false end
 end
 
 function getImageScaleForNewDimensions(image, newWidth, newHeight)
