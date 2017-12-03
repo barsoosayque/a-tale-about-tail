@@ -1,4 +1,4 @@
-Player = {}
+local Player = {}
 Player.name = 'player'
 
 Player.x = 0
@@ -20,8 +20,6 @@ local dj = false
 
 local width = 0
 local speed = 200
-
-local g = 98
 
 function Player.load(x, y, length)
 	Player.x = x
@@ -53,7 +51,7 @@ function Player.update(dt)
 	end
 
 	
-	print('fly:'..tostring(fly)..' dj:'..tostring(dj))
+	-- print('fly:'..tostring(fly)..' dj:'..tostring(dj))
 	Player.animationUpdate(dt)
 end
 
@@ -68,10 +66,10 @@ function Player.draw(x, y)
 	end
 
 	if Player.x < 640/2 - Player.width/2 then
-		anim:draw(img, x + Player.x - ((imgD/2)*scale - (Player.width/2)*scale), y + Player.y - (imgD*scale - Player.height), 
-			0, scale, scale)
+		anim:draw(img, x + Player.x , y + Player.y - (imgD*scale - Player.height), 
+			0, scale, scale) --- ((imgD/2)*scale - (Player.width/2)*scale)
 	elseif Player.x > width*16*2 - 640/2 - Player.width/2 then
-		anim:draw(img, x + Player.x - (width*16*2 - 640) - ((imgD/2)*scale - (Player.width/2)*scale),y + Player.y - (imgD*scale - Player.height), 0, scale, scale)
+		anim:draw(img, x + Player.x - (width*16*2 - 640),y + Player.y - (imgD*scale - Player.height), 0, scale, scale) -- - ((imgD/2)*scale - (Player.width/2)*scale)
 	else
 		anim:draw(img, 640/2 - imgD*scale/2, y + Player.y - (imgD*scale - Player.height), 0, scale, scale)
 	end

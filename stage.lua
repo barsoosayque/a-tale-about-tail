@@ -25,12 +25,30 @@ function Stage.load(bImgFileName, fImgFileName, description)
 	Stage.newTexture('dat/gph/tiles_bg.png', 'background')
 	Stage.newTexture('dat/gph/tiles_fg.png', 'foreground')
 
-	Stage.newTile('foreground', 'block_a', 48, 0, 16, 16)
+
+
+    --[[
+        block_a = (0, 0, 0)
+        block_l = (50, 0, 0)
+        block_c = (0, 50, 0)
+        block_r = (0, 0, 50)
+        box = (255, 255, 0)
+        empty = (255, 255, 255)
+        
+    ]]
+
+	Stage.newTile('foreground', 'block_a', 48, 0, 16, 16)   
 	Stage.newTile('foreground', 'block_l', 64, 16, 16, 16)
 	Stage.newTile('foreground', 'block_r', 48, 16, 16, 16)
 	Stage.newTile('foreground', 'block_c', 64, 0, 16, 16)
 	Stage.newTile('foreground', 'box', 80, 16, 16, 16)
 	Stage.newTile('foreground', 'empty', 80, 0, 16, 16)
+    Stage.newTile('foreground', 'roof_lu', 0, 0, 16, 16)
+    Stage.newTile('foreground', 'roof_cu', 16, 0, 16, 16)
+    Stage.newTile('foreground', 'roof_ru', 32, 0, 16, 16)
+    Stage.newTile('foreground', 'roof_ld', 0, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_cd', 16, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
 
 
 
@@ -83,27 +101,27 @@ end
 
 function Stage.drawMap(X, Y)
 
-	-- print('drawTile '..name)
-	-- for k, v in pairs(tiles) do
-	-- 	print('key:'..tostring(k)..' value:'..tostring(v))
-	-- 	if type(v) == 'table' then
-	-- 		for kk, vv in pairs(v) do
-	-- 			print('\tkey:'..tostring(kk)..' value:'..tostring(vv))
-	-- 		end
-	-- 	end
-	-- end
-	-- love.timer.sleep(1)
+    -- print('drawTile '..name)
+    -- for k, v in pairs(tiles) do
+    -- 	print('key:'..tostring(k)..' value:'..tostring(v))
+    -- 	if type(v) == 'table' then
+    -- 		for kk, vv in pairs(v) do
+    -- 			print('\tkey:'..tostring(kk)..' value:'..tostring(vv))
+    -- 		end
+    -- 	end
+    -- end
+    -- love.timer.sleep(1)
 
-	-- if entities['player'].x < 640/2 - entities['player'].width/2 then
-	-- 	l = entities['player'].x
-	-- end
+    -- if entities['player'].x < 640/2 - entities['player'].width/2 then
+    -- 	l = entities['player'].x
+    -- end
 
 	local l = entities['player'].x + entities['player'].width/2	
- 	-- local px = entities['player'].x
- 	-- local pw = entities['player'].width
+ 	local px = entities['player'].x
+ 	local pw = entities['player'].width
 	local dl = 0
-	if l < 640/2 then 
-	-- if px < 640/2 - pw/2
+	-- if l < 640/2 then 
+	if px < 640/2 - pw/2 then
 		dl = 0
 	elseif l > Stage.width*16*2 - 320 then
 		dl = Stage.width*16*2 - 640   -->??????
@@ -125,6 +143,7 @@ end
 function Stage.drawTile(name, x, y)
 	-- local scaleX, scaleY = getImageScaleForNewDimensions(textures[name], 2*16, 2*16 )
 	-- love.graphics.draw(textures[name], x, y, 0, scaleX, scaleY)
+    -- print('x:'..tostring(x)..' y:'..tostring(y)..' dtaw tile:'..tostring(name))
 	local tile = tiles[name]
 	-- print('drawTile:'..name..'\n\ttexture:'..tile.texture..' tile:'..tostring(tile.tile))
 	-- print('\t'..tostring(textures[tile.texture]))
@@ -133,6 +152,7 @@ function Stage.drawTile(name, x, y)
 	-- print(tostring(nw)..'|'..tostring(nh))
 	nw, nh = 2*nw, 2*nh
 	-- print(tostring(nw)..'|'..tostring(nh))
+
 
 	local scaleX, scaleY = getImageScaleForNewDimensions(textures[tile.texture], nw, nh)
 	love.graphics.draw(textures[tile.texture], tile.tile, x, y, 0, scaleX, scaleY)
@@ -143,17 +163,17 @@ end
 
 function chekColor(r, g, b)
 	if r == 0 and g == 0 and b == 0 then
-		return 'block_a'
+		return 'block'
 	elseif r == 255 and g == 255 and b == 255 then
 		return 'empty'
 	elseif r == 255 and g == 0 and b == 0 then
 		return 'fox'
-	elseif r == 50 and g == 0 and b == 0 then
-		return 'block_l'
-	elseif r == 0 and g == 50 and b == 0 then
-		return 'block_c'
-	elseif r == 0 and g == 0 and b == 50 then
-		return 'block_r'
+	-- elseif r == 50 and g == 0 and b == 0 then
+	-- 	return 'block_l'
+	-- elseif r == 0 and g == 50 and b == 0 then
+	-- 	return 'block_c'
+	-- elseif r == 0 and g == 0 and b == 50 then
+	-- 	return 'block_r'
 	elseif r == 255 and g == 255 and b == 0 then
 		return 'box'
 	end 
@@ -180,8 +200,9 @@ function Stage.buildMap(bImg, fImg)
 			-->fMap
 			r, g, b = fData:getPixel(x, y)
 			color = chekColor(r, g, b)
-			if color == 'block_a' or color == 'block_c' or color == 'block_l' or color == 'block_r' or color == 'box' then
-				fMap[x][y] = {name = color}
+			-- if color == 'block_a' or color == 'block_c' or color == 'block_l' or color == 'block_r' or color == 'box' then
+			if color == 'block' or color == 'box' then
+            	fMap[x][y] = {name = color}
 				world:add(fMap[x][y], x*16*2, y*16*2, 16*2, 16*2)
 			elseif color == 'empty' then
 				fMap[x][y] = {name = color}
@@ -193,7 +214,71 @@ function Stage.buildMap(bImg, fImg)
 
 		end
 	end
+    Stage.calculateCorners()
 	return pX, pY
+end
+
+function Stage.calculateCorners()
+    for x = 0, Stage.width - 1 do
+        for y = 0, Stage.height - 1 do
+            local str = fMap[x][y].name
+            -- print('x:'..tostring(x)..' y:'..tostring(y))
+            -- print(str)
+            if str == 'block' then
+
+                local env = {l = 0, u = 0, d = 0, r = 0}
+
+                if fMap[x - 1] ~= nil then
+                    local str = string.sub(fMap[x - 1][y].name, 1, 3)
+                    if str == 'blo' or str == 'box' then
+                        env.l = 1
+                    end
+                else
+                    env.l = 1
+                end
+                if fMap[x + 1] ~= nil then
+                    local str = string.sub(fMap[x + 1][y].name, 1, 3)
+                    if str == 'blo' or str == 'box' then
+                        env.r = 1
+                    end
+                else
+                    env.r = 1
+                end
+                if fMap[x][y - 1] ~= nil then
+
+                    local str = string.sub(fMap[x][y - 1].name, 1, 3)
+                    if str == 'blo' or str == 'box' then
+                        env.u = 1
+                    end
+                else
+                    env.u = 1
+                end
+                if fMap[x][y + 1] ~= nil then
+                    local str = string.sub(fMap[x][y + 1].name, 1, 3)
+                    if str == 'blo' or str == 'box' then
+                        env.d = 1
+                    end
+                else
+                    env.d = 1
+                end
+
+                if env.l == 1 and env.r == 1 then
+                    fMap[x][y].name = 'block_c'
+                elseif env.r == 1 and env.l == 0 then
+                    fMap[x][y].name = 'block_l'
+                elseif env.r == 0 and env.l == 1 then
+                    fMap[x][y].name = 'block_r'
+                elseif env.u == 1 then
+                    fMap[x][y].name = 'block_c'
+                else
+                    fMap[x][y].name = 'block_c'
+                end
+                if env.d == 1 then
+                    fMap[x][y].name = 'block_a'
+                end
+            end
+        end
+    end
 end
 
 function getImageScaleForNewDimensions(image, newWidth, newHeight )
