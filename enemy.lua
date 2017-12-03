@@ -9,7 +9,7 @@ Enemy.speedY = 0
 
 local anim8 = require('lib/anim8')
 local img
-local imgD = 18 -- dimenson texture
+local imgD = 30 -- dimenson texture
 local scale = 2
 local animations = {}
 
@@ -26,17 +26,17 @@ local t = 0
 function Enemy.load(x, y, length)
     Enemy.x = x
     Enemy.y = y
-    Enemy.width = 36 - 10
-    Enemy.height = 36 - 5
+    Enemy.width = 56
+    Enemy.height = 60
     width = length
 
     img = love.graphics.newImage('dat/gph/grandpa.png')
-    Enemy.addAnim('standL', 18, 18,   0,  0,    4, 0.1)
-    Enemy.addAnim('standR', 18, 18,   0,  18,   4, 0.1)
-    Enemy.addAnim('runL',   18, 18,   0,  36,   4, 0.1)
-    Enemy.addAnim('runR', 	18, 18,   0,  54,   4, 0.1)
-    Enemy.addAnim('jumpL',  18, 18,   0,  72,   2,   1)
-    Enemy.addAnim('jumpR',  18, 18,   36, 72,   2,   1)
+    Enemy.addAnim('standL', 28, 30,   0,  0,    4, 0.1)
+    Enemy.addAnim('standR', 28, 30,   0,  30,   4, 0.1)
+    Enemy.addAnim('runL',   28, 30,   0,  60,   4, 0.1)
+    Enemy.addAnim('runR', 	28, 30,   0,  90,   4, 0.1)
+    Enemy.addAnim('jumpL',  28, 30,   0,  120,   2,   1)
+    Enemy.addAnim('jumpR',  28, 30,   56, 150,   2,   1)
 end
 
 local _ = Enemy.x
