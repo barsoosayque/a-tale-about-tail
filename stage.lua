@@ -4,8 +4,11 @@ local gamera = require('lib/gamera')
 local bump = require('lib/bump')
 local world = bump.newWorld(16)
 
+local canvas
+
 local textures = {}
 local tiles = {}
+local unit = 16
 
 local leftWall = { name = 'wall', side = 'left' }
 local rightWall = { name = 'wall', side = 'right' }
@@ -43,6 +46,11 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
 
 
     Stage.loadTextures()
+
+    canvas = love.graphics.newCanvas(Stage.width*unit, Stage.height*unit)
+    love.graphics.setCanvas(canvas)
+    Stage.drawMap(0, 0)
+    love.graphics.setCanvas()
 
 
     -- local cx = playerX - (640 / 2 - entities['player'].width / 2)
@@ -141,7 +149,8 @@ function Stage.draw(x, y)
     camera:setScale(2.0)
 
     camera:draw(function(l, t, w, h)
-        Stage.drawMap(0, 0)
+        -- Stage.drawMap(0, 0)
+        love.graphics.draw(canvas)
         for _, entitie in pairs(entities) do
             entitie.draw(entitie.x, entitie.y)
         end
