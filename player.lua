@@ -18,9 +18,12 @@ local run = 0 -- 0 stand 1 - run
 local side = -1 -- -1 left 1 right
 local fly = false
 local dj = false
+local jump = false
 
 local width = 0
 local speed = 200
+
+local t = 0 
 
 function Player.load(x, y, length)
     Player.x = x
@@ -30,13 +33,18 @@ function Player.load(x, y, length)
     width = length
 
     img = love.graphics.newImage('dat/gph/fox.png')
-    Player.addAnim('standL', 18, 18, 0, 0, 4, 0.1)
-    Player.addAnim('standR', 18, 18, 0, 18, 4, 0.1)
-    Player.addAnim('runL', 18, 18, 0, 36, 4, 0.1)
-    Player.addAnim('runR', 18, 18, 0, 54, 4, 0.1)
+    Player.addAnim('standL', 18, 18,   0,  0, 	 4, 0.1)
+    Player.addAnim('standR', 18, 18,   0,  18,   4, 0.1)
+    Player.addAnim('runL', 	 18, 18,   0,  36,   4, 0.1)
+    Player.addAnim('runR', 	 18, 18,   0,  54,   4, 0.1)
+    Player.addAnim('jumpL',  18, 18,   0,  72,   2,   1)
+    Player.addAnim('jumpR',  18, 18,   36, 72,   2,   1)
 end
 
 function Player.update(dt)
+	print('fly:'..tostring(fly)..' jump:'..tostring(jump)..'\ntime:'..tostring(t))
+
+
     if love.keyboard.isDown('left') then
         Player.speedX = -speed
         run = 1
@@ -68,16 +76,25 @@ function Player.draw(x, y)
     elseif run == 1 and side == -1 then
         anim = animations['runL']
     end
+
     local dtx = imgD*scale/2 - math.floor(Player.width/2)
-    -- local dty = imgD*scale/2 - math.floor(Player.height/2)
     local dty = imgD*scale - Player.height
+    if fly == true and jump == true then
+		if side == -1 then
+			anim = animations['jumpL']
+		else
+			anim = animations['jumpR']
+		end
+    end
+
+
     anim:draw(img, x - dtx , y - dty, 0, scale, scale)
-    -- anim:draw(img, x , y, 0, scale, scale)
 end
 
 function Player.land()
     fly = false
     dj = false
+    jump = false
 end
 
 function Player.fly()
@@ -87,21 +104,40 @@ end
 function Player.addAnim(name, w, h, left, top, n, time)
     local g = anim8.newGrid(w, h, img:getWidth(), img:getHeight(), left, top)
     local str = '1-' .. tostring(n)
+    
     animations[name] = anim8.newAnimation(g(str, 1), time)
 end
 
 function Player.animationUpdate(dt)
-    if run == 0 then
+    if run == 0 and fly == false then
     	if side == -1 then 
     		animations['standL']:update(dt) 
     	else
     		animations['standR']:update(dt)
     	end
-    elseif run == 1 and side == 1 then
+    elseif run == 1 and side == 1 and fly == false then
         animations['runR']:update(dt)
-    elseif run == 1 and side == -1 then
+    elseif run == 1 and side == -1 and fly == false then
         animations['runL']:update(dt)
+    else
+    	t = t + dt
     end
+
+
+    if t < 0.18 and fly == true then
+    	if side == -1 then
+    		animations['jumpL']:gotoFrame(1)
+    	else
+    		animations['jumpR']:gotoFrame(1)
+    	end
+    else
+    	if side == -1 then
+    		animations['jumpL']:gotoFrame(2)
+    	else
+    		animations['jumpR']:gotoFrame(2)
+    	end
+    end
+
 end
 
 function Player.filter(intem, other)
@@ -112,9 +148,11 @@ end
 
 function Player.keypressed(key, scancode, isrepeat)
     if key == 'up' and (fly == false or dj == false) then
+    	jump = true
         Player.speedY = -175
         dj = fly
         fly = true
+        t = 0
     end
 end
 

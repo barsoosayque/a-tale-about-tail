@@ -135,8 +135,8 @@ function Stage.update(dt)
     end
 
 
-    print('camera:\n\tx:'..tostring(camera.x)..' y:'..tostring(camera.y))
-    print('player:\n\tx:'..tostring(entities['player'].x)..' y:'..tostring(entities['player'].y))
+    -- print('camera:\n\tx:'..tostring(camera.x)..' y:'..tostring(camera.y))
+    -- print('player:\n\tx:'..tostring(entities['player'].x)..' y:'..tostring(entities['player'].y))
 
 end
 
