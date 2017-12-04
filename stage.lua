@@ -282,7 +282,8 @@ if intro == false then
 
 else
 
-    if love.timer.getTime() - start > 5 then
+
+    if love.timer.getTime() - start > 5 or love.keyboard.isDown('space') then
         intro = false
         love.graphics.setFont(font16)
 
