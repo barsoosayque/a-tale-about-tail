@@ -76,7 +76,7 @@ function Player.load(x, y, length)
     fly = false
 end
 
-function Player.update(dt)
+function Player.update(self, dt)
     local rot = -math.random()*math.pi
     particleSystem:setDirection(rot)
 
@@ -114,7 +114,7 @@ function Player.update(dt)
     Player.animationUpdate(dt)
 end
 
-function Player.draw(x, y)
+function Player.draw(self, x, y)
     local anim
     if run == 0 and side == 1 then
         anim = animations['standR']
@@ -214,7 +214,7 @@ end
 
 function Player.filter(item, other)
     local name = other.name
-    if name == 'stone' or name == 'dirt' or name == 'wood' or name == 'roof' or name == 'wall' then
+    if name == 'stone' or name == 'dirt' or name == 'wood' or name == 'roof' or name == 'wall' or name == 'enemy' then
         return 'slide'
     elseif name == 'treasure' or name == 'spawn' then
         return 'cross'

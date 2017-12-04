@@ -3,6 +3,7 @@ Stage = {}
 local gamera = require('lib/gamera')
 local bump = require('lib/bump')
 local object = require('objects')
+local enemys = require('enemy')
 
 local world = bump.newWorld(16)
 
@@ -35,7 +36,8 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
     -- if intro then
     --     introFile = love.filesystem.newFile(description)
 
-    -- end
+        -- end
+    -- enemys.load()
 
     font = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 16)
     love.graphics.setFont(font)
@@ -56,10 +58,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
     entities['player'].load(playerX, playerY)
     world:add(entities['player'], playerX, playerY, entities['player'].width, entities['player'].height)
 
-    local enemy_key = 'enemy'
-    entities[enemy_key] = require('enemy')
-    entities[enemy_key].load(500, 368, Stage.width)
-    world:add(entities[enemy_key], 500, 368, 30, 30)
+
 
 
     -- camera:setScale(2)
@@ -180,7 +179,7 @@ function Stage.update(dt)
 
     -- psystem2:update(dt)
     for _, entitie in pairs(entities) do
-        entitie.update(dt)
+        entitie.update(entitie, dt)
 
         entitie.speedY = entitie.speedY + 1800 * dt --300
 
@@ -215,7 +214,7 @@ function Stage.update(dt)
 
                 -- проверка, чтобы не упасть в пропасть и не упереться в стену
                 if bottomTile.name == 'air' or leftTile.name ~= 'air' or rightTile.name ~= 'air' then
-                    entitie.turnBack()
+                    entitie.turnBack(entitie)
                 end
             end
         end
@@ -288,7 +287,7 @@ function Stage.draw(x, y)
         end
 
         for _, entitie in pairs(entities) do
-            entitie.draw(entitie.x, entitie.y)
+            entitie.draw(entitie, entitie.x, entitie.y)
         end
 
         -- local int_x, int_y = camera:getPosition()
@@ -380,6 +379,8 @@ function chekColor(r, g, b, a)
         return 'box'
     elseif r == 90 and g == 90 and b == 90 then
         return 'backstone'
+    elseif r == 255 and g == 128 and b == 128 then 
+        return 'enemy'
     end
 end
 
@@ -421,6 +422,14 @@ function Stage.buildMap(bImg, fImg)
                 local obj = object.newObject(color, r, x * unit, y * unit, unit, unit)
                 world:add(obj, x * unit, y * unit, unit, unit)
                 table.insert(objects, obj)
+            end
+            if color == 'enemy' then
+                print('new enemy')
+                fgMap[x][y] = { name = 'air' }
+                local enemy = enemys.newEnemy(x * unit, y * unit, Stage.width)
+                enemy:load()
+                world:add(enemy, x * unit, y * unit, enemy.width, enemy.height)
+                table.insert(entities, enemy)
             end
             if color == 'fox' then
 
