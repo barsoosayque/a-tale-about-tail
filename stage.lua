@@ -30,7 +30,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     local fgImg = love.graphics.newImage(fgImgFileName)
 
     Stage.width, Stage.height = fgImg:getDimensions()
-    camera:setWorld(0, 0, Stage.width*16, Stage.height*16)
+    camera:setWorld(0, 0, Stage.width * 16, Stage.height * 16)
     camera:setWindow(0, 0, 640, 640)
 
     local playerX, playerY = Stage.buildMap(bgImg, fgImg)
@@ -50,7 +50,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
 
     Stage.loadTextures()
 
-    canvas = love.graphics.newCanvas(Stage.width*unit, Stage.height*unit)
+    canvas = love.graphics.newCanvas(Stage.width * unit, Stage.height * unit)
     love.graphics.setCanvas(canvas)
     Stage.drawMap(0, 0)
     love.graphics.setCanvas()
@@ -63,9 +63,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
 
 
     -- psystem2 = newParticleSystem(i)
-
 end
-
 
 
 function Stage.loadTextures()
@@ -73,7 +71,7 @@ function Stage.loadTextures()
 
     Stage.newTexture('dat/gph/tiles_bg.png', 'background')
     Stage.newTexture('dat/gph/tiles_fg.png', 'foreground')
-    Stage.newTexture('dat/gph/objects.png' ,    'objects')
+    Stage.newTexture('dat/gph/objects.png', 'objects')
 
     Stage.newTile('foreground', 'dirt_lu', 48, 0, 16, 16)
     Stage.newTile('foreground', 'dirt_cu', 64, 0, 16, 16)
@@ -87,15 +85,15 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'dirt_cd', 64, 32, 16, 16)
     Stage.newTile('foreground', 'dirt_rd', 80, 32, 16, 16)
 
-    Stage.newTile('foreground', 'stone_lu', 96,  0, 16, 16)
+    Stage.newTile('foreground', 'stone_lu', 96, 0, 16, 16)
     Stage.newTile('foreground', 'stone_cu', 112, 0, 16, 16)
     Stage.newTile('foreground', 'stone_ru', 128, 0, 16, 16)
 
-    Stage.newTile('foreground', 'stone_lc', 96,  16, 16, 16)
+    Stage.newTile('foreground', 'stone_lc', 96, 16, 16, 16)
     Stage.newTile('foreground', 'stone_cc', 112, 16, 16, 16)
     Stage.newTile('foreground', 'stone_rc', 128, 16, 16, 16)
 
-    Stage.newTile('foreground', 'stone_ld', 96,  32, 16, 16)
+    Stage.newTile('foreground', 'stone_ld', 96, 32, 16, 16)
     Stage.newTile('foreground', 'stone_cd', 112, 32, 16, 16)
     Stage.newTile('foreground', 'stone_rd', 128, 32, 16, 16)
 
@@ -113,11 +111,11 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'wood_rd', 176, 32, 16, 16)
 
 
-    Stage.newTile('foreground', 'roof_lu',  0, 0, 16, 16)
+    Stage.newTile('foreground', 'roof_lu', 0, 0, 16, 16)
     Stage.newTile('foreground', 'roof_cu', 16, 0, 16, 16)
     Stage.newTile('foreground', 'roof_ru', 32, 0, 16, 16)
 
-    Stage.newTile('foreground', 'roof_ld',  0, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_ld', 0, 16, 16, 16)
     Stage.newTile('foreground', 'roof_cd', 16, 16, 16, 16)
     Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
 
@@ -128,26 +126,23 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'door_lu', 0, 32, 16, 16)
     Stage.newTile('foreground', 'door_u', 0, 16, 16, 16)
 
-    Stage.newTile('background', 'wall_u',   16,   0, 16, 16)
-    Stage.newTile('background', 'wall_d',   16,  16, 16, 16)
-    Stage.newTile('background', 'wall_c',   32,   0, 16, 16)
+    Stage.newTile('background', 'wall_u', 16, 0, 16, 16)
+    Stage.newTile('background', 'wall_d', 16, 16, 16, 16)
+    Stage.newTile('background', 'wall_c', 32, 0, 16, 16)
 
     Stage.newTile('background', 'fence', 0, 16, 16, 16)
 
-    Stage.newTile('objects', 'chest_f',  0,  0, 16, 16)
-    Stage.newTile('objects', 'chest_e', 16,  0, 16, 16)
-    Stage.newTile('objects', 'table_f',  0, 16, 16, 16)
+    Stage.newTile('objects', 'chest_f', 0, 0, 16, 16)
+    Stage.newTile('objects', 'chest_e', 16, 0, 16, 16)
+    Stage.newTile('objects', 'table_f', 0, 16, 16, 16)
     Stage.newTile('objects', 'table_e', 16, 16, 16, 16)
-    Stage.newTile('objects',   'cup_f',  0, 32, 16, 16)
-    Stage.newTile('objects',   'cup_e', 16, 32, 16, 16)
-
-
+    Stage.newTile('objects', 'cup_f', 0, 32, 16, 16)
+    Stage.newTile('objects', 'cup_e', 16, 32, 16, 16)
 
     Stage.newTile('foreground', 'air', 32, 32, 16, 16)
 end
 
 function Stage.update(dt)
-
 
     -- psystem2:update(dt)
     for _, entitie in pairs(entities) do
@@ -159,7 +154,6 @@ function Stage.update(dt)
         local goalY = entitie.y + entitie.speedY * dt
         local actualX, actualY, cols, len = world:move(entitie, goalX, goalY, entitie.filter)
 
-
         for i = 1, len do
             local other = cols[i].other
             local name = other.name
@@ -170,11 +164,19 @@ function Stage.update(dt)
                 local cost
                 if name == 'chest' then cost = 10
                 elseif name == 'table' then cost = 5
-                elseif name == 'cup' then cost = 1 end
+                elseif name == 'cup' then cost = 1
+                end
                 entitie.bag = entitie.bag + cost
-                print('Coin:'..tostring(entitie.bag))
+                print('Coin:' .. tostring(entitie.bag))
             end
 
+            if entitie.name == 'enemy' then
+                local tileX = math.ceil(goalX / 16)
+                local tileY = math.ceil((goalY - 1) / 16)
+                if fgMap[tileX][tileY].name == 'air' then
+                    entitie.turnBack()
+                end
+            end
         end
 
 
@@ -218,9 +220,9 @@ function Stage.draw(x, y)
         for _, obj in pairs(objects) do
             if obj.type == 'coin' then
                 if obj.full then
-                    Stage.drawTile(obj.name..'_f', obj.x, obj.y)
+                    Stage.drawTile(obj.name .. '_f', obj.x, obj.y)
                 else
-                    Stage.drawTile(obj.name..'_e', obj.x, obj.y)
+                    Stage.drawTile(obj.name .. '_e', obj.x, obj.y)
                 end
             end
         end
@@ -255,7 +257,7 @@ function Stage.drawMap(X, Y)
             local fgTileName = fgMap[x][y].name
             local bgTileName = bgMap[x][y].name
             if fgTileName == 'stone' or fgTileName == 'dirt' or fgTileName == 'wood' or fgTileName == 'roof' then
-                fgTileName = fgTileName..'_'..fgMap[x][y].type
+                fgTileName = fgTileName .. '_' .. fgMap[x][y].type
             end
             -- if fgTileName == 'chest' or fgTileName == 'table' or fgTileName == 'cup' then
             --     if fgMap[x][y].obj.full then
@@ -266,7 +268,7 @@ function Stage.drawMap(X, Y)
             -- end
 
             if bgTileName == 'wall' then
-                bgTileName = bgTileName..'_'..bgMap[x][y].type
+                bgTileName = bgTileName .. '_' .. bgMap[x][y].type
             end
             Stage.drawTile(bgTileName, nx, ny)
             Stage.drawTile(fgTileName, nx, ny)
@@ -324,7 +326,7 @@ function Stage.buildMap(bImg, fImg)
             if color == 'dirt' then
                 color = 'air'
             end
-            bgMap[x][y] = {name = color}
+            bgMap[x][y] = { name = color }
 
 
             -->fMap
@@ -339,9 +341,9 @@ function Stage.buildMap(bImg, fImg)
             elseif color == 'air' then
                 fgMap[x][y] = { name = color }
             elseif color == 'chest' or color == 'table' or color == 'cup' then
-                fgMap[x][y] = {name = 'air'}
-                local obj = object.newObject(color, 'coin', x*unit, y*unit, unit, unit)
-                world:add(obj, x*unit, y*unit, unit, unit)
+                fgMap[x][y] = { name = 'air' }
+                local obj = object.newObject(color, 'coin', x * unit, y * unit, unit, unit)
+                world:add(obj, x * unit, y * unit, unit, unit)
                 table.insert(objects, obj)
             end
             if color == 'fox' then
@@ -500,14 +502,14 @@ function Stage.calculateCorners()
                     bgMap[x][y].type = 'c'
                 end
             end
-
         end
     end
 end
 
 function equal(env, l, u, d, r)
     if env.l == l and env.u == u and env.d == d and env.r == r then return true
-    else return false end
+    else return false
+    end
 end
 
 function getImageScaleForNewDimensions(image, newWidth, newHeight)

@@ -1,5 +1,6 @@
 local Enemy = {}
 
+Enemy.name = 'enemy'
 Enemy.x = 0
 Enemy.y = 0
 Enemy.width = 0
@@ -23,7 +24,7 @@ local side = -1 -- -1 left 1 rigth
 local jump = false
 
 local width = 0
-local speed = 200/2
+local speed = 200 / 2
 
 local t = 0
 
@@ -37,9 +38,10 @@ function Enemy.load(x, y, length)
     img = love.graphics.newImage('dat/gph/grandpa.png')
     Enemy.addAnim('standL', 30, 30, 0, 0, 4, 0.1)
     Enemy.addAnim('standR', 30, 30, 0, 30, 4, 0.1)
-    Enemy.addAnim('runL',   30, 30, 0, 60, 4, 0.1)
-    Enemy.addAnim('runR',   30, 30, 0, 90, 4, 0.1)
+    Enemy.addAnim('runL', 30, 30, 0, 60, 4, 0.1)
+    Enemy.addAnim('runR', 30, 30, 0, 90, 4, 0.1)
 end
+
 function Enemy.draw(x, y)
     local anim
 
@@ -81,6 +83,11 @@ function Enemy.update(dt)
     end
     Enemy.stepTick = Enemy.stepTick + 1
     Enemy.animationUpdate(dt)
+end
+
+function Enemy.turnBack()
+    side = -side
+    Enemy.stepTick = 0
 end
 
 function Enemy.animationUpdate(dt)
