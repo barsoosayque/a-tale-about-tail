@@ -21,7 +21,6 @@ local objects = {}
 local bgMap = {} -- background map
 local fgMap = {} -- foreground map
 
--- local camera = { x = 0, y = 0, width = 640, height = 640 }
 local camera = gamera.new(0, 0, 640, 640)
 
 function Stage.load(bgImgFileName, fgImgFileName, description)
@@ -29,7 +28,6 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     local fgImg = love.graphics.newImage(fgImgFileName)
 
     Stage.width, Stage.height = fgImg:getDimensions()
-    -- camera = gamera.new(0, 0, Stage.width*16, Stage.height*16)
     camera:setWorld(0, 0, Stage.width*16, Stage.height*16)
     camera:setWindow(0, 0, 640, 640)
 
@@ -160,12 +158,6 @@ function Stage.update(dt)
                 elseif name == 'cup' then cost = 1 end
                 entitie.bag = entitie.bag + cost 
                 print('Coin:'..tostring(entitie.bag))
-
-                -- love.graphics.setCanvas(canvas)
-                -- love.graphics.clear()
-                -- Stage.drawMap(0, 0)
-                -- love.graphics.setCanvas()
-
             end
 
         end
