@@ -49,23 +49,21 @@ function Player.load(x, y, length)
 
     local i = love.graphics.newImage('dat/gph/particle.png')
     particleSystem = newParticleSystem(i)
+    particleSystem:setQuads(love.graphics.newQuad(0, 0, 3, 3, i:getDimensions()), love.graphics.newQuad(0, 3, 3, 3, i:getDimensions()))
+
 end
 
 function Player.update(dt)
     -- print('fly:'..tostring(fly)..' jump:'..tostring(jump)..'\ntime:'..tostring(t))
-    -- particleSystem:setLinearAcceleration(-10 + Player.speedX, -10, 10 + Player.speedX, 1)
     local rot = -math.random()*math.pi
     particleSystem:setDirection(rot)
-    if run == 1 then
-        particleSystem:setEmissionRate(Player.bag/2)
-    else
+    -- particleSystem:setSpeed(20, 40)
+    -- particleSystem:setPosition( Player.x + Player.width/2,
+    --                             Player.y + Player.height - 2)
+    particleSystem:update(dt)
+    if particleSystem:getCount() > Player.bag/3 then
         particleSystem:setEmissionRate(0)
     end
-    -- particleSystem:setLinearAcceleration(-100 + Player.speedX, -200, 100 + Player.speedX, 1) -- Random movement in all directions.
-    particleSystem:setSpeed(50, 100)
-    particleSystem:setPosition( Player.x + Player.width/2,
-                                Player.y + Player.height - 2)
-    particleSystem:update(dt)
 
     if love.keyboard.isDown('left') then
         Player.speedX = -speed
@@ -118,20 +116,30 @@ function Player.draw(x, y)
 end
 
 function newParticleSystem(i)
-    local ps = love.graphics.newParticleSystem(i, 100)
-    ps:setParticleLifetime(0.5, 1) -- Particles live at least 2s and at most 5s.
+    local ps = love.graphics.newParticleSystem(i, 200)
+    ps:setParticleLifetime(0.5, 0.5) -- Particles live at least 2s and at most 5s.
     ps:setEmissionRate(10)
     ps:setSizeVariation(0)
-    ps:setLinearAcceleration(-100, -100, 100, 1) -- Random movement in all directions.
-    ps:setColors( 255, 255, 0, 255,
-                  -- 255, 255, 0, 200,
-                  -- 255, 255, 0, 180,
-                  -- 255, 255, 0, 150,  
-                  255, 255, 0,   0) -- Fade to transparency.
+    -- ps:setLinearAcceleration(-100, -100, 100, 1) -- Random movement in all directions.
+    -- ps:setColors( 255, 255, 0, 255,
+    --               -- 255, 255, 0, 200,
+    --               -- 255, 255, 0, 180,
+    --               -- 255, 255, 0, 150,  
+    --               255, 255, 0,   0) -- Fade to transparency.
     return ps
 end
 
 function Player.land()
+    if fly == true and Player.speedY > 350 then 
+        particleSystem:setEmissionRate(Player.bag) 
+        particleSystem:setPosition( Player.x + Player.width/2,
+                                    Player.y + Player.height - 2)
+        particleSystem:setSpeed(20 + Player.bag/10, 40 + Player.bag/10)
+    end
+
+    if Player.speedY > 10 then
+        print('speedY:'..tostring(Player.speedY))
+    end
     fly = false
     dj = false
     jump = false
