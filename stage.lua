@@ -25,7 +25,20 @@ local parallax_bg
 
 local camera = gamera.new(0, 0, 640, 640)
 
-function Stage.load(bgImgFileName, fgImgFileName, description)
+local intro = true
+local introFile
+
+function Stage.load(bgImgFileName, fgImgFileName, description, int)
+    -- intro = int or false
+    -- if intro then
+    --     introFile = love.filesystem.newFile(description) 
+
+    -- end
+
+
+    math.randomseed(os.time())
+
+
     local bgImg = love.graphics.newImage(bgImgFileName)
     local fgImg = love.graphics.newImage(fgImgFileName)
 
@@ -162,15 +175,11 @@ function Stage.update(dt)
         for i = 1, len do
             local other = cols[i].other
             local name = other.name
-            if name == 'chest' or name == 'table' or name == 'cup' and entitie.name == 'player' then
+            if name == 'treasure' then
                 other.full = false
                 world:remove(other)
 
-                local cost
-                if name == 'chest' then cost = 10
-                elseif name == 'table' then cost = 5
-                elseif name == 'cup' then cost = 1
-                end
+                local cost = other.value*5
                 entitie.bag = entitie.bag + cost
                 print('Coin:' .. tostring(entitie.bag))
             end
@@ -223,11 +232,20 @@ function Stage.draw(x, y)
         local px, py = 0, 0
 
         for _, obj in pairs(objects) do
-            if obj.type == 'coin' then
-                if obj.full then
-                    Stage.drawTile(obj.name .. '_f', obj.x, obj.y)
+            if obj.name == 'treasure' then
+                local name
+                if obj.value == 1 then
+                    name = 'chest'
+                elseif obj.value == 2 then
+                    name = 'table'
                 else
-                    Stage.drawTile(obj.name .. '_e', obj.x, obj.y)
+                    name = 'cup'
+                end
+
+                if obj.full then
+                    Stage.drawTile(name .. '_f', obj.x, obj.y)
+                else
+                    Stage.drawTile(name .. '_e', obj.x, obj.y)
                 end
             end
         end
@@ -306,11 +324,7 @@ function chekColor(r, g, b, a)
     elseif r == 100 and g == 50 and b == 50 then
         return 'wall'
     elseif r == 255 and g == 255 and b == 0 then
-        return 'chest'
-    elseif r == 255 and g == 220 and b == 0 then
-        return 'table'
-    elseif r == 255 and g == 200 and b == 0 then
-        return 'cup'
+        return 'treasure'
     end
 end
 
@@ -345,9 +359,10 @@ function Stage.buildMap(bImg, fImg)
                 world:add(fgMap[x][y], x * 16, y * 16, 16, 16)
             elseif color == 'air' then
                 fgMap[x][y] = { name = color }
-            elseif color == 'chest' or color == 'table' or color == 'cup' then
+            elseif color == 'treasure' then
                 fgMap[x][y] = { name = 'air' }
-                local obj = object.newObject(color, 'coin', x * unit, y * unit, unit, unit)
+                local r = math.random(1, 3)
+                local obj = object.newObject(color, 'treasure', r, x * unit, y * unit, unit, unit)
                 world:add(obj, x * unit, y * unit, unit, unit)
                 table.insert(objects, obj)
             end

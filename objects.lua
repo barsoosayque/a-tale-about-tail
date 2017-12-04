@@ -4,10 +4,11 @@ local Objects = {}
 
 
 
-function Objects.newObject(name, type, x, y, width, height)
+function Objects.newObject(name, type, value, x, y, width, height)
 	local obj = {}
 	obj.name = name
 	obj.type = type
+	obj.value = value
 	obj.x, obj.y = x, y
 	obj.width, obj.height = width, height
 	obj.speedX, obj.speedY = 0, 0
