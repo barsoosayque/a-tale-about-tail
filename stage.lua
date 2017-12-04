@@ -114,8 +114,8 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
     Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
 
-    Stage.newTile('foreground', 'door_u', 32, 16, 16, 16)
-    Stage.newTile('foreground', 'door_u', 32, 16, 16, 16)
+    Stage.newTile('foreground', 'door_lu', 0, 32, 16, 16)
+    Stage.newTile('foreground', 'door_u', 0, 16, 16, 16)
 
     Stage.newTile('background', 'wall_u',   16,   0, 16, 16)
     Stage.newTile('background', 'wall_d',   16,  16, 16, 16)
