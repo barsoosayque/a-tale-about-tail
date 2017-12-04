@@ -68,14 +68,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
     Stage.drawMap(0, 0)
     love.graphics.setCanvas()
 
-
-    -- local cx = playerX - (640 / 2 - entities['player'].width / 2)
-    -- local cy = playerY - (640 / 2 - entities['player'].height / 2)
     camera:setPosition(playerX, playerY)
-
-
-
-    -- psystem2 = newParticleSystem(i)
 end
 
 
@@ -103,7 +96,7 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'dirt_r2', 48, 64, 16, 16)
     Stage.newTile('foreground', 'dirt_r3', 64, 64, 16, 16)
 
-    Stage.newTile('foreground', 'stone_lu', 96,  0, 16, 16)
+    Stage.newTile('foreground', 'stone_lu', 96, 0, 16, 16)
     Stage.newTile('foreground', 'stone_cu', 112, 0, 16, 16)
     Stage.newTile('foreground', 'stone_ru', 128, 0, 16, 16)
 
@@ -133,13 +126,13 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'roof_cu', 16, 0, 16, 16)
     Stage.newTile('foreground', 'roof_ru', 32, 0, 16, 16)
 
-    Stage.newTile('foreground', 'roof_ld', 0, 16, 16, 16)
-    Stage.newTile('foreground', 'roof_cd', 16, 16, 16, 16)
-    Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_lc', 0, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_cc', 16, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_rc', 32, 16, 16, 16)
 
-    Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
-    Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
-    Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_ld', 0, 32, 16, 16)
+    Stage.newTile('foreground', 'roof_cd', 16, 32, 16, 16)
+    Stage.newTile('foreground', 'roof_rd', 32, 32, 16, 16)
 
     Stage.newTile('foreground', 'door_lu', 0, 32, 16, 16)
     Stage.newTile('foreground', 'door_u', 0, 16, 16, 16)
@@ -157,7 +150,7 @@ function Stage.loadTextures()
     Stage.newTile('objects', 'cup_f', 0, 32, 16, 16)
     Stage.newTile('objects', 'cup_e', 16, 32, 16, 16)
 
-    Stage.newTile('foreground', 'air', 32, 32, 16, 16)
+    -- Stage.newTile('foreground', 'air', 32, 32, 16, 16)
 end
 
 function Stage.update(dt)
@@ -185,9 +178,15 @@ function Stage.update(dt)
             end
 
             if entitie.name == 'enemy' then
-                local tileX = math.ceil(goalX / 16)
-                local tileY = math.ceil((goalY + 24) / 16)
-                if fgMap[tileX][tileY].name == 'air' then
+                local nextTileX = math.ceil(goalX / 16)
+                local nextTileY = math.ceil(goalY / 16)
+
+                local bottomTile = fgMap[nextTileX][nextTileY + 1]
+                local leftTile = fgMap[nextTileX + 1][nextTileY]
+                local rightTile = fgMap[nextTileX - 1][nextTileY]
+
+                -- проверка, чтобы не упасть в пропасть и не упереться в стену
+                if bottomTile.name == 'air' or leftTile.name ~= 'air' or rightTile.name ~= 'air' then
                     entitie.turnBack()
                 end
             end
@@ -293,16 +292,21 @@ function Stage.drawMap(X, Y)
             if bgTileName == 'wall' then
                 bgTileName = bgTileName .. '_' .. bgMap[x][y].type
             end
+
             Stage.drawTile(bgTileName, nx, ny)
+
             Stage.drawTile(fgTileName, nx, ny)
         end
     end
 end
 
 function Stage.drawTile(name, x, y)
-    local tile = tiles[name]
-    local nw, nh = textures[tile.texture]:getDimensions()
-    love.graphics.draw(textures[tile.texture], tile.tile, x, y)
+    if name ~= "air" then
+    -- print(name)
+        local tile = tiles[name]
+        local nw, nh = textures[tile.texture]:getDimensions()
+        love.graphics.draw(textures[tile.texture], tile.tile, x, y)
+    end
 end
 
 
@@ -430,7 +434,7 @@ function Stage.calculateCorners()
                 fEnv.d = 1
             end
 
-            if fBlockType == 'stone' or fBlockType == 'wood' or fBlockType == 'dirt' then
+            if fBlockType == 'stone' or fBlockType == 'wood' or fBlockType == 'roof' or fBlockType == 'dirt' then
                 if equal(fEnv, 0, 0, 1, 1) or equal(fEnv, 0, 0, 0, 1) then
                     fgMap[x][y].type = 'lu'
                 elseif equal(fEnv, 1, 0, 1, 1) or equal(fEnv, 0, 0, 1, 0) then
@@ -443,20 +447,20 @@ function Stage.calculateCorners()
                     fgMap[x][y].type = 'cc'
 
                     if fBlockType == 'dirt' then
-                        if x+1 < Stage.width and y+1 < Stage.height
-                            and fgMap[x+1][y+1].name == 'air' then
+                        if x + 1 < Stage.width and y + 1 < Stage.height
+                                and fgMap[x + 1][y + 1].name == 'air' then
                             fgMap[x][y].type = 'r0'
                         end
-                        if x+1 < Stage.width and y-1 > 0
-                            and fgMap[x+1][y-1].name == 'air' then
+                        if x + 1 < Stage.width and y - 1 > 0
+                                and fgMap[x + 1][y - 1].name == 'air' then
                             fgMap[x][y].type = 'r2'
                         end
-                        if x-1 > 0 and y+1 < Stage.height
-                            and fgMap[x-1][y+1].name == 'air' then
+                        if x - 1 > 0 and y + 1 < Stage.height
+                                and fgMap[x - 1][y + 1].name == 'air' then
                             fgMap[x][y].type = 'r1'
                         end
-                        if x-1 > 0 and y-1 > 0
-                            and fgMap[x-1][y-1].name == 'air' then
+                        if x - 1 > 0 and y - 1 > 0
+                                and fgMap[x - 1][y - 1].name == 'air' then
                             fgMap[x][y].type = 'r3'
                         end
                     end
@@ -475,23 +479,23 @@ function Stage.calculateCorners()
                 end
             end
 
-            if fBlockType == 'roof' then
-                if equal(fEnv, 0, 0, 1, 1) then
-                    fgMap[x][y].type = 'lu'
-                elseif equal(fEnv, 1, 0, 1, 1) then
-                    fgMap[x][y].type = 'cu'
-                elseif equal(fEnv, 1, 0, 1, 0) then
-                    fgMap[x][y].type = 'ru'
-                elseif equal(fEnv, 0, 1, 1, 1) or equal(fEnv, 0, 1, 0, 1) then
-                    fgMap[x][y].type = 'ld'
-                elseif equal(fEnv, 1, 1, 1, 1) then
-                    fgMap[x][y].type = 'cd'
-                elseif equal(fEnv, 1, 1, 1, 0) then
-                    fgMap[x][y].type = 'rd'
-                else
-                    fgMap[x][y].type = 'cu'
-                end
-            end
+            -- if fBlockType == 'roof' then
+            --     if equal(fEnv, 0, 0, 1, 1) then
+            --         fgMap[x][y].type = 'lu'
+            --     elseif equal(fEnv, 1, 0, 1, 1) then
+            --         fgMap[x][y].type = 'cu'
+            --     elseif equal(fEnv, 1, 0, 1, 0) then
+            --         fgMap[x][y].type = 'ru'
+            --     elseif equal(fEnv, 0, 1, 1, 1) or equal(fEnv, 0, 1, 0, 1) then
+            --         fgMap[x][y].type = 'ld'
+            --     elseif equal(fEnv, 1, 1, 1, 1) then
+            --         fgMap[x][y].type = 'cd'
+            --     elseif equal(fEnv, 1, 1, 1, 0) then
+            --         fgMap[x][y].type = 'rd'
+            --     else
+            --         fgMap[x][y].type = 'cu'
+            --     end
+            -- end
 
             local bEnv = { l = 0, u = 0, d = 0, r = 0 }
 

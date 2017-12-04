@@ -8,7 +8,7 @@ Enemy.height = 0
 Enemy.speedX = 0
 Enemy.speedY = 0
 Enemy.stepTick = 0
-Enemy.STEP_LIMIT = 175
+Enemy.STEP_LIMIT = 1200
 
 local anim8 = require('lib/anim8')
 local img
@@ -101,7 +101,7 @@ function Enemy.animationUpdate(dt)
 end
 
 function Enemy.filter(intem, other)
-    if other.name == 'stone' or other.name == 'dirt' or other.name == 'wood' or other.name == 'wall' then
+    if other.name == 'stone' or other.name == 'dirt' or other.name == 'wood' then
         return 'slide'
     end
 end
