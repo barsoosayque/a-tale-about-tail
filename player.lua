@@ -213,7 +213,7 @@ end
 
 function Player.filter(item, other)
     local name = other.name
-    if name == 'stone' or name == 'dirt' or name == 'wood' or name == 'roof' then
+    if name == 'stone' or name == 'dirt' or name == 'wood' or name == 'roof' or name == 'wall' then
         return 'slide'
     elseif name == 'treasure' then
         return 'cross'

@@ -2,6 +2,7 @@ function love.conf(t)
 	t.title = "A Tale about tail"			-- The title of the window the game is in (string)
 	-- t.author = "Leibee and his team"	-- The author of the game (string)
 	-- t.identity = "Gspot"				-- The name of the save directory (string)
+	t.version = "0.10.2"
 	t.console = true					-- Attach a console (boolean, Windows only)
 	t.window.width = 640				-- The window width (number)
 	t.window.height = 640				-- The window height (number)

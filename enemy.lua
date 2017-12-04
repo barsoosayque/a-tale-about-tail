@@ -24,7 +24,8 @@ local side = -1 -- -1 left 1 rigth
 local jump = false
 
 local width = 0
-local speed = 200 / 2
+local speed = 55
+
 
 local t = 0
 
