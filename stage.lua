@@ -155,112 +155,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     camera:setPosition(spawn.x, spawn.y)
 end
 
-function Stage.loadTextures()
-    parallax_bg = love.graphics.newImage("dat/gph/bg.png")
 
-    Stage.newTexture('dat/gph/tiles_bg.png', 'background')
-    Stage.newTexture('dat/gph/tiles_fg.png', 'foreground')
-    Stage.newTexture('dat/gph/objects.png', 'objects')
-
-    Stage.newTile('foreground', 'dirt_lu', 48, 0, 16, 16)
-    Stage.newTile('foreground', 'dirt_cu', 64, 0, 16, 16)
-    Stage.newTile('foreground', 'dirt_ru', 80, 0, 16, 16)
-
-    Stage.newTile('foreground', 'dirt_lc', 48, 16, 16, 16)
-    Stage.newTile('foreground', 'dirt_cc', 64, 16, 16, 16)
-    Stage.newTile('foreground', 'dirt_rc', 80, 16, 16, 16)
-
-    Stage.newTile('foreground', 'dirt_ld', 48, 32, 16, 16)
-    Stage.newTile('foreground', 'dirt_cd', 64, 32, 16, 16)
-    Stage.newTile('foreground', 'dirt_rd', 80, 32, 16, 16)
-
-    Stage.newTile('foreground', 'dirt_r0', 48, 48, 16, 16)
-    Stage.newTile('foreground', 'dirt_r1', 64, 48, 16, 16)
-    Stage.newTile('foreground', 'dirt_r2', 48, 64, 16, 16)
-    Stage.newTile('foreground', 'dirt_r3', 64, 64, 16, 16)
-
-    Stage.newTile('foreground', 'stone_lu', 96, 0, 16, 16)
-    Stage.newTile('foreground', 'stone_cu', 112, 0, 16, 16)
-    Stage.newTile('foreground', 'stone_ru', 128, 0, 16, 16)
-
-    Stage.newTile('foreground', 'stone_lc', 96, 16, 16, 16)
-    Stage.newTile('foreground', 'stone_cc', 112, 16, 16, 16)
-    Stage.newTile('foreground', 'stone_rc', 128, 16, 16, 16)
-
-    Stage.newTile('foreground', 'stone_ld', 96, 32, 16, 16)
-    Stage.newTile('foreground', 'stone_cd', 112, 32, 16, 16)
-    Stage.newTile('foreground', 'stone_rd', 128, 32, 16, 16)
-
-
-    Stage.newTile('foreground', 'wood_lu', 144, 0, 16, 16)
-    Stage.newTile('foreground', 'wood_cu', 160, 0, 16, 16)
-    Stage.newTile('foreground', 'wood_ru', 176, 0, 16, 16)
-
-    Stage.newTile('foreground', 'wood_lc', 144, 16, 16, 16)
-    Stage.newTile('foreground', 'wood_cc', 160, 16, 16, 16)
-    Stage.newTile('foreground', 'wood_rc', 176, 16, 16, 16)
-
-    Stage.newTile('foreground', 'wood_ld', 144, 32, 16, 16)
-    Stage.newTile('foreground', 'wood_cd', 160, 32, 16, 16)
-    Stage.newTile('foreground', 'wood_rd', 176, 32, 16, 16)
-
-
-    Stage.newTile('foreground', 'roof_lu', 0, 0, 16, 16)
-    Stage.newTile('foreground', 'roof_cu', 16, 0, 16, 16)
-    Stage.newTile('foreground', 'roof_ru', 32, 0, 16, 16)
-
-    Stage.newTile('foreground', 'roof_lc', 0, 16, 16, 16)
-    Stage.newTile('foreground', 'roof_cc', 16, 16, 16, 16)
-    Stage.newTile('foreground', 'roof_rc', 32, 16, 16, 16)
-
-    Stage.newTile('foreground', 'roof_ld', 0, 32, 16, 16)
-    Stage.newTile('foreground', 'roof_cd', 16, 32, 16, 16)
-    Stage.newTile('foreground', 'roof_rd', 32, 32, 16, 16)
-
-    Stage.newTile('foreground', 'door_lu', 0, 32, 16, 16)
-    Stage.newTile('foreground', 'door_u', 0, 16, 16, 16)
-
-    Stage.newTile('background', 'wall_lu', 0, 0, 16, 16)
-    Stage.newTile('background', 'wall_cu', 16, 0, 16, 16)
-    Stage.newTile('background', 'wall_ru', 32, 0, 16, 16)
-
-    Stage.newTile('background', 'wall_lc', 0, 16, 16, 16)
-    Stage.newTile('background', 'wall_cc', 16, 16, 16, 16)
-    Stage.newTile('background', 'wall_rc', 32, 16, 16, 16)
-
-    Stage.newTile('background', 'wall_ld', 0, 32, 16, 16)
-    Stage.newTile('background', 'wall_cd', 16, 32, 16, 16)
-    Stage.newTile('background', 'wall_rd', 32, 32, 16, 16)
-
-    Stage.newTile('background', 'backstone_lu', 96, 0, 16, 16)
-    Stage.newTile('background', 'backstone_cu', 112, 0, 16, 16)
-    Stage.newTile('background', 'backstone_ru', 128, 0, 16, 16)
-
-    Stage.newTile('background', 'backstone_lc', 96, 16, 16, 16)
-    Stage.newTile('background', 'backstone_cc', 112, 16, 16, 16)
-    Stage.newTile('background', 'backstone_rc', 128, 16, 16, 16)
-
-    Stage.newTile('background', 'backstone_ld', 96, 32, 16, 16)
-    Stage.newTile('background', 'backstone_cd', 112, 32, 16, 16)
-    Stage.newTile('background', 'backstone_rd', 128, 32, 16, 16)
-
-    Stage.newTile('background', 'fence_l', 48, 0, 16, 16)
-    Stage.newTile('background', 'fence_c', 64, 0, 16, 16)
-    Stage.newTile('background', 'fence_r', 80, 0, 16, 16)
-
-    Stage.newTile('background', 'wooden_fence_l', 48, 16, 16, 16)
-    Stage.newTile('background', 'wooden_fence_c', 64, 16, 16, 16)
-    Stage.newTile('background', 'wooden_fence_r', 80, 16, 16, 16)
-
-    Stage.newTile('objects', 'chest_f', 0, 0, 16, 16)
-    Stage.newTile('objects', 'chest_e', 16, 0, 16, 16)
-    Stage.newTile('objects', 'table_f', 0, 16, 16, 16)
-    Stage.newTile('objects', 'table_e', 16, 16, 16, 16)
-    Stage.newTile('objects', 'cup_f', 0, 32, 16, 16)
-    Stage.newTile('objects', 'cup_e', 16, 32, 16, 16)
-    Stage.newTile('objects', 'spawn', 32, 0, 16, 16)
-
-end
 
 function Stage.update(dt)
     if timer.using then
@@ -320,11 +215,12 @@ if intro == false then
             end
 
             if name == 'spawn' and entitie.name == 'player' then
-                entitie.drop()
+                local r = entitie.drop()
                 if entitie.score == maxScore then
                     -- print('win')
                     win = true
                 end
+                if r == true then music.effect('pickup') end
             end
 
             if entitie.name == 'enemy' then
@@ -819,6 +715,113 @@ function Stage.keypressed(key, scancode, isrepeat)
     if entities['player'] then
         entities['player'].keypressed(key, scancode, isrepeat)
     end
+end
+
+function Stage.loadTextures()
+    parallax_bg = love.graphics.newImage("dat/gph/bg.png")
+
+    Stage.newTexture('dat/gph/tiles_bg.png', 'background')
+    Stage.newTexture('dat/gph/tiles_fg.png', 'foreground')
+    Stage.newTexture('dat/gph/objects.png', 'objects')
+
+    Stage.newTile('foreground', 'dirt_lu', 48, 0, 16, 16)
+    Stage.newTile('foreground', 'dirt_cu', 64, 0, 16, 16)
+    Stage.newTile('foreground', 'dirt_ru', 80, 0, 16, 16)
+
+    Stage.newTile('foreground', 'dirt_lc', 48, 16, 16, 16)
+    Stage.newTile('foreground', 'dirt_cc', 64, 16, 16, 16)
+    Stage.newTile('foreground', 'dirt_rc', 80, 16, 16, 16)
+
+    Stage.newTile('foreground', 'dirt_ld', 48, 32, 16, 16)
+    Stage.newTile('foreground', 'dirt_cd', 64, 32, 16, 16)
+    Stage.newTile('foreground', 'dirt_rd', 80, 32, 16, 16)
+
+    Stage.newTile('foreground', 'dirt_r0', 48, 48, 16, 16)
+    Stage.newTile('foreground', 'dirt_r1', 64, 48, 16, 16)
+    Stage.newTile('foreground', 'dirt_r2', 48, 64, 16, 16)
+    Stage.newTile('foreground', 'dirt_r3', 64, 64, 16, 16)
+
+    Stage.newTile('foreground', 'stone_lu', 96, 0, 16, 16)
+    Stage.newTile('foreground', 'stone_cu', 112, 0, 16, 16)
+    Stage.newTile('foreground', 'stone_ru', 128, 0, 16, 16)
+
+    Stage.newTile('foreground', 'stone_lc', 96, 16, 16, 16)
+    Stage.newTile('foreground', 'stone_cc', 112, 16, 16, 16)
+    Stage.newTile('foreground', 'stone_rc', 128, 16, 16, 16)
+
+    Stage.newTile('foreground', 'stone_ld', 96, 32, 16, 16)
+    Stage.newTile('foreground', 'stone_cd', 112, 32, 16, 16)
+    Stage.newTile('foreground', 'stone_rd', 128, 32, 16, 16)
+
+
+    Stage.newTile('foreground', 'wood_lu', 144, 0, 16, 16)
+    Stage.newTile('foreground', 'wood_cu', 160, 0, 16, 16)
+    Stage.newTile('foreground', 'wood_ru', 176, 0, 16, 16)
+
+    Stage.newTile('foreground', 'wood_lc', 144, 16, 16, 16)
+    Stage.newTile('foreground', 'wood_cc', 160, 16, 16, 16)
+    Stage.newTile('foreground', 'wood_rc', 176, 16, 16, 16)
+
+    Stage.newTile('foreground', 'wood_ld', 144, 32, 16, 16)
+    Stage.newTile('foreground', 'wood_cd', 160, 32, 16, 16)
+    Stage.newTile('foreground', 'wood_rd', 176, 32, 16, 16)
+
+
+    Stage.newTile('foreground', 'roof_lu', 0, 0, 16, 16)
+    Stage.newTile('foreground', 'roof_cu', 16, 0, 16, 16)
+    Stage.newTile('foreground', 'roof_ru', 32, 0, 16, 16)
+
+    Stage.newTile('foreground', 'roof_lc', 0, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_cc', 16, 16, 16, 16)
+    Stage.newTile('foreground', 'roof_rc', 32, 16, 16, 16)
+
+    Stage.newTile('foreground', 'roof_ld', 0, 32, 16, 16)
+    Stage.newTile('foreground', 'roof_cd', 16, 32, 16, 16)
+    Stage.newTile('foreground', 'roof_rd', 32, 32, 16, 16)
+
+    Stage.newTile('foreground', 'door_lu', 0, 32, 16, 16)
+    Stage.newTile('foreground', 'door_u', 0, 16, 16, 16)
+
+    Stage.newTile('background', 'wall_lu', 0, 0, 16, 16)
+    Stage.newTile('background', 'wall_cu', 16, 0, 16, 16)
+    Stage.newTile('background', 'wall_ru', 32, 0, 16, 16)
+
+    Stage.newTile('background', 'wall_lc', 0, 16, 16, 16)
+    Stage.newTile('background', 'wall_cc', 16, 16, 16, 16)
+    Stage.newTile('background', 'wall_rc', 32, 16, 16, 16)
+
+    Stage.newTile('background', 'wall_ld', 0, 32, 16, 16)
+    Stage.newTile('background', 'wall_cd', 16, 32, 16, 16)
+    Stage.newTile('background', 'wall_rd', 32, 32, 16, 16)
+
+    Stage.newTile('background', 'backstone_lu', 96, 0, 16, 16)
+    Stage.newTile('background', 'backstone_cu', 112, 0, 16, 16)
+    Stage.newTile('background', 'backstone_ru', 128, 0, 16, 16)
+
+    Stage.newTile('background', 'backstone_lc', 96, 16, 16, 16)
+    Stage.newTile('background', 'backstone_cc', 112, 16, 16, 16)
+    Stage.newTile('background', 'backstone_rc', 128, 16, 16, 16)
+
+    Stage.newTile('background', 'backstone_ld', 96, 32, 16, 16)
+    Stage.newTile('background', 'backstone_cd', 112, 32, 16, 16)
+    Stage.newTile('background', 'backstone_rd', 128, 32, 16, 16)
+
+    Stage.newTile('background', 'fence_l', 48, 0, 16, 16)
+    Stage.newTile('background', 'fence_c', 64, 0, 16, 16)
+    Stage.newTile('background', 'fence_r', 80, 0, 16, 16)
+
+    Stage.newTile('background', 'wooden_fence_l', 48, 16, 16, 16)
+    Stage.newTile('background', 'wooden_fence_c', 64, 16, 16, 16)
+    Stage.newTile('background', 'wooden_fence_r', 80, 16, 16, 16)
+
+    Stage.newTile('objects', 'chest_f', 0, 0, 16, 16)
+    Stage.newTile('objects', 'chest_e', 16, 0, 16, 16)
+    Stage.newTile('objects', 'table_f', 0, 16, 16, 16)
+    Stage.newTile('objects', 'table_e', 16, 16, 16, 16)
+    Stage.newTile('objects', 'cup_f', 0, 32, 16, 16)
+    Stage.newTile('objects', 'cup_e', 16, 32, 16, 16)
+    Stage.newTile('objects', 'spawn', 32, 0, 16, 16)
+
 end
 
 return Stage
