@@ -26,7 +26,7 @@ local speed = 200/2
 
 local inventory
 
-local t = 0 
+local t = 0
 
 -- local particleSystem, fgParticleSystem
 local particleSystem
@@ -93,7 +93,7 @@ function Player.draw(x, y)
     if run == 0 and side == 1 then
         anim = animations['standR']
     elseif run == 0 and side == -1 then
-        anim = animations['standL']     
+        anim = animations['standL']
     elseif run == 1 and side == 1 then
         anim = animations['runR']
     elseif run == 1 and side == -1 then
@@ -112,7 +112,7 @@ function Player.draw(x, y)
             anim = animations['jumpR']
         end
     end
-    
+
     love.graphics.draw(particleSystem, 0, 0)
     anim:draw(img, x - dtx , y - dty)
 end
@@ -126,7 +126,7 @@ function newParticleSystem(i)
     ps:setColors( 255, 255, 0, 255,
                   -- 255, 255, 0, 200,
                   -- 255, 255, 0, 180,
-                  -- 255, 255, 0, 150,  
+                  -- 255, 255, 0, 150,
                   255, 255, 0,   0) -- Fade to transparency.
     return ps
 end
@@ -144,14 +144,14 @@ end
 function Player.addAnim(name, w, h, left, top, n, time)
     local g = anim8.newGrid(w, h, img:getWidth(), img:getHeight(), left, top)
     local str = '1-' .. tostring(n)
-    
+
     animations[name] = anim8.newAnimation(g(str, 1), time)
 end
 
 function Player.animationUpdate(dt)
     if run == 0 and fly == false then
-        if side == -1 then 
-            animations['standL']:update(dt) 
+        if side == -1 then
+            animations['standL']:update(dt)
         else
             animations['standR']:update(dt)
         end
@@ -189,6 +189,8 @@ end
 
 function Player.keypressed(key, scancode, isrepeat)
     if key == 'up' and (fly == false or dj == false) then
+        music = require('music')
+        music.effect('jump')
         jump = true
         Player.speedY = -400-- -500
         dj = fly
