@@ -2,7 +2,7 @@ Stage = {}
 
 local gamera = require('lib/gamera')
 local bump = require('lib/bump')
-local objects = require('objects')
+local object = require('objects')
 
 local world = bump.newWorld(16)
 
@@ -16,6 +16,7 @@ local leftWall = { name = 'wall', side = 'left' }
 local rightWall = { name = 'wall', side = 'right' }
 
 local entities = {}
+local objects = {}
 
 local bgMap = {} -- background map
 local fgMap = {} -- foreground map
@@ -150,7 +151,7 @@ function Stage.update(dt)
             local other = cols[i].other
             local name = other.name
             if name == 'chest' or name == 'table' or name == 'cup' and entitie.name == 'player' then
-                other.obj.full = false
+                other.full = false
                 world:remove(other)
 
                 local cost
@@ -158,12 +159,12 @@ function Stage.update(dt)
                 elseif name == 'table' then cost = 5
                 elseif name == 'cup' then cost = 1 end
                 entitie.bag = entitie.bag + cost 
+                print('Coin:'..tostring(entitie.bag))
 
-
-                love.graphics.setCanvas(canvas)
-                love.graphics.clear()
-                Stage.drawMap(0, 0)
-                love.graphics.setCanvas()
+                -- love.graphics.setCanvas(canvas)
+                -- love.graphics.clear()
+                -- Stage.drawMap(0, 0)
+                -- love.graphics.setCanvas()
 
             end
 
@@ -202,6 +203,15 @@ function Stage.draw(x, y)
         for _, entitie in pairs(entities) do
             entitie.draw(entitie.x, entitie.y)
         end
+        for _, obj in pairs(objects) do
+            if obj.type == 'coin' then
+                if obj.full then
+                    Stage.drawTile(obj.name..'_f', obj.x, obj.y)
+                else
+                    Stage.drawTile(obj.name..'_e', obj.x, obj.y)
+                end
+            end
+        end
     end)
 end
 
@@ -222,31 +232,24 @@ function Stage.drawMap(X, Y)
             local nx = x * 16
             local ny = y * 16
 
-            -- nx = nx - camera.x
-            -- ny = ny - camera.y
-
-
-
             local fgTileName = fgMap[x][y].name
             local bgTileName = bgMap[x][y].name
             if fgTileName == 'stone' or fgTileName == 'dirt' or fgTileName == 'wood' or fgTileName == 'roof' then
                 fgTileName = fgTileName..'_'..fgMap[x][y].type
             end
-            if fgTileName == 'chest' or fgTileName == 'table' or fgTileName == 'cup' then
-                if fgMap[x][y].obj.full then
-                    fgTileName = fgTileName..'_f'
-                else
-                    fgTileName = fgTileName..'_e'
-                end
-            end
+            -- if fgTileName == 'chest' or fgTileName == 'table' or fgTileName == 'cup' then
+            --     if fgMap[x][y].obj.full then
+            --         fgTileName = fgTileName..'_f'
+            --     else
+            --         fgTileName = fgTileName..'_e'
+            --     end
+            -- end
 
             if bgTileName == 'wall' then
                 bgTileName = bgTileName..'_'..bgMap[x][y].type
             end
-            -- if nx > 16*2*(-2) or ny > 16*(-2) then
-                Stage.drawTile(bgTileName, nx - X, ny - Y)
-                Stage.drawTile(fgTileName, nx - X, ny - Y)
-            -- end
+            Stage.drawTile(bgTileName, nx, ny)
+            Stage.drawTile(fgTileName, nx, ny)
         end
     end
 end
@@ -315,7 +318,7 @@ function Stage.buildMap(bImg, fImg)
             r, g, b = fData:getPixel(x, y)
             -- print('r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b))
             color = chekColor(r, g, b, a)
-            print('color:'..color..' r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b)..' a:'..tostring(a))
+            -- print('color:'..color..' r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b)..' a:'..tostring(a))
             
             if color == 'dirt' or color == 'wood' or color == 'stone' or color == 'roof' then
                 fgMap[x][y] = { name = color }
@@ -323,9 +326,13 @@ function Stage.buildMap(bImg, fImg)
             elseif color == 'air' then
                 fgMap[x][y] = { name = color }
             elseif color == 'chest' or color == 'table' or color == 'cup' then
-                local obj = objects.newObject(color, x*unit, y*unit, unit, unit)
-                fgMap[x][y] = {name = color, obj = obj}
-                world:add(fgMap[x][y], x*unit, y*unit, unit, unit)
+                fgMap[x][y] = {name = 'air'}
+                -- local obj = objects.newObject(color, x*unit, y*unit, unit, unit)
+                -- fgMap[x][y] = {name = color, obj = obj}
+                -- world:add(fgMap[x][y], x*unit, y*unit, unit, unit)
+                local obj = object.newObject(color, 'coin', x*unit, y*unit, unit, unit)
+                world:add(obj, x*unit, y*unit, unit, unit)
+                table.insert(objects, obj)
             end
             if color == 'fox' then
                 fgMap[x][y] = { name = 'air' }

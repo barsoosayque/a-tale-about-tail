@@ -4,9 +4,10 @@ local Objects = {}
 
 
 
-function Objects.newObject(name, x, y, width, height)
+function Objects.newObject(name, type, x, y, width, height)
 	local obj = {}
 	obj.name = name
+	obj.type = type
 	obj.x, obj.y = x, y
 	obj.width, obj.height = width, height
 	obj.speedX, obj.speedY = 0, 0
@@ -16,6 +17,11 @@ function Objects.newObject(name, x, y, width, height)
 		if other.name == 'palyer' then
 			return 'cross'
 		end
+	end
+
+	obj.draw = function()
+
+	
 	end
 
 	return obj
