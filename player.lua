@@ -75,11 +75,11 @@ function Player.update(dt)
     particleSystem:setDirection(rot)
 
     particleSystem:setLinearAcceleration(0, particleSetting.acceleration.y*dt)
-    particleSystem:setPosition (Player.x + Player.width/2,
-                                Player.y + Player.height - 2)
+    -- particleSystem:setPosition (Player.x + Player.width/2,
+    --                             Player.y + Player.height - 2)
 
-    -- local offset = (math.random() - 0.5)*Player.width
-    -- particleSystem:setPosition(particleSetting.position.x + offset, particleSetting.position.y)
+    local offset = (math.random() - 0.5)*Player.width
+    particleSystem:setPosition(particleSetting.position.x + offset, particleSetting.position.y)
 
 
     particleSystem:update(dt)
