@@ -29,8 +29,14 @@ local camera = gamera.new(0, 0, 640, 640)
 
 local intro = true
 local introFile
+local introText = {}
+local start
 
-local font
+local maxScore = 0
+
+local font16, font32
+
+local win = false
 
 local spawn = {
     x = 0,
@@ -43,16 +49,25 @@ local timer = {
     callback = function() end
 }
 
-function Stage.load(bgImgFileName, fgImgFileName, description, int)
-    -- intro = int or false
-    -- if intro then
-    --     introFile = love.filesystem.newFile(description)
+function Stage.load(bgImgFileName, fgImgFileName, description)
+    font16 = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 16)
+    font32 = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 32)
 
-        -- end
+    intro = description or false
+    if intro then
+        introFile = love.filesystem.newFile(description)
+        for line in introFile:lines() do
+            table.insert(introText, line)
+        end
+        introFile:close()
+        start = love.timer.getTime()
+        love.graphics.setFont(font32)
+    end
+
     -- enemys.load()
 
-    font = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 16)
-    love.graphics.setFont(font)
+
+    -- love.graphics.setFont(font16)
     math.randomseed(os.time())
 
 
@@ -64,17 +79,10 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
     camera:setWindow(0, 0, 640, 640)
 
     spawn.x, spawn.y = Stage.buildMap(bgImg, fgImg)
-    -- spawn.x, spawn,y = playerX, playerY
 
     entities['player'] = require('player')
     entities['player'].load(spawn.x, spawn.y)
     world:add(entities['player'], spawn.x, spawn.y, entities['player'].width, entities['player'].height)
-
-
-
-
-    -- camera:setScale(2)
-
 
     Stage.loadTextures()
 
@@ -191,7 +199,6 @@ function Stage.loadTextures()
     Stage.newTile('objects', 'cup_e', 16, 32, 16, 16)
     Stage.newTile('objects', 'spawn', 32, 0, 16, 16)
 
-    -- Stage.newTile('foreground', 'air', 32, 32, 16, 16)
 end
 
 function Stage.update(dt)
@@ -204,7 +211,8 @@ function Stage.update(dt)
     end
     -- print('upd px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
 
-    -- psystem2:update(dt)
+if intro == false then
+
     for _, entitie in pairs(entities) do
         entitie.update(entitie, dt)
 
@@ -246,12 +254,17 @@ function Stage.update(dt)
                 local cost = 5
                 entitie.bag = entitie.bag + cost
                 entitie.speed = math.max(entitie.speed - cost, 50)
+
                 music.effect('pickup')
                 -- print('Coin:' .. tostring(entitie.bag))
             end
 
             if name == 'spawn' and entitie.name == 'player' then
                 entitie.drop()
+                if entitie.score == maxScore then
+                    -- print('win')
+                    win = true
+                end
             end
 
             if entitie.name == 'enemy' then
@@ -292,10 +305,20 @@ function Stage.update(dt)
     local cy = entities['player'].y + entities['player'].height / 2
 
     camera:setPosition(cx, cy)
-    -- print('camera:\n\tx:'..tostring(camera.x)..' y:'..tostring(camera.y))
-    -- print('player: x:'..tostring(entities['player'].x)..' y:'..tostring(entities['player'].y))
-    -- print('camera: x:'..tostring(cx)..' y:'..tostring(cy))
+    return win
+
+else
+
+
+    if love.timer.getTime() - start > 5 or love.keyboard.isDown('space') then
+        intro = false
+        love.graphics.setFont(font16)
+
+    end
+
 end
+end
+
 
 function Stage.reset()
     -- print('sx:'..tostring(spawn.x)..' sy:'..tostring(spawn.y))
@@ -325,11 +348,14 @@ end
 
 function drawInterface(x, y)
     -- love.graphics.setColor(0, 255, 0, 255)
-    love.graphics.print('Score:'..tostring(entities['player'].score), x, y)
-    love.graphics.print('Bag:'..tostring(entities['player'].bag), x, y + 10)
+    love.graphics.print('Score: '..tostring(entities['player'].score), x, y)
+    love.graphics.print('Bag: '..tostring(entities['player'].bag), x, y + 10)
 end
 
 function Stage.draw(x, y)
+
+if intro == false then
+
     camera:setScale(2.0)
     camera:draw(function(l, t, w, h)
         local par_x, par_y = camera:getPosition()
@@ -373,9 +399,17 @@ function Stage.draw(x, y)
         -- drawInterface(int_x, int_y)
     end)
 
-    love.graphics.print('Score:'..tostring(entities['player'].score), 0, 0)
-    love.graphics.print('Bag:'..tostring(entities['player'].bag), 0, 16)
+    love.graphics.print('Score: '..tostring(entities['player'].score)..'\\'..tostring(maxScore), 0, 0)
+    love.graphics.print('Bag: '..tostring(entities['player'].bag), 0, 16)
+else
+    love.graphics.scale(2, 2)
+    love.graphics.draw(parallax_bg, 0, 0)
+    love.graphics.draw(canvas, 0, 0)
+    for i, str in ipairs(introText) do
+        love.graphics.print(str, 0, 32*(i - 1))
+    end
 
+end
 end
 
 function Stage.newTexture(fileName, textureName)
@@ -496,6 +530,7 @@ function Stage.buildMap(bImg, fImg)
             elseif color == 'air' or color == 'box' then
                 fgMap[x][y] = { name = color }
             elseif color == 'treasure' then
+                maxScore = maxScore + 5
                 fgMap[x][y] = { name = 'air' }
                 local r = math.random(1, 3)
                 --rm 'treasure'

@@ -8,7 +8,7 @@ Enemy.name = 'enemy'
 -- Enemy.speedX = 0
 -- Enemy.speedY = 0
 -- Enemy.stepTick = 0
-Enemy.STEP_LIMIT = 1200
+Enemy.STEP_LIMIT = 1600
 
 local anim8 = require('lib/anim8')
 -- local img
