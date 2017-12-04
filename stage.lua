@@ -161,6 +161,7 @@ function Stage.update(dt)
 
 
                 love.graphics.setCanvas(canvas)
+                love.graphics.clear()
                 Stage.drawMap(0, 0)
                 love.graphics.setCanvas()
 
