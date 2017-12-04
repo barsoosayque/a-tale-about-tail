@@ -209,11 +209,13 @@ function Stage.update(dt)
                 local nextTileY = math.ceil(goalY / 16)
 
                 local bottomTile = fgMap[nextTileX][nextTileY + 1]
+                local nextTile = fgMap[nextTileX + 1][nextTileY]
                 local leftTile = fgMap[nextTileX + 1][nextTileY]
-                local rightTile = fgMap[nextTileX - 1][nextTileY]
+                -- local rightTile = fgMap[nextTileX - 1][nextTileY]
 
                 -- проверка, чтобы не упасть в пропасть и не упереться в стену
-                if bottomTile.name == 'air' or leftTile.name ~= 'air' or rightTile.name ~= 'air' then
+                -- if bottomTile.name == 'air' orx leftTile.name ~= 'air' or rightTile.name ~= 'air' then
+                if bottomTile.name == 'air' or nextTile.name ~= 'air' then
                     entitie.turnBack(entitie)
                 end
             end
@@ -250,9 +252,6 @@ end
 
 function Stage.draw(x, y)
     camera:setScale(2.0)
-
-
-
     camera:draw(function(l, t, w, h)
         local par_x, par_y = camera:getPosition()
         _, _, par_w, par_h = camera:getWindow()
