@@ -195,7 +195,7 @@ function Stage.update(dt)
                 other.full = false
                 world:remove(other)
 
-                local cost = other.value*5
+                local cost = 5
                 entitie.bag = entitie.bag + cost
                 entitie.speed = math.max(entitie.speed - cost, 50)
                 -- print('Coin:' .. tostring(entitie.bag))
@@ -417,7 +417,8 @@ function Stage.buildMap(bImg, fImg)
             elseif color == 'treasure' then
                 fgMap[x][y] = { name = 'air' }
                 local r = math.random(1, 3)
-                local obj = object.newObject(color, 'treasure', r, x * unit, y * unit, unit, unit)
+                --rm 'treasure'
+                local obj = object.newObject(color, r, x * unit, y * unit, unit, unit)
                 world:add(obj, x * unit, y * unit, unit, unit)
                 table.insert(objects, obj)
             end
