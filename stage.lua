@@ -42,7 +42,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     local enemy_key = 'enemy'
     entities[enemy_key] = require('enemy')
     entities[enemy_key].load(playerX - 150, playerY - 120, Stage.width)
-    world:add(entities[enemy_key], playerX - 150, playerY - 320, 30, 30)
+    world:add(entities[enemy_key], playerX - 100, playerY - 120, 30, 30)
 
 
     -- camera:setScale(2)
@@ -55,14 +55,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     Stage.drawMap(0, 0)
     love.graphics.setCanvas()
 
-
-    -- local cx = playerX - (640 / 2 - entities['player'].width / 2)
-    -- local cy = playerY - (640 / 2 - entities['player'].height / 2)
     camera:setPosition(playerX, playerY)
-
-
-
-    -- psystem2 = newParticleSystem(i)
 end
 
 
@@ -90,7 +83,7 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'dirt_r2', 48, 64, 16, 16)
     Stage.newTile('foreground', 'dirt_r3', 64, 64, 16, 16)
 
-    Stage.newTile('foreground', 'stone_lu', 96,  0, 16, 16)
+    Stage.newTile('foreground', 'stone_lu', 96, 0, 16, 16)
     Stage.newTile('foreground', 'stone_cu', 112, 0, 16, 16)
     Stage.newTile('foreground', 'stone_ru', 128, 0, 16, 16)
 
@@ -176,9 +169,15 @@ function Stage.update(dt)
             end
 
             if entitie.name == 'enemy' then
-                local tileX = math.ceil(goalX / 16)
-                local tileY = math.ceil((goalY - 1) / 16)
-                if fgMap[tileX][tileY].name == 'air' then
+                local nextTileX = math.ceil(goalX / 16)
+                local nextTileY = math.ceil(goalY / 16)
+
+                local bottomTile = fgMap[nextTileX][nextTileY + 1]
+                local leftTile = fgMap[nextTileX + 1][nextTileY]
+                local rightTile = fgMap[nextTileX - 1][nextTileY]
+
+                -- проверка, чтобы не упасть в пропасть и не упереться в стену
+                if bottomTile.name == 'air' or leftTile.name ~= 'air' or rightTile.name ~= 'air' then
                     entitie.turnBack()
                 end
             end
@@ -433,20 +432,20 @@ function Stage.calculateCorners()
                     fgMap[x][y].type = 'cc'
 
                     if fBlockType == 'dirt' then
-                        if x+1 < Stage.width and y+1 < Stage.height
-                            and fgMap[x+1][y+1].name == 'air' then
+                        if x + 1 < Stage.width and y + 1 < Stage.height
+                                and fgMap[x + 1][y + 1].name == 'air' then
                             fgMap[x][y].type = 'r0'
                         end
-                        if x+1 < Stage.width and y-1 > 0
-                            and fgMap[x+1][y-1].name == 'air' then
+                        if x + 1 < Stage.width and y - 1 > 0
+                                and fgMap[x + 1][y - 1].name == 'air' then
                             fgMap[x][y].type = 'r2'
                         end
-                        if x-1 > 0 and y+1 < Stage.height
-                            and fgMap[x-1][y+1].name == 'air' then
+                        if x - 1 > 0 and y + 1 < Stage.height
+                                and fgMap[x - 1][y + 1].name == 'air' then
                             fgMap[x][y].type = 'r1'
                         end
-                        if x-1 > 0 and y-1 > 0
-                            and fgMap[x-1][y-1].name == 'air' then
+                        if x - 1 > 0 and y - 1 > 0
+                                and fgMap[x - 1][y - 1].name == 'air' then
                             fgMap[x][y].type = 'r3'
                         end
                     end
