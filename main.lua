@@ -15,7 +15,7 @@ bgDelta = 0
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
-    love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT)
+    -- love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT)
     love.graphics.setBackgroundColor(128, 256, 256, 0)
 
     love.graphics.setFont(font)
