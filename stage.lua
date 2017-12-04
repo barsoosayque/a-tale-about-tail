@@ -34,7 +34,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     local playerX, playerY = Stage.buildMap(bgImg, fgImg)
 
     entities['player'] = require('player')
-    entities['player'].load(playerX, playerY, Stage.width)
+    entities['player'].load(playerX, playerY)
     world:add(entities['player'], playerX, playerY, entities['player'].width, entities['player'].height)
 
     local enemy_key = 'enemy'
@@ -114,6 +114,8 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
     Stage.newTile('foreground', 'roof_rd', 32, 16, 16, 16)
 
+    Stage.newTile('foreground', 'door_u', 32, 16, 16, 16)
+    Stage.newTile('foreground', 'door_u', 32, 16, 16, 16)
 
     Stage.newTile('background', 'wall_u',   16,   0, 16, 16)
     Stage.newTile('background', 'wall_d',   16,  16, 16, 16)
