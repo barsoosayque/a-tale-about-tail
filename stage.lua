@@ -37,6 +37,12 @@ local spawn = {
     y = 0
 }
 
+local timer = {
+    using = false,
+    t = 0,
+    callback = function() end
+}
+
 function Stage.load(bgImgFileName, fgImgFileName, description, int)
     -- intro = int or false
     -- if intro then
@@ -189,7 +195,13 @@ function Stage.loadTextures()
 end
 
 function Stage.update(dt)
-
+    if timer.using then
+        timer.t = timer.t - dt
+        if timer.t <= 0 then
+            timer.callback()
+            timer.using = false
+        end
+    end
     -- print('upd px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
 
     -- psystem2:update(dt)
@@ -211,8 +223,19 @@ function Stage.update(dt)
             local name = other.name
             if item.name == 'player' and name == 'enemy' then
                 -- print('ded')
-                Stage.reset()
-                reset = true
+
+                if entitie.ded == false then
+                    entitie.die()
+
+                    timer.t = 4
+                    timer.using = true
+                    timer.callback = function()
+                        entitie.ded = false
+                        Stage.reset()
+                        reset = true
+                        music.play("shadow")
+                    end
+                end
                 -- print('--->px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
             end
 
