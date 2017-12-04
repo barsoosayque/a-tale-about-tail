@@ -493,6 +493,10 @@ function Stage.calculateCorners()
                     end
                 elseif equal(fEnv, 0, 1, 1, 0) then
                     fgMap[x][y].type = 'cc'
+
+                    if fBlockType == 'wood' then
+
+                    end
                 elseif equal(fEnv, 1, 1, 1, 0) then
                     fgMap[x][y].type = 'rc'
                 elseif equal(fEnv, 0, 1, 0, 1) then
