@@ -31,6 +31,11 @@ local introFile
 
 local font
 
+local spawn = {
+    x = 0,
+    y = 0
+}
+
 function Stage.load(bgImgFileName, fgImgFileName, description, int)
     -- intro = int or false
     -- if intro then
@@ -51,12 +56,12 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
     camera:setWorld(0, 0, Stage.width * 16, Stage.height * 16)
     camera:setWindow(0, 0, 640, 640)
 
-    local playerX, playerY = Stage.buildMap(bgImg, fgImg)
+    spawn.x, spawn.y = Stage.buildMap(bgImg, fgImg)
     -- spawn.x, spawn,y = playerX, playerY
 
     entities['player'] = require('player')
-    entities['player'].load(playerX, playerY)
-    world:add(entities['player'], playerX, playerY, entities['player'].width, entities['player'].height)
+    entities['player'].load(spawn.x, spawn.y)
+    world:add(entities['player'], spawn.x, spawn.y, entities['player'].width, entities['player'].height)
 
 
 
@@ -71,7 +76,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
     Stage.drawMap(0, 0)
     love.graphics.setCanvas()
 
-    camera:setPosition(playerX, playerY)
+    camera:setPosition(spawn.x, spawn.y)
 end
 
 function Stage.loadTextures()
@@ -196,7 +201,14 @@ function Stage.update(dt)
 
         for i = 1, len do
             local other = cols[i].other
+            local item = cols[i].item
+            
             local name = other.name
+            if item.name == 'player' and name == 'enemy' then
+                print('ded')
+                Stage.reset()
+            end 
+
             if name == 'treasure' and entitie.name == 'player' then
                 other.full = false
                 world:remove(other)
@@ -249,6 +261,28 @@ function Stage.update(dt)
     -- print('camera:\n\tx:'..tostring(camera.x)..' y:'..tostring(camera.y))
     -- print('player: x:'..tostring(entities['player'].x)..' y:'..tostring(entities['player'].y))
     -- print('camera: x:'..tostring(cx)..' y:'..tostring(cy))
+end
+
+function Stage.reset()
+    print('sx:'..tostring(spawn.x)..' sy:'..tostring(spawn.y))
+    world:remove(entities['player'])
+    entities['player'].reset(spawn.x, spawn.y)
+    world:add(entities['player'], spawn.x, spawn.y, entities['player'].width, entities['player'].height)
+    
+    for _, entitie in pairs(entities) do
+        if entitie.name ~= 'player' then
+            world:remove(entitie)
+            entitie:reset()
+            world:add(entitie, entitie.x, entitie.y, entitie.width, entitie.height)
+        end
+    end
+    for _, obj in pairs(objects) do
+        if obj.full == false then
+            world:add(obj, obj.x, obj.y, obj.width, obj.height) 
+            obj:reset()
+        end
+
+    end
 end
 
 function drawInterface(x, y)

@@ -20,6 +20,10 @@ function Objects.newObject(name, value, x, y, width, height) -- rm type
 		end
 	end
 
+	obj.reset = function(self)
+		self.full = true
+	end
+
 	return obj
 
 end
