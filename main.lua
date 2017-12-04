@@ -8,7 +8,7 @@ SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 640
 font = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 32)
 bgImage = love.graphics.newImage("dat/gph/menu_bg.png")
-bg = love.graphics.newCanvas(SCREEN_WIDTH + 64, SCREEN_HEIGHT + 64)
+bg = love.graphics.newCanvas(SCREEN_WIDTH + 128, SCREEN_HEIGHT + 128)
 bgAnimation = 0
 bgDelta = 0
 
@@ -32,9 +32,9 @@ function love.load()
 
     love.graphics.setCanvas(bg)
         love.graphics.clear()
-        for x=0,11 do
-            for y=0,11 do
-                love.graphics.draw(bgImage, 64 * x, 64 * y)
+        for x=0,5 do
+            for y=0,5 do
+                love.graphics.draw(bgImage, 128 * x, 128 * y)
             end
         end
     love.graphics.setCanvas()
@@ -59,14 +59,14 @@ function love.update(dt)
     if bgDelta >= 0.03 then
         bgAnimation = bgAnimation + 1
         bgDelta = 0
-        if bgAnimation >= 64 then
+        if bgAnimation >= 128 then
             bgAnimation = 0
         end
     end
 end
 
 function love.draw()
-    love.graphics.draw(bg, bgAnimation - 64, bgAnimation - 64)
+    love.graphics.draw(bg, bgAnimation - 128, bgAnimation - 128)
     gui:draw()
 end
 

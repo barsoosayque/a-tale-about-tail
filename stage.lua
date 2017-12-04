@@ -85,7 +85,12 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'dirt_cd', 64, 32, 16, 16)
     Stage.newTile('foreground', 'dirt_rd', 80, 32, 16, 16)
 
-    Stage.newTile('foreground', 'stone_lu', 96, 0, 16, 16)
+    Stage.newTile('foreground', 'dirt_r0', 48, 48, 16, 16)
+    Stage.newTile('foreground', 'dirt_r1', 64, 48, 16, 16)
+    Stage.newTile('foreground', 'dirt_r2', 48, 64, 16, 16)
+    Stage.newTile('foreground', 'dirt_r3', 64, 64, 16, 16)
+
+    Stage.newTile('foreground', 'stone_lu', 96,  0, 16, 16)
     Stage.newTile('foreground', 'stone_cu', 112, 0, 16, 16)
     Stage.newTile('foreground', 'stone_ru', 128, 0, 16, 16)
 
@@ -419,7 +424,28 @@ function Stage.calculateCorners()
                     fgMap[x][y].type = 'ru'
                 elseif equal(fEnv, 0, 1, 1, 1) then
                     fgMap[x][y].type = 'lc'
-                elseif equal(fEnv, 1, 1, 1, 1) or equal(fEnv, 0, 1, 1, 0) then
+                elseif equal(fEnv, 1, 1, 1, 1) then
+                    fgMap[x][y].type = 'cc'
+
+                    if fBlockType == 'dirt' then
+                        if x+1 < Stage.width and y+1 < Stage.height
+                            and fgMap[x+1][y+1].name == 'air' then
+                            fgMap[x][y].type = 'r0'
+                        end
+                        if x+1 < Stage.width and y-1 > 0
+                            and fgMap[x+1][y-1].name == 'air' then
+                            fgMap[x][y].type = 'r2'
+                        end
+                        if x-1 > 0 and y+1 < Stage.height
+                            and fgMap[x-1][y+1].name == 'air' then
+                            fgMap[x][y].type = 'r1'
+                        end
+                        if x-1 > 0 and y-1 > 0
+                            and fgMap[x-1][y-1].name == 'air' then
+                            fgMap[x][y].type = 'r3'
+                        end
+                    end
+                elseif equal(fEnv, 0, 1, 1, 0) then
                     fgMap[x][y].type = 'cc'
                 elseif equal(fEnv, 1, 1, 1, 0) then
                     fgMap[x][y].type = 'rc'
