@@ -54,12 +54,15 @@ end
 function Player.update(dt)
     -- print('fly:'..tostring(fly)..' jump:'..tostring(jump)..'\ntime:'..tostring(t))
     -- particleSystem:setLinearAcceleration(-10 + Player.speedX, -10, 10 + Player.speedX, 1)
+    local rot = -math.random()*math.pi
+    particleSystem:setDirection(rot)
     if run == 1 then
         particleSystem:setEmissionRate(Player.bag/2)
     else
         particleSystem:setEmissionRate(0)
     end
-    particleSystem:setLinearAcceleration(-100 + Player.speedX, -100, 100 + Player.speedX, 1) -- Random movement in all directions.
+    -- particleSystem:setLinearAcceleration(-100 + Player.speedX, -200, 100 + Player.speedX, 1) -- Random movement in all directions.
+    particleSystem:setSpeed(50, 100)
     particleSystem:setPosition( Player.x + Player.width/2,
                                 Player.y + Player.height - 2)
     particleSystem:update(dt)
