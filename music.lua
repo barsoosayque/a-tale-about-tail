@@ -4,6 +4,8 @@ local songs = {}
 local effects = {}
 local playing_song = nil
 
+Music.effectsEnabled = true
+
 -- Загружает аудио-файлы в соответствии с их типом
 -- Типы могут быть: song (для песен в фоне) и sfx (для эффектов)
 function Music.load(type, name, path)
@@ -40,9 +42,11 @@ end
 -- Воспроизводит  указанный эффект по параметру effecy (название)
 -- Если этот эффект уже играл, он остановится и сыграется снова
 function Music.effect(effect)
-	if effects[effect] ~= nil then
-		effects[effect]:stop()
-		effects[effect]:play()
+	if Music.effectsEnabled then
+		if effects[effect] ~= nil then
+			effects[effect]:stop()
+			effects[effect]:play()
+		end
 	end
 end
 

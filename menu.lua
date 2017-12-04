@@ -3,17 +3,25 @@ music = require('music')
 Menu = {}
 Menu.startGameCallback = nul
 
-function saveToFile(value)
+function saveToFile()
     io.output(io.open('./cfg', 'w+'))
-    io.write(value)
+    io.write(tostring(Menu.stateSound).."\n"..tostring(music.effectsEnabled))
     io.close()
 end
 
 function Menu.load()
     local config = io.open("./cfg", "r")
     if config ~= nil then
-        if config:read() == "1" then
+        if config:read() == "true" then
             Menu.stateSound = true
+        else
+            Menu.stateSound = false
+        end
+
+        if config:read() == "true" then
+            music.effectsEnabled = true
+        else
+            music.effectsEnabled = false
         end
         config:close()
     else
@@ -28,8 +36,14 @@ end
 
 function Menu.drawOptionsMenu()
     local cbSound = gui:checkbox(nul, { x = 200, y = gui.style.unit * 5, r = 16 })
+    local cblSound = gui:text("Music on/off", { x = 32, y = -24 }, cbSound, true)
     cbSound.shape = 'rect'
-    local btnBack = gui:button('Back', { x = 160, y = gui.style.unit * 7, w = 320, h = gui.style.unit })
+
+    local cbEffects = gui:checkbox(nul, { x = 200, y = gui.style.unit * 6, r = 16 })
+    local cblEffects = gui:text("Effects on/off", { x = 32, y = -24 }, cbEffects, true)
+    cbEffects.shape = 'rect'
+
+    local btnBack = gui:button('Back', { x = 160, y = gui.style.unit * 8, w = 320, h = gui.style.unit })
 
     cbSound.value = Menu.stateSound
     cbSound.style.labelfg = cbSound.style.fg
@@ -48,13 +62,25 @@ function Menu.drawOptionsMenu()
             saveToFile(0)
         end
     end
-
-    local cblSound = gui:text("Sound on/off", { x = 32, y = -24 }, cbSound, true)
     cblSound.click = function(this)
         this.parent:click()
     end
 
+    cbEffects.value = music.effectsEnabled
+    cbEffects.style.labelfg = cbEffects.style.fg
+    cbEffects.click = function(this)
+        gui[this.elementtype].click(this)
+
+        music.effectsEnabled = this.value
+    end
+    cblEffects.click = function(this)
+        this.parent:click()
+    end
+
     btnBack.click = function()
+        saveToFile()
+        gui:rem(cbEffects)
+        gui:rem(cblEffects)
         gui:rem(cbSound)
         gui:rem(cblSound)
         gui:rem(btnBack)
