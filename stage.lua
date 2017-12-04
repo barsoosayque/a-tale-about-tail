@@ -123,7 +123,6 @@ function Stage.loadTextures()
 
     Stage.newTile('background', 'fence', 0, 16, 16, 16)
 
-
     Stage.newTile('objects', 'chest_f',  0,  0, 16, 16)
     Stage.newTile('objects', 'chest_e', 16,  0, 16, 16)
     Stage.newTile('objects', 'table_f',  0, 16, 16, 16)
