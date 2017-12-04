@@ -177,7 +177,7 @@ function Stage.update(dt)
 
         if actualY == entitie.y then
             if entitie.speedY > 0 then
-                entitie.land()
+                entitie.land(dt)
             end
             entitie.speedY = 0
         else

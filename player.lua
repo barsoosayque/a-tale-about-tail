@@ -33,14 +33,19 @@ local t = 0
 local particleSetting = {
     lifeTime = 0.4,
     count = 0,
+    maxCount = 50,
     speed = 60,
     acceleration = {
         y = 100000,
         x = 0
-    }
+    },
+    position = {
+        x = 0,
+        y = 0
+    },
+    coast = 1/1000
 }
 
--- local particleSystem, fgParticleSystem
 local particleSystem
 
 function Player.load(x, y, length)
@@ -61,21 +66,26 @@ function Player.load(x, y, length)
 
     local i = love.graphics.newImage('dat/gph/particle.png')
     particleSystem = newParticleSystem(i)
-    particleSystem:setQuads(love.graphics.newQuad(0, 0, 3, 3, i:getDimensions()), love.graphics.newQuad(0, 3, 3, 3, i:getDimensions()))
+    particleSystem:setQuads(love.graphics.newQuad(0, 0, 3, 3, i:getDimensions()),
+                            love.graphics.newQuad(0, 3, 3, 3, i:getDimensions()))
 end
 
 function Player.update(dt)
-    -- print('fly:'..tostring(fly)..' jump:'..tostring(jump)..'\ntime:'..tostring(t))
     local rot = -math.random()*math.pi
     particleSystem:setLinearAcceleration(0, particleSetting.acceleration.y*dt)
     local ax, ay = particleSystem:getLinearAcceleration()
-    -- print('acc:'..tostring(ax)..' '..tostring(ay))
     particleSystem:setDirection(rot)
-    -- particleSystem:setSpeed(20, 40)
-    -- particleSystem:setPosition( Player.x + Player.width/2,
-    --                             Player.y + Player.height - 2)
+    particleSystem:setPosition (Player.x + Player.width/2,
+                                Player.y + Player.height - 2)
+
+    -- local offset = (math.random() - 0.5)*Player.width
+    -- particleSystem:setPosition(particleSetting.position.x + offset, particleSetting.position.y)
+
+
     particleSystem:update(dt)
-    if particleSystem:getCount() > particleSetting.count*(particleSetting.lifeTime - 0.1) then
+    -- if particleSystem:getCount() > particleSetting.count*(particleSetting.lifeTime - 0.1) then
+    -- print('count'..tostring(particleSystem:getCount()))
+    if particleSystem:getCount() > particleSetting.count*particleSetting.lifeTime then
         particleSystem:setEmissionRate(0)
     end
 
@@ -92,7 +102,6 @@ function Player.update(dt)
         run = 0
     end
     if fly == true and Player.speedX ~= 0 then
-        -- Player.speedX = Player.speedX / 1.15
         Player.speedX = Player.speedX
     end
 
@@ -115,8 +124,6 @@ function Player.draw(x, y)
     local dtx = math.floor(imgD/2 - Player.width/2)
     local dty = math.floor(imgD - Player.height)
 
-
-
     if fly == true then
         if side == -1 then
             anim = animations['jumpL']
@@ -130,34 +137,25 @@ function Player.draw(x, y)
 end
 
 function newParticleSystem(i)
-    local ps = love.graphics.newParticleSystem(i, 200)
-    ps:setParticleLifetime(particleSetting.lifeTime, particleSetting.lifeTime) -- Particles live at least 2s and at most 5s.
-    -- ps:setEmissionRate(10)
-    -- ps:setSizeVariation(0)
-    -- ps:setLinearAcceleration(-100, -100, 100, 1) -- Random movement in all directions.
-    -- ps:setColors( 255, 255, 0, 255,
-    --               -- 255, 255, 0, 200,
-    --               -- 255, 255, 0, 180,
-    --               -- 255, 255, 0, 150,
-    --               255, 255, 0,   0) -- Fade to transparency.
-    -- ps:setLinearAcceleration(-100, -100, 100, 1) -- Random movement in all directions.
-    -- ps:setColors( 255, 255, 0, 255,
-    --               -- 255, 255, 0, 200,
-    --               -- 255, 255, 0, 180,
-    --               -- 255, 255, 0, 150,
-    --               255, 255, 0,   0) -- Fade to transparency.
+    local ps = love.graphics.newParticleSystem(i, particleSetting.maxCount)
+    ps:setParticleLifetime(particleSetting.lifeTime, particleSetting.lifeTime)
     return ps
 end
 
-function Player.land()
+function Player.land(dt)
     if fly == true then
-        particleSetting.count = Player.bag*Player.speedY/1500
-        print('count:'..tostring(particleSetting.count))
-        particleSystem:setEmissionRate(particleSetting.count)
-        particleSystem:setPosition( Player.x + Player.width/2,
-                                    Player.y + Player.height - 2)
+        -- particleSetting.count = Player.bag*Player.speedY/1500
+        particleSetting.count = particleSetting.coast*Player.bag*Player.speedY*dt*100
+        print("count"..tostring(particleSetting.count))
+
+        if particleSetting.count ~= 0 then
+            particleSystem:setEmissionRate(particleSetting.count + 1/particleSetting.lifeTime)
+        end
+
+        -- particleSystem:setPosition( Player.x + Player.width/2,
+        --                             Player.y + Player.height - 2)
+        particleSetting.position.x, particleSetting.position.y = Player.x + Player.width/2, Player.y + Player.height - 2
         particleSystem:setSpeed(particleSetting.speed, particleSetting.speed)
-        -- particleSystem:setSpeed(20 + Player.bag/10, 40 + Player.bag/10)
 
         if Player.speedY > 400 then
             require('music').effect('land')
