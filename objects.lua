@@ -19,11 +19,6 @@ function Objects.newObject(name, type, x, y, width, height)
 		end
 	end
 
-	obj.draw = function()
-
-	
-	end
-
 	return obj
 
 end
