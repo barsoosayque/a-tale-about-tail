@@ -207,15 +207,10 @@ function Stage.draw(x, y)
         local par_x, par_y = camera:getPosition()
         _, _, par_w, par_h = camera:getWindow()
         _, _, wr_w, wr_h = camera:getWorld()
-
-
-
         par_x = par_x - ((par_x + par_w) / wr_w * 160)
         par_y = par_y - ((par_y + par_h) / wr_h * 160)
-        -- p/ar_y = par_y - (par_y / par_h * 480)
-        -- par_y = par_y - par_h / 2 + (entities["player"].y / wr_h * par_h)
-
         love.graphics.draw(parallax_bg, par_x, par_y)
+
         -- Stage.drawMap(0, 0)
         love.graphics.draw(canvas)
         local px, py = 0, 0
