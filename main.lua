@@ -6,7 +6,7 @@ music = require('music')
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 640
-font = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 32)
+font = love.graphics.newImageFont("dat/fnt/font.png", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/.,")
 bgImage = love.graphics.newImage("dat/gph/menu_bg.png")
 bg = love.graphics.newCanvas(SCREEN_WIDTH + 128, SCREEN_HEIGHT + 128)
 bgAnimation = 0
@@ -90,6 +90,7 @@ end
 function love.draw()
     love.graphics.draw(bg, bgAnimation - 128, bgAnimation - 128)
     gui:draw()
+    love.graphics.print(2424242, 100, 150)
 end
 
 function love.mousepressed(x, y, button)
