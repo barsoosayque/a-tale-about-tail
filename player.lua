@@ -22,7 +22,8 @@ local dj = false
 local jump = false
 
 local width = 0
-local speed = 200/2
+local initialSpeed = 100
+Player.speed = 100
 
 local inventory
 
@@ -31,19 +32,19 @@ local t = 0
 
 
 local particleSetting = {
-    lifeTime = 0.4,
+    lifeTime = 0.3,
     count = 0,
     maxCount = 50,
     speed = 60,
     acceleration = {
-        y = 100000,
+        y = 099999,
         x = 0
     },
     position = {
         x = 0,
         y = 0
     },
-    cost = 1/1000
+    cost = 2
 }
 
 local particleSystem
@@ -66,8 +67,12 @@ function Player.load(x, y, length)
 
     local i = love.graphics.newImage('dat/gph/particle.png')
     particleSystem = newParticleSystem(i)
-    particleSystem:setQuads(love.graphics.newQuad(0, 0, 3, 3, i:getDimensions()),
-                            love.graphics.newQuad(0, 3, 3, 3, i:getDimensions()))
+    particleSystem:setQuads(love.graphics.newQuad(0, 0, 4, 4, i:getDimensions()),
+                            love.graphics.newQuad(4, 0, 4, 4, i:getDimensions()),
+                            love.graphics.newQuad(8, 0, 4, 4, i:getDimensions()),
+                            love.graphics.newQuad(12, 0, 4, 4, i:getDimensions()))
+
+    fly = false
 end
 
 function Player.update(dt)
@@ -85,16 +90,16 @@ function Player.update(dt)
     particleSystem:update(dt)
     -- if particleSystem:getCount() > particleSetting.count*(particleSetting.lifeTime - 0.1) then
     -- print('count'..tostring(particleSystem:getCount()))
-    if particleSystem:getCount() > particleSetting.count*particleSetting.lifeTime then
-        particleSystem:setEmissionRate(0)
-    end
+    -- if particleSystem:getCount() > particleSetting.count*particleSetting.lifeTime then
+    --     particleSystem:setEmissionRate(0)
+    -- end
 
     if love.keyboard.isDown('left') then
-        Player.speedX = -speed
+        Player.speedX = -Player.speed
         run = 1
         side = -1
     elseif love.keyboard.isDown('right') then
-        Player.speedX = speed
+        Player.speedX = Player.speed
         run = 1
         side = 1
     else
@@ -137,24 +142,20 @@ end
 
 function newParticleSystem(i)
     local ps = love.graphics.newParticleSystem(i, particleSetting.maxCount)
-    ps:setParticleLifetime(particleSetting.lifeTime, particleSetting.lifeTime)
+    ps:setParticleLifetime(particleSetting.lifeTime, particleSetting.lifeTime * 2)
+    ps:setAreaSpread("normal", 5, 5)
+    ps:setSpread(1.5)
     return ps
 end
 
 function Player.land(dt)
     if fly == true then
-        -- particleSetting.count = Player.bag*Player.speedY/1500
-        particleSetting.count = particleSetting.cost*Player.bag*Player.speedY*dt*100
-        print("count"..tostring(particleSetting.count))
+        particleSetting.count = Player.speedY/800 * particleSetting.maxCount * (1.1 - Player.speed / initialSpeed)
 
-        if particleSetting.count ~= 0 then
-            particleSystem:setEmissionRate(particleSetting.count + 1/particleSetting.lifeTime)
-        end
-
-        -- particleSystem:setPosition( Player.x + Player.width/2,
-        --                             Player.y + Player.height - 2)
         particleSetting.position.x, particleSetting.position.y = Player.x + Player.width/2, Player.y + Player.height - 2
         particleSystem:setSpeed(particleSetting.speed, particleSetting.speed)
+        particleSystem:moveTo(particleSetting.position.x, particleSetting.position.y)
+        particleSystem:emit(particleSetting.count)
 
         if Player.speedY > 400 then
             require('music').effect('land')

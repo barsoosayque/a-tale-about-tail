@@ -31,7 +31,7 @@ local introFile
 function Stage.load(bgImgFileName, fgImgFileName, description, int)
     -- intro = int or false
     -- if intro then
-    --     introFile = love.filesystem.newFile(description) 
+    --     introFile = love.filesystem.newFile(description)
 
     -- end
 
@@ -174,7 +174,8 @@ function Stage.update(dt)
 
                 local cost = other.value*5
                 entitie.bag = entitie.bag + cost
-                print('Coin:' .. tostring(entitie.bag))
+                entitie.speed = math.max(entitie.speed - cost, 50)
+                -- print('Coin:' .. tostring(entitie.bag))
             end
 
             if entitie.name == 'enemy' then
