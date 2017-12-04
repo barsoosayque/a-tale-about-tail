@@ -290,9 +290,14 @@ function Player.keypressed(key, scancode, isrepeat)
 end
 
 function Player.drop()
+    local r = false
+    if Player.bag ~= 0 then
+        r = true
+    end
     Player.score = Player.score + Player.bag
     Player.bag = 0
     Player.speed = initialSpeed
+    return r
 end
 
 return Player
