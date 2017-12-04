@@ -16,6 +16,10 @@ function love.load()
     music.load("song", "dusk", "dat/snd/dusk.xm")
     music.load("song", "shadow", "dat/snd/shadow.xm")
 
+    music.load("sfx", "jump", "dat/sfx/jump.xm")
+    music.load("sfx", "djump", "dat/sfx/djump.xm")
+    music.load("sfx", "land", "dat/sfx/land.xm")
+
     Menu.load()
 
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -38,11 +42,6 @@ function love.load()
     Menu.drawMainMenu()
     Menu.startGameCallback = function()
         stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
-
-        if Menu.stateSound then
-            -- music_02.play()
-            -- music_01.stop()
-        end
 
         love.update = function(dt)
             stage.update(dt)
