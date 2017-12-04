@@ -42,7 +42,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     local enemy_key = 'enemy'
     entities[enemy_key] = require('enemy')
     entities[enemy_key].load(playerX - 150, playerY - 120, Stage.width)
-    world:add(entities[enemy_key], playerX - 150, playerY - 320, 30, 30)
+    world:add(entities[enemy_key], playerX - 100, playerY - 120, 30, 30)
 
 
     -- camera:setScale(2)
@@ -177,7 +177,7 @@ function Stage.update(dt)
 
             if entitie.name == 'enemy' then
                 local tileX = math.ceil(goalX / 16)
-                local tileY = math.ceil((goalY - 1) / 16)
+                local tileY = math.ceil((goalY + 24) / 16)
                 if fgMap[tileX][tileY].name == 'air' then
                     entitie.turnBack()
                 end

@@ -144,7 +144,7 @@ end
 function Player.land(dt)
     if fly == true then
         -- particleSetting.count = Player.bag*Player.speedY/1500
-        particleSetting.count = particleSetting.coast*Player.bag*Player.speedY*dt*100
+        particleSetting.count = particleSetting.cost*Player.bag*Player.speedY*dt*100
         print("count"..tostring(particleSetting.count))
 
         if particleSetting.count ~= 0 then
@@ -212,7 +212,7 @@ end
 
 function Player.filter(item, other)
     local name = other.name
-    if name == 'stone' or name == 'dirt' or name == 'wood' or name == 'wall' or name == 'roof' then
+    if name == 'stone' or name == 'dirt' or name == 'wood' or name == 'roof' then
         return 'slide'
     elseif name == 'chest' or name == 'table' or name == 'cup' then
         return 'cross'
