@@ -57,7 +57,15 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     -- local cx = playerX - (640 / 2 - entities['player'].width / 2)
     -- local cy = playerY - (640 / 2 - entities['player'].height / 2)
     camera:setPosition(playerX, playerY)
+
+
+    
+    -- psystem2 = newParticleSystem(i)
+
+
 end
+
+
 
 function Stage.loadTextures()
     Stage.newTexture('dat/gph/tiles_bg.png', 'background')
@@ -136,6 +144,9 @@ function Stage.loadTextures()
 end
 
 function Stage.update(dt)
+
+
+    -- psystem2:update(dt)
     for _, entitie in pairs(entities) do
         entitie.update(dt)
 
@@ -193,9 +204,8 @@ function Stage.draw(x, y)
     camera:draw(function(l, t, w, h)
         -- Stage.drawMap(0, 0)
         love.graphics.draw(canvas)
-        for _, entitie in pairs(entities) do
-            entitie.draw(entitie.x, entitie.y)
-        end
+        local px, py = 0, 0
+
         for _, obj in pairs(objects) do
             if obj.type == 'coin' then
                 if obj.full then
@@ -205,6 +215,14 @@ function Stage.draw(x, y)
                 end
             end
         end
+
+        for _, entitie in pairs(entities) do
+            entitie.draw(entitie.x, entitie.y)
+        end
+        
+
+        -- love.graphics.draw(psystem2, entities['player'].x + (entities['player'].width/3)*2
+        --                           ,  entities['player'].y + entities['player'].height - 2)
     end)
 end
 
@@ -248,15 +266,8 @@ function Stage.drawMap(X, Y)
 end
 
 function Stage.drawTile(name, x, y)
-    -- print(name)
     local tile = tiles[name]
-    -- print(tile)
     local nw, nh = textures[tile.texture]:getDimensions()
-
-    -- nw, nh = 2 * nw, 2 * nh
-
-    -- local scaleX, scaleY = getImageScaleForNewDimensions(textures[tile.texture], nw, nh)
-    -- love.graphics.draw(textures[tile.texture], tile.tile, x, y, 0, scaleX, scaleY)
     love.graphics.draw(textures[tile.texture], tile.tile, x, y)
 end
 
@@ -320,9 +331,6 @@ function Stage.buildMap(bImg, fImg)
                 fgMap[x][y] = { name = color }
             elseif color == 'chest' or color == 'table' or color == 'cup' then
                 fgMap[x][y] = {name = 'air'}
-                -- local obj = objects.newObject(color, x*unit, y*unit, unit, unit)
-                -- fgMap[x][y] = {name = color, obj = obj}
-                -- world:add(fgMap[x][y], x*unit, y*unit, unit, unit)
                 local obj = object.newObject(color, 'coin', x*unit, y*unit, unit, unit)
                 world:add(obj, x*unit, y*unit, unit, unit)
                 table.insert(objects, obj)

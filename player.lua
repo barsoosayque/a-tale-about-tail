@@ -28,6 +28,9 @@ local inventory
 
 local t = 0 
 
+-- local particleSystem, fgParticleSystem
+local particleSystem
+
 function Player.load(x, y, length)
     Player.x = x
     Player.y = y
@@ -42,10 +45,24 @@ function Player.load(x, y, length)
     Player.addAnim('runR',   18, 18,   0,  54,   4, 0.1)
     Player.addAnim('jumpL',  18, 18,   0,  72,   2,   1)
     Player.addAnim('jumpR',  18, 18,   36, 72,   2,   1)
+
+
+    local i = love.graphics.newImage('dat/gph/particle.png')
+    particleSystem = newParticleSystem(i)
 end
 
 function Player.update(dt)
     -- print('fly:'..tostring(fly)..' jump:'..tostring(jump)..'\ntime:'..tostring(t))
+    -- particleSystem:setLinearAcceleration(-10 + Player.speedX, -10, 10 + Player.speedX, 1)
+    if run == 1 then
+        particleSystem:setEmissionRate(Player.bag/2)
+    else
+        particleSystem:setEmissionRate(0)
+    end
+    particleSystem:setLinearAcceleration(-100 + Player.speedX, -100, 100 + Player.speedX, 1) -- Random movement in all directions.
+    particleSystem:setPosition( Player.x + Player.width/2,
+                                Player.y + Player.height - 2)
+    particleSystem:update(dt)
 
     if love.keyboard.isDown('left') then
         Player.speedX = -speed
@@ -92,9 +109,23 @@ function Player.draw(x, y)
             anim = animations['jumpR']
         end
     end
-
-
+    
+    love.graphics.draw(particleSystem, 0, 0)
     anim:draw(img, x - dtx , y - dty)
+end
+
+function newParticleSystem(i)
+    local ps = love.graphics.newParticleSystem(i, 100)
+    ps:setParticleLifetime(0.5, 1) -- Particles live at least 2s and at most 5s.
+    ps:setEmissionRate(10)
+    ps:setSizeVariation(0)
+    ps:setLinearAcceleration(-100, -100, 100, 1) -- Random movement in all directions.
+    ps:setColors( 255, 255, 0, 255,
+                  -- 255, 255, 0, 200,
+                  -- 255, 255, 0, 180,
+                  -- 255, 255, 0, 150,  
+                  255, 255, 0,   0) -- Fade to transparency.
+    return ps
 end
 
 function Player.land()
@@ -129,17 +160,6 @@ function Player.animationUpdate(dt)
         t = t + dt
     end
 
-
-
-    --------> whaaaat <--------
-    -- if fly == true and jump == false then
-    --     print('fly jump')
-    --     if side == -1 then
-    --         animations['jumpL']:gotoFrame(2)
-    --     else
-    --         animations['jumpR']:gotoFrame(2)
-    --     end
-    -- else
     if t < 0.1 and fly == true  then
         if side == -1 then
             animations['jumpL']:gotoFrame(1)
