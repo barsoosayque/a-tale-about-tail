@@ -36,6 +36,8 @@ local maxScore = 0
 
 local font16, font32
 
+local win = false
+
 local spawn = {
     x = 0,
     y = 0
@@ -237,7 +239,8 @@ if intro == false then
             if name == 'spawn' and entitie.name == 'player' then
                 entitie.drop()
                 if entitie.score == maxScore then
-                    print('win')
+                    -- print('win')
+                    win = true
                 end
             end
 
@@ -279,6 +282,7 @@ if intro == false then
     local cy = entities['player'].y + entities['player'].height / 2
 
     camera:setPosition(cx, cy)
+    return win
 
 else
 
