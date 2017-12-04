@@ -77,6 +77,7 @@ function Player.load(x, y, length)
 end
 
 function Player.update(self, dt)
+    -- p upd px:'..tostring(Player.x)..' py:'..tostring(Player.y))
     local rot = -math.random()*math.pi
     particleSystem:setDirection(rot)
 
@@ -164,7 +165,7 @@ function Player.land(dt)
     end
 
     if Player.speedY > 10 then
-        print('speedY:'..tostring(Player.speedY))
+        -- print('speedY:'..tostring(Player.speedY))
     end
     fly = false
     dj = false
@@ -223,9 +224,17 @@ end
 
 function Player.reset(x, y)
     Player.x, Player.y = x, y
+    Player.speedX, Player.speedY = 0, 0
     Player.bag = 0
     Player.score = 0
     Player.speed = initialSpeed
+
+    run = 0 -- 0 stand 1 - run
+    side = -1 -- -1 left 1 right
+    fly = false
+    dj = false
+    jump = false
+
 end
 
 function Player.keypressed(key, scancode, isrepeat)

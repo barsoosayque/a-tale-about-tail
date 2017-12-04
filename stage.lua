@@ -183,6 +183,8 @@ end
 
 function Stage.update(dt)
 
+    -- print('upd px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
+
     -- psystem2:update(dt)
     for _, entitie in pairs(entities) do
         entitie.update(entitie, dt)
@@ -192,6 +194,8 @@ function Stage.update(dt)
         local goalX = entitie.x + entitie.speedX * dt
         local goalY = entitie.y + entitie.speedY * dt
         local actualX, actualY, cols, len = world:move(entitie, goalX, goalY, entitie.filter)
+        local reset = false
+
 
         for i = 1, len do
             local other = cols[i].other
@@ -199,8 +203,10 @@ function Stage.update(dt)
             
             local name = other.name
             if item.name == 'player' and name == 'enemy' then
-                print('ded')
+                -- print('ded')
                 Stage.reset()
+                reset = true
+                -- print('--->px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
             end 
 
             if name == 'treasure' and entitie.name == 'player' then
@@ -244,8 +250,11 @@ function Stage.update(dt)
             entitie.fly()
         end
 
-        entitie.x = actualX
-        entitie.y = actualY
+
+        if reset == false then
+            entitie.x = actualX
+            entitie.y = actualY
+        end
     end
 
     local cx = entities['player'].x + entities['player'].width / 2
@@ -258,11 +267,18 @@ function Stage.update(dt)
 end
 
 function Stage.reset()
-    print('sx:'..tostring(spawn.x)..' sy:'..tostring(spawn.y))
+    -- print('sx:'..tostring(spawn.x)..' sy:'..tostring(spawn.y))
+    
+    -- print('reset start')
     world:remove(entities['player'])
     entities['player'].reset(spawn.x, spawn.y)
-    world:add(entities['player'], spawn.x, spawn.y, entities['player'].width, entities['player'].height)
+    -- print('>px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
     
+    world:add(entities['player'], spawn.x, spawn.y, entities['player'].width, entities['player'].height)
+    -- print('->px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
+    
+    -- print('reset finish')
+
     for _, entitie in pairs(entities) do
         if entitie.name ~= 'player' then
             world:remove(entitie)
@@ -277,6 +293,7 @@ function Stage.reset()
         end
 
     end
+    -- print('-->px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
 end
 
 function drawInterface(x, y)
@@ -458,7 +475,7 @@ function Stage.buildMap(bImg, fImg)
                 table.insert(objects, obj)
             end
             if color == 'enemy' then
-                print('new enemy')
+                -- print('new enemy')
                 fgMap[x][y] = { name = 'air' }
                 local enemy = enemys.newEnemy(x * unit, y * unit, Stage.width)
                 enemy:load()
