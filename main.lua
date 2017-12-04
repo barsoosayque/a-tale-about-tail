@@ -2,18 +2,22 @@ gui = require('lib/Gspot')
 -- player = require('player')
 menu = require('menu')
 stage = require('stage')
+music = require('music')
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 640
 font = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 32)
-music_01 = love.audio.newSource("/dat/snd/menu.xm", "static")
-music_02 = love.audio.newSource("/dat/snd/shadow.xm", "static")
 bgImage = love.graphics.newImage("dat/gph/menu_bg.png")
 bg = love.graphics.newCanvas(SCREEN_WIDTH + 64, SCREEN_HEIGHT + 64)
 bgAnimation = 0
 bgDelta = 0
 
 function love.load()
+    music.load("song", "dusk", "dat/snd/dusk.xm")
+    music.load("song", "shadow", "dat/snd/shadow.xm")
+
+    Menu.load()
+
     love.graphics.setDefaultFilter("nearest", "nearest")
     -- love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT)
     love.graphics.setBackgroundColor(128, 256, 256, 0)
@@ -36,7 +40,8 @@ function love.load()
         stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
 
         if Menu.stateSound then
-            music_02.play()
+            -- music_02.play()
+            -- music_01.stop()
         end
 
         love.update = function(dt)
@@ -49,26 +54,8 @@ function love.load()
     end
 end
 
-function enableMusic()
-    music_01:setLooping(true)
-    music_02:setLooping(true)
-    music_02:stop()
-    music_01:play()
-end
-
-function disableMusic()
-    music_01:stop()
-    music_02:stop()
-end
-
-
 function love.update(dt)
     gui:update(dt)
-    if menu.stateSound then
-        enableMusic()
-    else
-        disableMusic()
-    end
     bgDelta = bgDelta + dt
     if bgDelta >= 0.03 then
         bgAnimation = bgAnimation + 1

@@ -1,17 +1,29 @@
+music = require('music')
+
 Menu = {}
 Menu.startGameCallback = nul
 
-io.input(io.open('./config.ini', 'r'))
-if io.read() == "1" then
-    Menu.stateSound = true
-else
-    Menu.stateSound = false
-end
-
 function saveToFile(value)
-    io.output(io.open('./config.ini', 'w+'))
+    io.output(io.open('./cfg', 'w+'))
     io.write(value)
     io.close()
+end
+
+function Menu.load()
+    local config = io.open("./cfg", "r")
+    if config ~= nil then
+        if config:read() == "1" then
+            Menu.stateSound = true
+        end
+        config:close()
+    else
+        saveToFile(1)
+        Menu.stateSound = true
+    end
+
+    if Menu.stateSound then
+        music.play("dusk")
+    end
 end
 
 function Menu.drawOptionsMenu()
@@ -27,9 +39,11 @@ function Menu.drawOptionsMenu()
         Menu.stateSound = this.value
 
         if this.value then
+            music.play("dusk")
             this.style.fg = { 255, 255, 255, 255 }
             saveToFile(1)
         else
+            music.stop()
             this.style.fg = { 128, 128, 128, 255 }
             saveToFile(0)
         end
@@ -65,6 +79,9 @@ function Menu.drawMainMenu()
     btnStart.click = function()
         clearMainMenu()
         if (Menu.startGameCallback ~= nil) then
+            if Menu.stateSound then
+                music.play("shadow")
+            end
             Menu.startGameCallback()
         end
     end
