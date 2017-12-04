@@ -22,6 +22,7 @@ local side = -1 -- -1 left 1 right
 local fly = false
 local dj = false
 local jump = false
+Player.ded = false
 
 local width = 0
 local initialSpeed = 100
@@ -34,12 +35,12 @@ local t = 0
 
 
 local particleSetting = {
-    lifeTime = 0.3,
+    lifeTime = 0.4,
     count = 0,
     maxCount = 50,
     speed = 60,
     acceleration = {
-        y = 099999,
+        y = 400,
         x = 0
     },
     position = {
@@ -50,6 +51,8 @@ local particleSetting = {
 }
 
 local particleSystem
+local dedSystem
+local coinSystem
 
 function Player.load(x, y, length)
     Player.x = x
@@ -72,50 +75,71 @@ function Player.load(x, y, length)
     local i = love.graphics.newImage('dat/gph/particle.png')
     particleSystem = newParticleSystem(i)
     particleSystem:setQuads(love.graphics.newQuad(0, 0, 4, 4, i:getDimensions()),
-                            love.graphics.newQuad(4, 0, 4, 4, i:getDimensions()),
-                            love.graphics.newQuad(8, 0, 4, 4, i:getDimensions()),
-                            love.graphics.newQuad(12, 0, 4, 4, i:getDimensions()))
+                        love.graphics.newQuad(4, 0, 4, 4, i:getDimensions()),
+                        love.graphics.newQuad(8, 0, 4, 4, i:getDimensions()),
+                        love.graphics.newQuad(12, 0, 4, 4, i:getDimensions()))
+
+    coinSystem = newParticleSystem(i)
+    coinSystem:setQuads(love.graphics.newQuad(0, 4, 4, 4, i:getDimensions()),
+                        love.graphics.newQuad(4, 4, 4, 4, i:getDimensions()),
+                        love.graphics.newQuad(8, 4, 4, 4, i:getDimensions()),
+                        love.graphics.newQuad(12, 4, 4, 4, i:getDimensions()))
+    coinSystem:setParticleLifetime(2)
+
+    i = love.graphics.newImage('dat/gph/fox.png')
+    dedSystem = newParticleSystem(i)
+    dedSystem:setQuads(love.graphics.newQuad(18, 72, 18, 18, i:getDimensions()))
+    dedSystem:setParticleLifetime(3)
 
     fly = false
 end
 
+function Player.die()
+    if Player.ded == false then
+        dedSystem:moveTo(Player.x, Player.y + Player.height * 2)
+        coinSystem:moveTo(Player.x, Player.y)
+        dedSystem:emit(1)
+        coinSystem:emit(Player.bag)
+        Player.ded = true
+        Player.speedX = 0
+        Player.speedY = 0
+
+        require('music').play('catcher')
+    end
+end
+
 function Player.update(self, dt)
-    -- p upd px:'..tostring(Player.x)..' py:'..tostring(Player.y))
-    local rot = -math.random()*math.pi
-    particleSystem:setDirection(rot)
-
-    particleSystem:setLinearAcceleration(0, particleSetting.acceleration.y*dt)
-    -- particleSystem:setPosition (Player.x + Player.width/2,
-    --                             Player.y + Player.height - 2)
-
-    local offset = (math.random() - 0.5)*Player.width
-    particleSystem:setPosition(particleSetting.position.x + offset, particleSetting.position.y)
-
-
-    particleSystem:update(dt)
     -- if particleSystem:getCount() > particleSetting.count*(particleSetting.lifeTime - 0.1) then
     -- print('count'..tostring(particleSystem:getCount()))
     -- if particleSystem:getCount() > particleSetting.count*particleSetting.lifeTime then
     --     particleSystem:setEmissionRate(0)
     -- end
 
-    if love.keyboard.isDown('left') then
-        Player.speedX = -Player.speed
-        run = 1
-        side = -1
-    elseif love.keyboard.isDown('right') then
-        Player.speedX = Player.speed
-        run = 1
-        side = 1
-    else
-        Player.speedX = 0
-        run = 0
-    end
-    if fly == true and Player.speedX ~= 0 then
-        Player.speedX = Player.speedX
-    end
+    if Player.ded == false then
+        particleSystem:update(dt)
 
-    Player.animationUpdate(dt)
+        if love.keyboard.isDown('left') then
+            Player.speedX = -Player.speed
+            run = 1
+            side = -1
+        elseif love.keyboard.isDown('right') then
+            Player.speedX = Player.speed
+            run = 1
+            side = 1
+        else
+            Player.speedX = 0
+            run = 0
+        end
+
+        if fly == true and Player.speedX ~= 0 then
+            Player.speedX = Player.speedX
+        end
+
+        Player.animationUpdate(dt)
+    else
+        coinSystem:update(dt)
+        dedSystem:update(dt)
+    end
 end
 
 function Player.draw(self, x, y)
@@ -142,14 +166,21 @@ function Player.draw(self, x, y)
     end
 
     love.graphics.draw(particleSystem, 0, 0)
-    anim:draw(img, x - dtx , y - dty)
+    love.graphics.draw(dedSystem, 0, 0)
+    love.graphics.draw(coinSystem, 0, 0)
+    if Player.ded == false then
+        anim:draw(img, x - dtx , y - dty)
+    end
 end
 
 function newParticleSystem(i)
     local ps = love.graphics.newParticleSystem(i, particleSetting.maxCount)
     ps:setParticleLifetime(particleSetting.lifeTime, particleSetting.lifeTime * 2)
-    ps:setAreaSpread("normal", 5, 0)
-    ps:setSpread(1.5)
+    ps:setAreaSpread("normal", 3, 0)
+    ps:setSpread(math.pi / 4)
+    ps:setDirection(-math.pi / 2)
+    ps:setLinearAcceleration(0, particleSetting.acceleration.y)
+    ps:setSpeed(particleSetting.speed, particleSetting.speed * 2)
     return ps
 end
 
@@ -158,7 +189,6 @@ function Player.land(dt)
         particleSetting.count = Player.speedY/800 * particleSetting.maxCount * (1.1 - Player.speed / initialSpeed)
 
         particleSetting.position.x, particleSetting.position.y = Player.x + Player.width/2, Player.y + Player.height - 2
-        particleSystem:setSpeed(particleSetting.speed, particleSetting.speed)
         particleSystem:moveTo(particleSetting.position.x, particleSetting.position.y)
         particleSystem:emit(particleSetting.count)
 
@@ -241,7 +271,7 @@ function Player.reset(x, y)
 end
 
 function Player.keypressed(key, scancode, isrepeat)
-    if key == 'up' and (fly == false or dj == false) then
+    if key == 'up' and (fly == false or dj == false) and Player.ded == false then
         music = require('music')
 
         if fly and jump then

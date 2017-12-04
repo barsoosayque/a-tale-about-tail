@@ -5,7 +5,7 @@ Menu.startGameCallback = nul
 
 function saveToFile()
     io.output(io.open('./cfg', 'w+'))
-    io.write(tostring(Menu.stateSound).."\n"..tostring(music.effectsEnabled))
+    io.write(tostring(music.songsEnabled).."\n"..tostring(music.effectsEnabled))
     io.close()
 end
 
@@ -13,9 +13,9 @@ function Menu.load()
     local config = io.open("./cfg", "r")
     if config ~= nil then
         if config:read() == "true" then
-            Menu.stateSound = true
+            music.songsEnabled = true
         else
-            Menu.stateSound = false
+            music.songsEnabled = false
         end
 
         if config:read() == "true" then
@@ -26,12 +26,10 @@ function Menu.load()
         config:close()
     else
         saveToFile(1)
-        Menu.stateSound = true
+        music.songsEnabled = true
     end
 
-    if Menu.stateSound then
-        music.play("dusk")
-    end
+    music.play("dusk")
 end
 
 function Menu.drawOptionsMenu()
@@ -45,12 +43,12 @@ function Menu.drawOptionsMenu()
 
     local btnBack = gui:button('Back', { x = 160, y = gui.style.unit * 8, w = 320, h = gui.style.unit })
 
-    cbSound.value = Menu.stateSound
+    cbSound.value = music.songsEnabled
     cbSound.style.labelfg = cbSound.style.fg
     cbSound.click = function(this)
         gui[this.elementtype].click(this)
 
-        Menu.stateSound = this.value
+        music.songsEnabled = this.value
 
         if this.value then
             music.play("dusk")
@@ -105,9 +103,7 @@ function Menu.drawMainMenu()
     btnStart.click = function()
         clearMainMenu()
         if (Menu.startGameCallback ~= nil) then
-            if Menu.stateSound then
-                music.play("shadow")
-            end
+            music.play("shadow")
             Menu.startGameCallback()
         end
     end

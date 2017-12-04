@@ -17,6 +17,8 @@ lvl = 1
 function love.load()
     music.load("song", "dusk", "dat/snd/dusk.xm")
     music.load("song", "shadow", "dat/snd/shadow.xm")
+    music.load("song", "catcher", "dat/snd/catcher.xm")
+    music.songs["catcher"]:setLooping(false)
 
     music.load("sfx", "jump", "dat/sfx/jump.xm")
     music.load("sfx", "djump", "dat/sfx/djump.xm")

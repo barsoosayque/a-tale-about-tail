@@ -48,6 +48,7 @@ local spawn = {
     y = 0
 }
 
+
 function Stage.clearWorld()
 
 
@@ -64,16 +65,28 @@ function Stage.clearWorld()
         end
         if v.name == 'enemy' then
             world:remove(v)
-            table.remove(entities, k)
         end
 
+    end
+
+    local max = table.maxn(entities) 
+    for k = 1, max do
+        table.remove(entities)
+    end
+
+    for _, v in pairs(entities) do
+        print('ent:'..tostring(v))
     end
 
     for k, v in pairs(objects) do
         if v.full then
             world:remove(v)
         end
-        table.remove(objects, k)
+        -- table.remove(objects, k)
+    end
+
+    for k = 1, table.maxn(objects) do
+        table.remove(objects)
     end
 
     if Stage.width ~= nil and Stage.width ~= 0 then
@@ -92,6 +105,13 @@ function Stage.clearWorld()
     
 
 end
+
+local timer = {
+    using = false,
+    t = 0,
+    callback = function() end
+}
+
 
 function Stage.load(bgImgFileName, fgImgFileName, description)
     font16 = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 16)
@@ -243,10 +263,16 @@ function Stage.loadTextures()
 end
 
 function Stage.update(dt)
+    if timer.using then
+        timer.t = timer.t - dt
+        if timer.t <= 0 then
+            timer.callback()
+            timer.using = false
+        end
+    end
+    -- print('upd px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
 
 if intro == false then
-
-
 
     for _, entitie in pairs(entities) do
         entitie.update(entitie, dt)
@@ -264,10 +290,22 @@ if intro == false then
 
             local name = other.name
             if item.name == 'player' and name == 'enemy' then
-                Stage.reset()
-                reset = true
-            end 
+                -- print('ded')
 
+                if entitie.ded == false then
+                    entitie.die()
+
+                    timer.t = 4
+                    timer.using = true
+                    timer.callback = function()
+                        entitie.ded = false
+                        Stage.reset()
+                        reset = true
+                        music.play("shadow")
+                    end
+                end
+                -- print('--->px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
+            end
 
             if name == 'treasure' and entitie.name == 'player' then
                 other.full = false
