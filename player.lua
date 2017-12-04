@@ -221,6 +221,13 @@ function Player.filter(item, other)
     end
 end
 
+function Player.reset(x, y)
+    Player.x, Player.y = x, y
+    Player.bag = 0
+    Player.score = 0
+    Player.speed = initialSpeed
+end
+
 function Player.keypressed(key, scancode, isrepeat)
     if key == 'up' and (fly == false or dj == false) then
         music = require('music')

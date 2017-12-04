@@ -47,12 +47,18 @@ function Enemy.newEnemy(x, y, w)
         speedX = speed,
         speedY = 0,
         stepTick = 0,
+        spawnX = x,
+        spawnY = y,
         -- stepLimit = limit, ???
         run = 1, -- 0 stand 1 - run
         side = -1, -- -1 left 1 rigth
 
         img = nil,
         animations = {},
+        reset = function(self) 
+            self.x = self.spawnX
+            self.y = self.spawnY
+        end,
         animationUpdate = function(self, dt)
             if self.side == -1 then
                 self.speedX = -speed
