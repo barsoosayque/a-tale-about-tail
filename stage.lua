@@ -28,6 +28,8 @@ local camera = gamera.new(0, 0, 640, 640)
 local intro = true
 local introFile
 
+local font
+
 function Stage.load(bgImgFileName, fgImgFileName, description, int)
     -- intro = int or false
     -- if intro then
@@ -35,7 +37,8 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
 
     -- end
 
-
+    font = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 16)
+    love.graphics.setFont(font)
     math.randomseed(os.time())
 
 
@@ -47,6 +50,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
     camera:setWindow(0, 0, 640, 640)
 
     local playerX, playerY = Stage.buildMap(bgImg, fgImg)
+    -- spawn.x, spawn,y = playerX, playerY
 
     entities['player'] = require('player')
     entities['player'].load(playerX, playerY)
@@ -70,7 +74,6 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
 
     camera:setPosition(playerX, playerY)
 end
-
 
 function Stage.loadTextures()
     parallax_bg = love.graphics.newImage("dat/gph/bg.png")
@@ -188,7 +191,7 @@ function Stage.update(dt)
         for i = 1, len do
             local other = cols[i].other
             local name = other.name
-            if name == 'treasure' then
+            if name == 'treasure' and entitie.name == 'player' then
                 other.full = false
                 world:remove(other)
 
@@ -196,6 +199,10 @@ function Stage.update(dt)
                 entitie.bag = entitie.bag + cost
                 entitie.speed = math.max(entitie.speed - cost, 50)
                 -- print('Coin:' .. tostring(entitie.bag))
+            end
+
+            if name == 'spawn' and entitie.name == 'player' then 
+                entitie.drop()
             end
 
             if entitie.name == 'enemy' then
@@ -236,8 +243,16 @@ function Stage.update(dt)
     -- print('camera: x:'..tostring(cx)..' y:'..tostring(cy))
 end
 
+function drawInterface(x, y)
+    -- love.graphics.setColor(0, 255, 0, 255)
+    love.graphics.print('Score:'..tostring(entities['player'].score), x, y)
+    love.graphics.print('Bag:'..tostring(entities['player'].bag), x, y + 10)
+end
+
 function Stage.draw(x, y)
     camera:setScale(2.0)
+
+
 
     camera:draw(function(l, t, w, h)
         local par_x, par_y = camera:getPosition()
@@ -246,6 +261,8 @@ function Stage.draw(x, y)
         par_x = par_x - ((par_x + par_w) / wr_w * 160)
         par_y = par_y - ((par_y + par_h) / wr_h * 160)
         love.graphics.draw(parallax_bg, par_x, par_y)
+
+
 
         -- Stage.drawMap(0, 0)
         love.graphics.draw(canvas)
@@ -274,10 +291,14 @@ function Stage.draw(x, y)
             entitie.draw(entitie.x, entitie.y)
         end
 
-
-        -- love.graphics.draw(psystem2, entities['player'].x + (entities['player'].width/3)*2
-        --                           ,  entities['player'].y + entities['player'].height - 2)
+        -- local int_x, int_y = camera:getPosition()
+        -- int_x, int_y = math.ceil(int_x), math.ceil(int_y)
+        -- drawInterface(int_x, int_y)
     end)
+
+    love.graphics.print('Score:'..tostring(entities['player'].score), 0, 0)
+    love.graphics.print('Bag:'..tostring(entities['player'].bag), 0, 16)
+
 end
 
 function Stage.newTexture(fileName, textureName)
@@ -313,6 +334,9 @@ function Stage.drawMap(X, Y)
                 bgTileName = bgTileName .. '_' .. bgMap[x][y].type
             end
             if fgTileName == 'box' then
+                fgTileName = 'air'
+            end
+            if fgTileName == 'spawn' then -- Заглушка пока нет тайла
                 fgTileName = 'air'
             end
 
@@ -398,8 +422,11 @@ function Stage.buildMap(bImg, fImg)
                 table.insert(objects, obj)
             end
             if color == 'fox' then
-                fgMap[x][y] = { name = 'air' }
-                pX, pY = x * 16, y * 16
+
+                fgMap[x][y] = { name = 'spawn' }
+                
+                pX, pY = x * unit, y * unit
+                world:add(fgMap[x][y], pX, pY, unit, unit)
             end
         end
     end
