@@ -4,6 +4,7 @@ local gamera = require('lib/gamera')
 local bump = require('lib/bump')
 local object = require('objects')
 local enemys = require('enemy')
+local music = require('music')
 
 local world = bump.newWorld(16)
 
@@ -213,12 +214,13 @@ if intro == false then
         for i = 1, len do
             local other = cols[i].other
             local item = cols[i].item
-            
+
             local name = other.name
             if item.name == 'player' and name == 'enemy' then
                 Stage.reset()
                 reset = true
             end 
+
 
             if name == 'treasure' and entitie.name == 'player' then
                 other.full = false
@@ -227,6 +229,9 @@ if intro == false then
                 local cost = 5
                 entitie.bag = entitie.bag + cost
                 entitie.speed = math.max(entitie.speed - cost, 50)
+
+                music.effect('pickup')
+                -- print('Coin:' .. tostring(entitie.bag))
             end
 
             if name == 'spawn' and entitie.name == 'player' then
@@ -289,17 +294,13 @@ end
 
 function Stage.reset()
     -- print('sx:'..tostring(spawn.x)..' sy:'..tostring(spawn.y))
-    
+
     -- print('reset start')
     world:remove(entities['player'])
     entities['player'].reset(spawn.x, spawn.y)
     -- print('>px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
-    
-    world:add(entities['player'], spawn.x, spawn.y, entities['player'].width, entities['player'].height)
-    -- print('->px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
-    
-    -- print('reset finish')
 
+    world:add(entities['player'], spawn.x, spawn.y, entities['player'].width, entities['player'].height)
     for _, entitie in pairs(entities) do
         if entitie.name ~= 'player' then
             world:remove(entitie)
@@ -309,7 +310,7 @@ function Stage.reset()
     end
     for _, obj in pairs(objects) do
         if obj.full == false then
-            world:add(obj, obj.x, obj.y, obj.width, obj.height) 
+            world:add(obj, obj.x, obj.y, obj.width, obj.height)
             obj:reset()
         end
 

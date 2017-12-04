@@ -145,7 +145,7 @@ end
 function newParticleSystem(i)
     local ps = love.graphics.newParticleSystem(i, particleSetting.maxCount)
     ps:setParticleLifetime(particleSetting.lifeTime, particleSetting.lifeTime * 2)
-    ps:setAreaSpread("normal", 5, 5)
+    ps:setAreaSpread("normal", 5, 0)
     ps:setSpread(1.5)
     return ps
 end

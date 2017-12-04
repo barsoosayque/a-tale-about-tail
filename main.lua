@@ -19,6 +19,7 @@ function love.load()
     music.load("sfx", "jump", "dat/sfx/jump.xm")
     music.load("sfx", "djump", "dat/sfx/djump.xm")
     music.load("sfx", "land", "dat/sfx/land.xm")
+    music.load("sfx", "pickup", "dat/sfx/pickup.xm")
 
     Menu.load()
 
