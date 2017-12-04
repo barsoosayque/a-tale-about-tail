@@ -21,6 +21,8 @@ local objects = {}
 local bgMap = {} -- background map
 local fgMap = {} -- foreground map
 
+local parallax_bg
+
 local camera = gamera.new(0, 0, 640, 640)
 
 function Stage.load(bgImgFileName, fgImgFileName, description)
@@ -59,15 +61,16 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     camera:setPosition(playerX, playerY)
 
 
-    
-    -- psystem2 = newParticleSystem(i)
 
+    -- psystem2 = newParticleSystem(i)
 
 end
 
 
 
 function Stage.loadTextures()
+    parallax_bg = love.graphics.newImage("dat/gph/bg.png")
+
     Stage.newTexture('dat/gph/tiles_bg.png', 'background')
     Stage.newTexture('dat/gph/tiles_fg.png', 'foreground')
     Stage.newTexture('dat/gph/objects.png' ,    'objects')
@@ -168,7 +171,7 @@ function Stage.update(dt)
                 if name == 'chest' then cost = 10
                 elseif name == 'table' then cost = 5
                 elseif name == 'cup' then cost = 1 end
-                entitie.bag = entitie.bag + cost 
+                entitie.bag = entitie.bag + cost
                 print('Coin:'..tostring(entitie.bag))
             end
 
@@ -192,7 +195,6 @@ function Stage.update(dt)
     local cy = entities['player'].y + entities['player'].height / 2
 
     camera:setPosition(cx, cy)
-
     -- print('camera:\n\tx:'..tostring(camera.x)..' y:'..tostring(camera.y))
     -- print('player: x:'..tostring(entities['player'].x)..' y:'..tostring(entities['player'].y))
     -- print('camera: x:'..tostring(cx)..' y:'..tostring(cy))
@@ -202,6 +204,18 @@ function Stage.draw(x, y)
     camera:setScale(2.0)
 
     camera:draw(function(l, t, w, h)
+        local par_x, par_y = camera:getPosition()
+        _, _, par_w, par_h = camera:getWindow()
+        _, _, wr_w, wr_h = camera:getWorld()
+
+
+
+        par_x = par_x - ((par_x + par_w) / wr_w * 160)
+        par_y = par_y - ((par_y + par_h) / wr_h * 160)
+        -- p/ar_y = par_y - (par_y / par_h * 480)
+        -- par_y = par_y - par_h / 2 + (entities["player"].y / wr_h * par_h)
+
+        love.graphics.draw(parallax_bg, par_x, par_y)
         -- Stage.drawMap(0, 0)
         love.graphics.draw(canvas)
         local px, py = 0, 0
@@ -219,7 +233,7 @@ function Stage.draw(x, y)
         for _, entitie in pairs(entities) do
             entitie.draw(entitie.x, entitie.y)
         end
-        
+
 
         -- love.graphics.draw(psystem2, entities['player'].x + (entities['player'].width/3)*2
         --                           ,  entities['player'].y + entities['player'].height - 2)
@@ -323,7 +337,7 @@ function Stage.buildMap(bImg, fImg)
             -- print('r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b))
             color = chekColor(r, g, b, a)
             -- print('color:'..color..' r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b)..' a:'..tostring(a))
-            
+
             if color == 'dirt' or color == 'wood' or color == 'stone' or color == 'roof' then
                 fgMap[x][y] = { name = color }
                 world:add(fgMap[x][y], x * 16, y * 16, 16, 16)
@@ -354,8 +368,8 @@ function Stage.calculateCorners()
 
             -- print('x:'..tostring(x)..' y:'..tostring(y))
             local fBlockType = fgMap[x][y].name
-            local bBlockType = bgMap[x][y].name 
-            
+            local bBlockType = bgMap[x][y].name
+
             -- local str = string.sub(fBlockType, 1, 3)
 
             local fEnv = { l = 0, u = 0, d = 0, r = 0 }
@@ -399,7 +413,7 @@ function Stage.calculateCorners()
                 fEnv.d = 1
             end
 
-            if fBlockType == 'stone' or fBlockType == 'wood' or fBlockType == 'dirt' then  
+            if fBlockType == 'stone' or fBlockType == 'wood' or fBlockType == 'dirt' then
                 if equal(fEnv, 0, 0, 1, 1) or equal(fEnv, 0, 0, 0, 1) then
                     fgMap[x][y].type = 'lu'
                 elseif equal(fEnv, 1, 0, 1, 1) or equal(fEnv, 0, 0, 1, 0) then
@@ -427,7 +441,7 @@ function Stage.calculateCorners()
                 if equal(fEnv, 0, 0, 1, 1) then
                     fgMap[x][y].type = 'lu'
                 elseif equal(fEnv, 1, 0, 1, 1) then
-                    fgMap[x][y].type = 'cu' 
+                    fgMap[x][y].type = 'cu'
                 elseif equal(fEnv, 1, 0, 1, 0) then
                     fgMap[x][y].type = 'ru'
                 elseif equal(fEnv, 0, 1, 1, 1) or equal(fEnv, 0, 1, 0, 1) then
