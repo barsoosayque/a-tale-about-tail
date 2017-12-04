@@ -43,7 +43,7 @@ local particleSetting = {
         x = 0,
         y = 0
     },
-    coast = 1/1000
+    cost = 1/1000
 }
 
 local particleSystem
