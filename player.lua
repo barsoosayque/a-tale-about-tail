@@ -33,7 +33,11 @@ local t = 0
 local particleSetting = {
     lifeTime = 0.4,
     count = 0,
-    speed = 60
+    speed = 60,
+    acceleration = {
+        y = 100000,
+        x = 0
+    }
 }
 
 
@@ -64,8 +68,10 @@ end
 function Player.update(dt)
     -- print('fly:'..tostring(fly)..' jump:'..tostring(jump)..'\ntime:'..tostring(t))
     local rot = -math.random()*math.pi
+    particleSystem:setLinearAcceleration(0, particleSetting.acceleration.y*dt)
+    local ax, ay = particleSystem:getLinearAcceleration()
+    -- print('acc:'..tostring(ax)..' '..tostring(ay))
     particleSystem:setDirection(rot)
-    -- particleSystem:setLinearAcceleration(0, 3000*dt, 0, 3000*dt)
     -- particleSystem:setSpeed(20, 40)
     -- particleSystem:setPosition( Player.x + Player.width/2,
     --                             Player.y + Player.height - 2)
