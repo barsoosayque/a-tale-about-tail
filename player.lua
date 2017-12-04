@@ -214,7 +214,7 @@ function Player.filter(item, other)
     local name = other.name
     if name == 'stone' or name == 'dirt' or name == 'wood' or name == 'roof' then
         return 'slide'
-    elseif name == 'chest' or name == 'table' or name == 'cup' then
+    elseif name == 'treasure' then
         return 'cross'
     end
 end
