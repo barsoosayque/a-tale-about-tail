@@ -10,6 +10,9 @@ function Music.load(type, name, path)
 	if type == "song" then
 		songs[name] = love.audio.newSource(path, "static")
 		songs[name]:setLooping(true)
+		songs[name]:play()
+		songs[name]:pause()
+		songs[name]:setVolume(0.25)
 	end
 
 	if type == "sfx" then
@@ -22,7 +25,7 @@ end
 function Music.play(song)
 	if songs[song] ~= nil then
 		Music.stop()
-		songs[song]:play()
+		songs[song]:resume()
 		playing_song = song
 	end
 end
@@ -30,7 +33,7 @@ end
 -- Выключает играющую песню
 function Music.stop()
 	if songs[playing_song] ~= nil then
-		songs[playing_song]:stop()
+		songs[playing_song]:pause()
 	end
 end
 
@@ -38,6 +41,7 @@ end
 -- Если этот эффект уже играл, он остановится и сыграется снова
 function Music.effect(effect)
 	if effects[effect] ~= nil then
+		effects[effect]:stop()
 		effects[effect]:play()
 	end
 end
