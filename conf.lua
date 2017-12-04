@@ -3,7 +3,7 @@ function love.conf(t)
 	-- t.author = "Leibee and his team"	-- The author of the game (string)
 	-- t.identity = "Gspot"				-- The name of the save directory (string)
 	t.version = "0.10.2"
-	t.console = true					-- Attach a console (boolean, Windows only)
+	t.console = false					-- Attach a console (boolean, Windows only)
 	t.window.width = 640				-- The window width (number)
 	t.window.height = 640				-- The window height (number)
 	t.window.fullscreen = false			-- Enable fullscreen (boolean)
@@ -21,4 +21,5 @@ function love.conf(t)
 	t.modules.mouse = true				-- Enable the mouse module (boolean)
 	t.modules.sound = true				-- Enable the sound module (boolean)
 	t.modules.physics = false			-- Enable the physics module (boolean)
+	t.modules.filesystem = true
 end

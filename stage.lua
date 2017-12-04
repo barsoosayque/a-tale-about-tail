@@ -75,7 +75,7 @@ function Stage.clearWorld()
     end
 
     for _, v in pairs(entities) do
-        print('ent:'..tostring(v))
+        -- print('ent:'..tostring(v))
     end
 
     for k, v in pairs(objects) do
@@ -118,15 +118,25 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
     font32 = love.graphics.newImageFont("dat/fnt/font.png", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/.,:", 2)
     Stage.clearWorld()
 
+
     intro = description or false
     if intro then
         introFile = love.filesystem.newFile(description)
+        introFile:open("r")
+        introFile:read() -- whhaaaat без этого уходит в бесконечный цикл
+
         for line in introFile:lines() do
+            -- print('read line:'..line)
             table.insert(introText, line)
         end
+        -- print('read file')
         introFile:close()
+        -- print('close file')
         start = love.timer.getTime()
+        -- print('get time')
         love.graphics.setFont(font32)
+        -- print('set font')
+        
     end
 
     math.randomseed(os.time())
@@ -497,7 +507,7 @@ function Stage.buildMap(bImg, fImg)
                 table.insert(objects, obj)
             end
             if color == 'enemy' then
-                print('new enemy')
+                -- print('new enemy')
                 fgMap[x][y] = { name = 'air' }
                 local enemy = enemys.newEnemy(x * unit, y * unit, Stage.width)
                 enemy:load()
