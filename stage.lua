@@ -1,5 +1,8 @@
 Stage = {}
 
+Stage.width = 0
+Stage.height = 0
+
 local gamera = require('lib/gamera')
 local bump = require('lib/bump')
 local object = require('objects')
@@ -18,6 +21,8 @@ local leftWall = { name = 'wall', side = 'left' }
 local rightWall = { name = 'wall', side = 'right' }
 
 local entities = {}
+entities['player'] = require('player')
+
 local objects = {}
 
 local bgMap = {} -- background map
@@ -43,9 +48,55 @@ local spawn = {
     y = 0
 }
 
+function Stage.clearWorld()
+
+
+    maxScore = 0
+    win = false
+    introFile = nil
+    introText = {}
+    start = nil
+    
+    for k, v in pairs(entities) do
+        if v.name == 'player' and v.inWorld == true then
+            world:remove(v)
+            v.inWorld = false
+        end
+        if v.name == 'enemy' then
+            world:remove(v)
+            table.remove(entities, k)
+        end
+
+    end
+
+    for k, v in pairs(objects) do
+        if v.full then
+            world:remove(v)
+        end
+        table.remove(objects, k)
+    end
+
+    if Stage.width ~= nil and Stage.width ~= 0 then
+        for x = 0, Stage.width - 1 do
+            for y = 0, Stage.height - 1 do
+                local name = fgMap[x][y].name
+                if name == 'dirt' or name == 'wood' or name == 'stone' or name == 'roof' or name == 'spawn' then
+                    world:remove(fgMap[x][y])
+                end           
+            end
+        end
+        world:remove(leftWall)
+        world:remove(rightWall)
+    end
+
+    
+
+end
+
 function Stage.load(bgImgFileName, fgImgFileName, description)
     font16 = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 16)
     font32 = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 32)
+    Stage.clearWorld()
 
     intro = description or false
     if intro then
@@ -58,11 +109,6 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
         love.graphics.setFont(font32)
     end
 
-
-    -- enemys.load()
-
-    
-    -- love.graphics.setFont(font16)
     math.randomseed(os.time())
 
 
@@ -75,9 +121,9 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
 
     spawn.x, spawn.y = Stage.buildMap(bgImg, fgImg)
 
-    entities['player'] = require('player')
     entities['player'].load(spawn.x, spawn.y)
     world:add(entities['player'], spawn.x, spawn.y, entities['player'].width, entities['player'].height)
+    entities['player'].inWorld = true
 
     Stage.loadTextures()
 
@@ -206,7 +252,6 @@ if intro == false then
         entitie.update(entitie, dt)
 
         entitie.speedY = entitie.speedY + 1800 * dt --300
-
         local goalX = entitie.x + entitie.speedX * dt
         local goalY = entitie.y + entitie.speedY * dt
         local actualX, actualY, cols, len = world:move(entitie, goalX, goalY, entitie.filter)
@@ -409,6 +454,7 @@ function Stage.drawMap(X, Y)
             local bgTileName = bgMap[x][y].name
             if fgTileName == 'stone' or fgTileName == 'dirt' or fgTileName == 'wood' or fgTileName == 'roof' then
                 fgTileName = fgTileName .. '_' .. fgMap[x][y].type
+
             end
             -- if fgTileName == 'chest' or fgTileName == 'table' or fgTileName == 'cup' then
             --     if fgMap[x][y].obj.full then
@@ -427,6 +473,8 @@ function Stage.drawMap(X, Y)
             -- if fgTileName == 'spawn' then -- Заглушка пока нет тайла
             --     fgTileName = 'air'
             -- end
+            -- print('fg:'..fgTileName)
+            -- print('bg:'..bgTileName)
 
             Stage.drawTile(bgTileName, nx, ny)
 
@@ -437,7 +485,6 @@ end
 
 function Stage.drawTile(name, x, y)
     if name ~= "air" then
-    -- print(name)
         local tile = tiles[name]
         local nw, nh = textures[tile.texture]:getDimensions()
         love.graphics.draw(textures[tile.texture], tile.tile, x, y)
@@ -516,7 +563,7 @@ function Stage.buildMap(bImg, fImg)
                 table.insert(objects, obj)
             end
             if color == 'enemy' then
-                -- print('new enemy')
+                print('new enemy')
                 fgMap[x][y] = { name = 'air' }
                 local enemy = enemys.newEnemy(x * unit, y * unit, Stage.width)
                 enemy:load()

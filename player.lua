@@ -7,6 +7,7 @@ Player.width = 0
 Player.height = 0
 Player.speedX = 0
 Player.speedY = 0
+Player.inWorld = false
 
 Player.bag = 0
 Player.score = 0
@@ -56,6 +57,8 @@ function Player.load(x, y, length)
     Player.width = imgD - 5
     Player.height = imgD - 7
     width = length
+    Player.score = 0
+    Player.bag = 0
 
     img = love.graphics.newImage('dat/gph/fox.png')
     Player.addAnim('standL', 18, 18,   0,  0,    4, 0.1)

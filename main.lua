@@ -12,6 +12,8 @@ bg = love.graphics.newCanvas(SCREEN_WIDTH + 128, SCREEN_HEIGHT + 128)
 bgAnimation = 0
 bgDelta = 0
 
+stg = {}
+lvl = 1
 function love.load()
     music.load("song", "dusk", "dat/snd/dusk.xm")
     music.load("song", "shadow", "dat/snd/shadow.xm")
@@ -20,6 +22,18 @@ function love.load()
     music.load("sfx", "djump", "dat/sfx/djump.xm")
     music.load("sfx", "land", "dat/sfx/land.xm")
     music.load("sfx", "pickup", "dat/sfx/pickup.xm")
+
+
+    stg[1] = {
+        b_name = 'stg/st1/map_b.png',
+        f_name = 'stg/st1/map_f.png',
+        description = 'stg/st1/description'
+    }
+    stg[2] = {
+        b_name = 'stg/st2/map_b.png',
+        f_name = 'stg/st2/map_f.png',
+        description = 'stg/st2/description'
+    }
 
     Menu.load()
 
@@ -42,10 +56,15 @@ function love.load()
 
     Menu.drawMainMenu()
     Menu.startGameCallback = function()
-        stage.load('stg/st1/map_b.png', 'stg/st1/map_f.png', 'stg/st1/description')
+        stage.load(stg[1].b_name, stg[1].f_name, stg[1].description)
 
         love.update = function(dt)
-            stage.update(dt)
+            local win = stage.update(dt)
+            if win == true then
+                lvl = lvl + 1
+                if lvl == 3 then lvl = 1 end
+                stage.load(stg[lvl].b_name, stg[lvl].f_name, stg[lvl].description)
+            end
         end
 
         love.draw = function()
