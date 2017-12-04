@@ -72,9 +72,9 @@ end
 
 function Player.update(dt)
     local rot = -math.random()*math.pi
-    particleSystem:setLinearAcceleration(0, particleSetting.acceleration.y*dt)
-    local ax, ay = particleSystem:getLinearAcceleration()
     particleSystem:setDirection(rot)
+
+    particleSystem:setLinearAcceleration(0, particleSetting.acceleration.y*dt)
     particleSystem:setPosition (Player.x + Player.width/2,
                                 Player.y + Player.height - 2)
 
@@ -104,7 +104,6 @@ function Player.update(dt)
     if fly == true and Player.speedX ~= 0 then
         Player.speedX = Player.speedX
     end
-
 
     Player.animationUpdate(dt)
 end
