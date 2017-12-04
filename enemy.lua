@@ -26,6 +26,7 @@ local jump = false
 local width = 0
 local speed = 55
 
+
 local t = 0
 
 function Enemy.load(x, y, length)
