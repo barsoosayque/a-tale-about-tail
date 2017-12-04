@@ -9,6 +9,7 @@ Player.speedX = 0
 Player.speedY = 0
 
 Player.bag = 0
+Player.score = 0
 
 local anim8 = require('lib/anim8')
 local img
@@ -215,7 +216,7 @@ function Player.filter(item, other)
     local name = other.name
     if name == 'stone' or name == 'dirt' or name == 'wood' or name == 'roof' or name == 'wall' then
         return 'slide'
-    elseif name == 'treasure' then
+    elseif name == 'treasure' or name == 'spawn' then
         return 'cross'
     end
 end
@@ -237,6 +238,12 @@ function Player.keypressed(key, scancode, isrepeat)
         t = 0
 
     end
+end
+
+function Player.drop()
+    Player.score = Player.score + Player.bag
+    Player.bag = 0
+    Player.speed = initialSpeed
 end
 
 return Player

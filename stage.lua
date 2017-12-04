@@ -28,6 +28,11 @@ local camera = gamera.new(0, 0, 640, 640)
 local intro = true
 local introFile
 
+local spawn = {
+    x = 0,
+    y = 0
+}
+
 function Stage.load(bgImgFileName, fgImgFileName, description, int)
     -- intro = int or false
     -- if intro then
@@ -47,6 +52,7 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
     camera:setWindow(0, 0, 640, 640)
 
     local playerX, playerY = Stage.buildMap(bgImg, fgImg)
+    spawn.x, spawn,y = playerX, playerY
 
     entities['player'] = require('player')
     entities['player'].load(playerX, playerY)
@@ -70,7 +76,6 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
 
     camera:setPosition(playerX, playerY)
 end
-
 
 function Stage.loadTextures()
     parallax_bg = love.graphics.newImage("dat/gph/bg.png")
@@ -168,7 +173,7 @@ function Stage.update(dt)
         for i = 1, len do
             local other = cols[i].other
             local name = other.name
-            if name == 'treasure' then
+            if name == 'treasure' and entitie.name == 'player' then
                 other.full = false
                 world:remove(other)
 
@@ -176,6 +181,10 @@ function Stage.update(dt)
                 entitie.bag = entitie.bag + cost
                 entitie.speed = math.max(entitie.speed - cost, 50)
                 -- print('Coin:' .. tostring(entitie.bag))
+            end
+
+            if name == 'spawn' and entitie.name == 'player' then 
+                entitie.drop()
             end
 
             if entitie.name == 'enemy' then
@@ -295,6 +304,9 @@ function Stage.drawMap(X, Y)
             if fgTileName == 'box' then
                 fgTileName = 'air'
             end
+            if fgTileName == 'spawn' then -- Заглушка пока нет тайла
+                fgTileName = 'air'
+            end
 
             Stage.drawTile(bgTileName, nx, ny)
 
@@ -376,8 +388,12 @@ function Stage.buildMap(bImg, fImg)
                 table.insert(objects, obj)
             end
             if color == 'fox' then
-                fgMap[x][y] = { name = 'air' }
-                pX, pY = x * 16, y * 16
+
+                fgMap[x][y] = { name = 'spawn' }
+                -- fgMap[x][y] = { name = 'spawn' }
+                
+                pX, pY = x * unit, y * unit
+                world:add(fgMap[x][y], pX, pY, unit, unit)
             end
         end
     end
