@@ -163,7 +163,13 @@ function Stage.loadTextures()
     Stage.newTile('background', 'backstone_cd', 112, 32, 16, 16)
     Stage.newTile('background', 'backstone_rd', 128, 32, 16, 16)
 
-    Stage.newTile('background', 'fence', 64, 0, 16, 16)
+    Stage.newTile('background', 'fence_l', 48, 0, 16, 16)
+    Stage.newTile('background', 'fence_c', 64, 0, 16, 16)
+    Stage.newTile('background', 'fence_r', 80, 0, 16, 16)
+
+    Stage.newTile('background', 'wooden_fence_l', 48, 16, 16, 16)
+    Stage.newTile('background', 'wooden_fence_c', 64, 16, 16, 16)
+    Stage.newTile('background', 'wooden_fence_r', 80, 16, 16, 16)
 
     Stage.newTile('objects', 'chest_f', 0, 0, 16, 16)
     Stage.newTile('objects', 'chest_e', 16, 0, 16, 16)
@@ -329,7 +335,7 @@ function Stage.drawMap(X, Y)
             --     end
             -- end
 
-            if bgTileName == 'wall' or bgTileName == 'backstone' then
+            if bgTileName == 'wall' or bgTileName == 'backstone' or bgTileName == 'fence' or bgTileName == 'wooden_fence' then
                 bgTileName = bgTileName .. '_' .. bgMap[x][y].type
             end
             if fgTileName == 'box' then
@@ -371,6 +377,8 @@ function chekColor(r, g, b, a)
         return 'roof'
     elseif r == 30 and g == 30 and b == 50 then
         return 'fence'
+    elseif r == 255 and g == 30 and b == 50 then
+        return 'wooden_fence'
     elseif r == 100 and g == 50 and b == 50 then
         return 'wall'
     elseif r == 255 and g == 255 and b == 0 then
@@ -551,7 +559,7 @@ function Stage.calculateCorners()
 
             if bgMap[x - 1] ~= nil then
                 local t = bgMap[x - 1][y].name
-                if t == 'wall' or t == 'backstone' then
+                if t == 'wall' or t == 'backstone' or t == 'fence' or t == 'wooden_fence' then
                     bEnv.l = 1
                 end
             else
@@ -560,7 +568,7 @@ function Stage.calculateCorners()
 
             if bgMap[x + 1] ~= nil then
                 local t = bgMap[x + 1][y].name
-                if t == 'wall' or t == 'backstone' then
+                if t == 'wall' or t == 'backstone' or t == 'fence' or t == 'wooden_fence' then
                     bEnv.r = 1
                 end
 
@@ -570,7 +578,7 @@ function Stage.calculateCorners()
 
             if bgMap[x][y - 1] ~= nil then
                 local t = bgMap[x][y - 1].name
-                if t == 'wall' or t == 'backstone' then
+                if t == 'wall' or t == 'backstone' or t == 'fence' or t == 'wooden_fence' then
                     bEnv.u = 1
                 end
 
@@ -580,7 +588,7 @@ function Stage.calculateCorners()
 
             if bgMap[x][y + 1] ~= nil then
                 local t = bgMap[x][y + 1].name
-                if t == 'wall' or t == 'backstone' then
+                if t == 'wall' or t == 'backstone' or t == 'fence' or t == 'wooden_fence' then
                     bEnv.d = 1
                 end
 
@@ -611,6 +619,16 @@ function Stage.calculateCorners()
                     bgMap[x][y].type = 'rd'
                 else
                     bgMap[x][y].type = 'cu'
+                end
+            end
+
+            if bBlockType == 'fence' or bBlockType == 'wooden_fence' then
+                if bEnv.l == 0 and bEnv.r == 1 then
+                    bgMap[x][y].type = 'l'
+                elseif bEnv.l == 1 and bEnv.r == 0 then
+                    bgMap[x][y].type = 'r'
+                else
+                    bgMap[x][y].type = 'c'
                 end
             end
         end
