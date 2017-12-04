@@ -54,8 +54,8 @@ function Stage.load(bgImgFileName, fgImgFileName, description, int)
 
     local enemy_key = 'enemy'
     entities[enemy_key] = require('enemy')
-    entities[enemy_key].load(playerX - 150, playerY - 120, Stage.width)
-    world:add(entities[enemy_key], playerX - 100, playerY - 120, 30, 30)
+    entities[enemy_key].load(500, 368, Stage.width)
+    world:add(entities[enemy_key], 500, 368, 30, 30)
 
 
     -- camera:setScale(2)
@@ -269,7 +269,6 @@ function Stage.newTile(textureName, tileName, x, y, w, h)
     tiles[tileName].texture = textureName
 end
 
-
 function Stage.drawMap(X, Y)
     for x = 0, Stage.width - 1 do
         for y = 0, Stage.height - 1 do
@@ -291,6 +290,9 @@ function Stage.drawMap(X, Y)
 
             if bgTileName == 'wall' then
                 bgTileName = bgTileName .. '_' .. bgMap[x][y].type
+            end
+            if fgTileName == 'box' then
+                fgTileName = 'air'
             end
 
             Stage.drawTile(bgTileName, nx, ny)
@@ -329,6 +331,8 @@ function chekColor(r, g, b, a)
         return 'wall'
     elseif r == 255 and g == 255 and b == 0 then
         return 'treasure'
+    elseif r == 150 and g == 80 and b == 0 then
+        return 'box'
     end
 end
 
@@ -361,7 +365,7 @@ function Stage.buildMap(bImg, fImg)
             if color == 'dirt' or color == 'wood' or color == 'stone' or color == 'roof' then
                 fgMap[x][y] = { name = color }
                 world:add(fgMap[x][y], x * 16, y * 16, 16, 16)
-            elseif color == 'air' then
+            elseif color == 'air' or color == 'box' then
                 fgMap[x][y] = { name = color }
             elseif color == 'treasure' then
                 fgMap[x][y] = { name = 'air' }
