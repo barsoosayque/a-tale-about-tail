@@ -171,6 +171,7 @@ function Stage.loadTextures()
     Stage.newTile('objects', 'table_e', 16, 16, 16, 16)
     Stage.newTile('objects', 'cup_f', 0, 32, 16, 16)
     Stage.newTile('objects', 'cup_e', 16, 32, 16, 16)
+    Stage.newTile('objects', 'spawn', 32, 0, 16, 16)
 
     -- Stage.newTile('foreground', 'air', 32, 32, 16, 16)
 end
@@ -200,7 +201,7 @@ function Stage.update(dt)
                 -- print('Coin:' .. tostring(entitie.bag))
             end
 
-            if name == 'spawn' and entitie.name == 'player' then 
+            if name == 'spawn' and entitie.name == 'player' then
                 entitie.drop()
             end
 
@@ -335,9 +336,9 @@ function Stage.drawMap(X, Y)
             if fgTileName == 'box' then
                 fgTileName = 'air'
             end
-            if fgTileName == 'spawn' then -- Заглушка пока нет тайла
-                fgTileName = 'air'
-            end
+            -- if fgTileName == 'spawn' then -- Заглушка пока нет тайла
+            --     fgTileName = 'air'
+            -- end
 
             Stage.drawTile(bgTileName, nx, ny)
 
@@ -379,7 +380,7 @@ function chekColor(r, g, b, a)
         return 'box'
     elseif r == 90 and g == 90 and b == 90 then
         return 'backstone'
-    elseif r == 255 and g == 128 and b == 128 then 
+    elseif r == 255 and g == 128 and b == 128 then
         return 'enemy'
     end
 end
@@ -434,7 +435,7 @@ function Stage.buildMap(bImg, fImg)
             if color == 'fox' then
 
                 fgMap[x][y] = { name = 'spawn' }
-                
+
                 pX, pY = x * unit, y * unit
                 world:add(fgMap[x][y], pX, pY, unit, unit)
             end
