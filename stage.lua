@@ -142,11 +142,31 @@ function Stage.loadTextures()
     Stage.newTile('foreground', 'door_lu', 0, 32, 16, 16)
     Stage.newTile('foreground', 'door_u', 0, 16, 16, 16)
 
-    Stage.newTile('background', 'wall_u', 16, 0, 16, 16)
-    Stage.newTile('background', 'wall_d', 16, 16, 16, 16)
-    Stage.newTile('background', 'wall_c', 32, 0, 16, 16)
+    Stage.newTile('background', 'wall_lu', 0, 0, 16, 16)
+    Stage.newTile('background', 'wall_cu', 16, 0, 16, 16)
+    Stage.newTile('background', 'wall_ru', 32, 0, 16, 16)
 
-    Stage.newTile('background', 'fence', 0, 16, 16, 16)
+    Stage.newTile('background', 'wall_lc', 0, 16, 16, 16)
+    Stage.newTile('background', 'wall_cc', 16, 16, 16, 16)
+    Stage.newTile('background', 'wall_rc', 32, 16, 16, 16)
+
+    Stage.newTile('background', 'wall_ld', 0, 32, 16, 16)
+    Stage.newTile('background', 'wall_cd', 16, 32, 16, 16)
+    Stage.newTile('background', 'wall_rd', 32, 32, 16, 16)
+
+    Stage.newTile('background', 'backstone_lu', 96, 0, 16, 16)
+    Stage.newTile('background', 'backstone_cu', 112, 0, 16, 16)
+    Stage.newTile('background', 'backstone_ru', 128, 0, 16, 16)
+
+    Stage.newTile('background', 'backstone_lc', 96, 16, 16, 16)
+    Stage.newTile('background', 'backstone_cc', 112, 16, 16, 16)
+    Stage.newTile('background', 'backstone_rc', 128, 16, 16, 16)
+
+    Stage.newTile('background', 'backstone_ld', 96, 32, 16, 16)
+    Stage.newTile('background', 'backstone_cd', 112, 32, 16, 16)
+    Stage.newTile('background', 'backstone_rd', 128, 32, 16, 16)
+
+    Stage.newTile('background', 'fence', 64, 0, 16, 16)
 
     Stage.newTile('objects', 'chest_f', 0, 0, 16, 16)
     Stage.newTile('objects', 'chest_e', 16, 0, 16, 16)
@@ -298,7 +318,7 @@ function Stage.drawMap(X, Y)
             --     end
             -- end
 
-            if bgTileName == 'wall' then
+            if bgTileName == 'wall' or bgTileName == 'backstone' then
                 bgTileName = bgTileName .. '_' .. bgMap[x][y].type
             end
             if fgTileName == 'box' then
@@ -346,6 +366,8 @@ function chekColor(r, g, b, a)
         return 'treasure'
     elseif r == 150 and g == 80 and b == 0 then
         return 'box'
+    elseif r == 90 and g == 90 and b == 90 then
+        return 'backstone'
     end
 end
 
@@ -500,29 +522,11 @@ function Stage.calculateCorners()
                 end
             end
 
-            -- if fBlockType == 'roof' then
-            --     if equal(fEnv, 0, 0, 1, 1) then
-            --         fgMap[x][y].type = 'lu'
-            --     elseif equal(fEnv, 1, 0, 1, 1) then
-            --         fgMap[x][y].type = 'cu'
-            --     elseif equal(fEnv, 1, 0, 1, 0) then
-            --         fgMap[x][y].type = 'ru'
-            --     elseif equal(fEnv, 0, 1, 1, 1) or equal(fEnv, 0, 1, 0, 1) then
-            --         fgMap[x][y].type = 'ld'
-            --     elseif equal(fEnv, 1, 1, 1, 1) then
-            --         fgMap[x][y].type = 'cd'
-            --     elseif equal(fEnv, 1, 1, 1, 0) then
-            --         fgMap[x][y].type = 'rd'
-            --     else
-            --         fgMap[x][y].type = 'cu'
-            --     end
-            -- end
-
             local bEnv = { l = 0, u = 0, d = 0, r = 0 }
 
             if bgMap[x - 1] ~= nil then
                 local t = bgMap[x - 1][y].name
-                if t == 'wall' then
+                if t == 'wall' or t == 'backstone' then
                     bEnv.l = 1
                 end
             else
@@ -531,7 +535,7 @@ function Stage.calculateCorners()
 
             if bgMap[x + 1] ~= nil then
                 local t = bgMap[x + 1][y].name
-                if t == 'wall' then
+                if t == 'wall' or t == 'backstone' then
                     bEnv.r = 1
                 end
 
@@ -541,7 +545,7 @@ function Stage.calculateCorners()
 
             if bgMap[x][y - 1] ~= nil then
                 local t = bgMap[x][y - 1].name
-                if t == 'wall' then
+                if t == 'wall' or t == 'backstone' then
                     bEnv.u = 1
                 end
 
@@ -551,7 +555,7 @@ function Stage.calculateCorners()
 
             if bgMap[x][y + 1] ~= nil then
                 local t = bgMap[x][y + 1].name
-                if t == 'wall' then
+                if t == 'wall' or t == 'backstone' then
                     bEnv.d = 1
                 end
 
@@ -559,13 +563,29 @@ function Stage.calculateCorners()
                 bEnv.d = 1
             end
 
-            if bBlockType == 'wall' then
-                if bEnv.d == 0 then
-                    bgMap[x][y].type = 'd'
-                elseif bEnv.u == 0 then
-                    bgMap[x][y].type = 'u'
+            if bBlockType == 'wall' or bBlockType == 'backstone' then
+                if equal(bEnv, 0, 0, 1, 1) or equal(bEnv, 0, 0, 0, 1) then
+                    bgMap[x][y].type = 'lu'
+                elseif equal(bEnv, 1, 0, 1, 1) or equal(bEnv, 0, 0, 1, 0) then
+                    bgMap[x][y].type = 'cu'
+                elseif equal(bEnv, 1, 0, 1, 0) or equal(bEnv, 1, 0, 0, 0) then
+                    bgMap[x][y].type = 'ru'
+                elseif equal(bEnv, 0, 1, 1, 1) then
+                    bgMap[x][y].type = 'lc'
+                elseif equal(bEnv, 1, 1, 1, 1) then
+                    bgMap[x][y].type = 'cc'
+                elseif equal(bEnv, 0, 1, 1, 0) then
+                    bgMap[x][y].type = 'cc'
+                elseif equal(bEnv, 1, 1, 1, 0) then
+                    bgMap[x][y].type = 'rc'
+                elseif equal(bEnv, 0, 1, 0, 1) then
+                    bgMap[x][y].type = 'ld'
+                elseif equal(bEnv, 1, 1, 0, 1) or equal(bEnv, 0, 1, 0, 0) then
+                    bgMap[x][y].type = 'cd'
+                elseif equal(bEnv, 1, 1, 0, 0) then
+                    bgMap[x][y].type = 'rd'
                 else
-                    bgMap[x][y].type = 'c'
+                    bgMap[x][y].type = 'cu'
                 end
             end
         end
