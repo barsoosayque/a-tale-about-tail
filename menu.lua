@@ -97,7 +97,6 @@ function Menu.drawMainMenu()
     local btnExit = gui:button('Exit', { x = 160, y = gui.style.unit * 8, w = 320, h = gui.style.unit })
     local imgTitle = gui:image(nil, { x = 0, y = 0 }, nil, "dat/gph/title.png")
 
-    -- imgTitle.rect({ x = 32, y = 32, w = 640, h = 256 })
 
     local function clearMainMenu()
         gui:rem(btnStart)

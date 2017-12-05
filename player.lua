@@ -31,7 +31,6 @@ Player.speed = 100
 local inventory
 
 local t = 0
--- local count = 0
 
 
 local particleSetting = {
@@ -74,15 +73,15 @@ function Player.load(x, y, length)
 
     local i = love.graphics.newImage('dat/gph/particle.png')
     particleSystem = newParticleSystem(i)
-    particleSystem:setQuads(love.graphics.newQuad(0, 0, 4, 4, i:getDimensions()),
-                        love.graphics.newQuad(4, 0, 4, 4, i:getDimensions()),
-                        love.graphics.newQuad(8, 0, 4, 4, i:getDimensions()),
-                        love.graphics.newQuad(12, 0, 4, 4, i:getDimensions()))
+    particleSystem:setQuads(love.graphics.newQuad(0,  0, 4, 4, i:getDimensions()),
+                            love.graphics.newQuad(4,  0, 4, 4, i:getDimensions()),
+                            love.graphics.newQuad(8,  0, 4, 4, i:getDimensions()),
+                            love.graphics.newQuad(12, 0, 4, 4, i:getDimensions()))
 
     coinSystem = newParticleSystem(i)
-    coinSystem:setQuads(love.graphics.newQuad(0, 4, 4, 4, i:getDimensions()),
-                        love.graphics.newQuad(4, 4, 4, 4, i:getDimensions()),
-                        love.graphics.newQuad(8, 4, 4, 4, i:getDimensions()),
+    coinSystem:setQuads(love.graphics.newQuad(0,  4, 4, 4, i:getDimensions()),
+                        love.graphics.newQuad(4,  4, 4, 4, i:getDimensions()),
+                        love.graphics.newQuad(8,  4, 4, 4, i:getDimensions()),
                         love.graphics.newQuad(12, 4, 4, 4, i:getDimensions()))
     coinSystem:setParticleLifetime(2)
 
@@ -110,12 +109,6 @@ function Player.die()
 end
 
 function Player.update(self, dt)
-    -- if particleSystem:getCount() > particleSetting.count*(particleSetting.lifeTime - 0.1) then
-    -- print('count'..tostring(particleSystem:getCount()))
-    -- if particleSystem:getCount() > particleSetting.count*particleSetting.lifeTime then
-    --     particleSystem:setEmissionRate(0)
-    -- end
-
     particleSystem:update(dt)
     coinSystem:update(dt)
     dedSystem:update(dt)
@@ -197,9 +190,6 @@ function Player.land(dt)
         end
     end
 
-    if Player.speedY > 10 then
-        -- print('speedY:'..tostring(Player.speedY))
-    end
     fly = false
     dj = false
     jump = false

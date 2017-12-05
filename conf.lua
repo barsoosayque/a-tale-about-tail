@@ -1,7 +1,5 @@
 function love.conf(t)
 	t.title = "A Tale about tail"			-- The title of the window the game is in (string)
-	-- t.author = "Leibee and his team"	-- The author of the game (string)
-	-- t.identity = "Gspot"				-- The name of the save directory (string)
 	t.version = "0.10.2"
 	t.console = false					-- Attach a console (boolean, Windows only)
 	t.window.width = 640				-- The window width (number)
@@ -9,9 +7,6 @@ function love.conf(t)
 	t.window.fullscreen = false			-- Enable fullscreen (boolean)
 	t.window.vsync = false				-- Enable vertical sync (boolean)
 	t.window.resizable = false
-	-- t.window.fsaa = 4					-- The number of MSAA-samples (number)
-	-- t.window.msaa = 4					-- The number of MSAA-samples (number) (for 0.10)
-	t.modules.joystick = false			-- Enable the joystick module (boolean)
 	t.modules.audio = true				-- Enable the audio module (boolean)
 	t.modules.keyboard = true			-- Enable the keyboard module (boolean)
 	t.modules.event = true				-- Enable the event module (boolean)

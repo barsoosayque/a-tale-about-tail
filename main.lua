@@ -1,5 +1,4 @@
 gui = require('lib/Gspot')
--- player = require('player')
 menu = require('menu')
 stage = require('stage')
 music = require('music')
@@ -14,12 +13,11 @@ bgDelta = 0
 bigwin = false
 stg = {}
 lvl = 1
-lastLvl = 2
+lastLvl = 4
 
 function drawTitles()
     love.graphics.draw(bg, bgAnimation - 128, bgAnimation - 128)
     love.graphics.scale(2)
-    -- love.graphics.rectangle("fill", 0, 0, 640, 640)
 
     for i, str in ipairs(titlesText) do
         love.graphics.setColor(232, 150, 52, 255)
@@ -61,7 +59,6 @@ function love.load()
     Menu.load()
 
     love.graphics.setDefaultFilter("nearest", "nearest")
-    -- love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT)
     love.graphics.setBackgroundColor(128, 256, 256, 0)
 
     love.graphics.setFont(font)
@@ -79,7 +76,7 @@ function love.load()
 
     Menu.drawMainMenu()
     Menu.startGameCallback = function()
-        stage.load(stg[1].b_name, stg[1].f_name, stg[1].description)
+        stage.load(stg[lvl].b_name, stg[lvl].f_name, stg[lvl].description)
 
         love.update = function(dt)
             if lvl == lastLvl then
@@ -141,10 +138,8 @@ function love.update(dt)
 end
 
 function love.draw()
-    -- if bigwind then
-        love.graphics.draw(bg, bgAnimation - 128, bgAnimation - 128)
-        gui:draw()
-    -- end
+    love.graphics.draw(bg, bgAnimation - 128, bgAnimation - 128)
+    gui:draw()
 end
 
 function love.mousepressed(x, y, button)

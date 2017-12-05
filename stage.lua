@@ -52,6 +52,7 @@ local spawn = {
 function Stage.clearWorld()
 
 
+
     maxScore = 0
     win = false
     introFile = nil
@@ -102,7 +103,10 @@ function Stage.clearWorld()
         world:remove(rightWall)
     end
 
-
+    for k in pairs(fgMap) do
+        fgMap[k] = nil
+        bgMap[k] = nil
+    end
 
 end
 
@@ -125,15 +129,10 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
         introFile:read() -- whhaaaat без этого уходит в бесконечный цикл
 
         for line in introFile:lines() do
-            -- print('read line:'..line)
             table.insert(introText, line)
         end
-        -- print('read file')
         introFile:close()
-        -- print('close file')
-        -- print('get time')
         love.graphics.setFont(font)
-        -- print('set font')
 
     end
 
@@ -173,7 +172,6 @@ function Stage.update(dt)
             timer.using = false
         end
     end
-    -- print('upd px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
 
 if intro == false then
 
@@ -195,7 +193,6 @@ if intro == false then
 
             local name = other.name
             if item.name == 'player' and name == 'enemy' then
-                -- print('ded')
 
                 entitie.die()
 
@@ -207,7 +204,6 @@ if intro == false then
                     reset = true
                     music.play("shadow")
                 end
-                -- print('--->px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
             end
 
             if name == 'treasure' and entitie.name == 'player' then
@@ -219,13 +215,11 @@ if intro == false then
                 entitie.speed = math.max(entitie.speed - cost, 50)
 
                 music.effect('pickup')
-                -- print('Coin:' .. tostring(entitie.bag))
             end
 
             if name == 'spawn' and entitie.name == 'player' then
                 local r = entitie.drop()
                 if entitie.score == maxScore then
-                    -- print('win')
                     win = true
                 end
                 if r == true then music.effect('pickup') end
@@ -242,10 +236,8 @@ if intro == false then
                 local rightDownTile = fgMap[nextTileX+2][nextTileY]
                 local rightUpTile = fgMap[nextTileX+2][nextTileY-1]
 
-                -- local rightTile = fgMap[nextTileX - 1][nextTileY]
 
                 -- проверка, чтобы не упасть в пропасть и не упереться в стену
-                -- if bottomTile.name == 'air' orx leftTile.name ~= 'air' or rightTile.name ~= 'air' then
                 if (leftDownTile.name ~= 'air' and entitie.side == -1) or
                     (leftUpTile.name ~= 'air' and entitie.side == -1) or
                     (rightUpTile.name ~= 'air' and entitie.side == 1) or
@@ -294,12 +286,9 @@ end
 
 
 function Stage.reset()
-    -- print('sx:'..tostring(spawn.x)..' sy:'..tostring(spawn.y))
 
-    -- print('reset start')
     world:remove(entities['player'])
     entities['player'].reset(spawn.x, spawn.y)
-    -- print('>px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
 
     world:add(entities['player'], spawn.x, spawn.y, entities['player'].width, entities['player'].height)
     for _, entitie in pairs(entities) do
@@ -316,11 +305,9 @@ function Stage.reset()
         end
 
     end
-    -- print('-->px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
 end
 
 function drawInterface(x, y)
-    -- love.graphics.setColor(0, 255, 0, 255)
     love.graphics.print('Score: '..tostring(entities['player'].score), x, y)
     love.graphics.print('Bag: '..tostring(entities['player'].bag), x, y + 10)
 end
@@ -341,7 +328,6 @@ if intro == false then
         par_y = par_y - 160 * (par_y / (wr_h - par_h / 4))
         love.graphics.draw(parallax_bg, par_x, par_y)
 
-        -- Stage.drawMap(0, 0)
         love.graphics.draw(canvas)
         local px, py = 0, 0
 
@@ -368,9 +354,6 @@ if intro == false then
             entitie.draw(entitie, entitie.x, entitie.y)
         end
 
-        -- local int_x, int_y = camera:getPosition()
-        -- int_x, int_y = math.ceil(int_x), math.ceil(int_y)
-        -- drawInterface(int_x, int_y)
     end)
 
     love.graphics.setColor( 48, 53, 53, 255 )
@@ -380,9 +363,6 @@ if intro == false then
     love.graphics.print('Score: '..tostring(entities['player'].score)..'/'..tostring(maxScore), 32, 8)
     love.graphics.print('Bag: '..tostring(entities['player'].bag), 352, 8)
 else
-    -- love.graphics.scale(2, 2)
-    -- love.graphics.draw(parallax_bg, 0, 0)
-    -- love.graphics.draw(canvas, 0, 0)
     love.graphics.setColor( 34, 34, 34, 255 )
     love.graphics.rectangle("fill", 0, 0, 640, 640)
     love.graphics.setColor( 255, 255, 255, 255 )
@@ -417,13 +397,6 @@ function Stage.drawMap(X, Y)
                 fgTileName = fgTileName .. '_' .. fgMap[x][y].type
 
             end
-            -- if fgTileName == 'chest' or fgTileName == 'table' or fgTileName == 'cup' then
-            --     if fgMap[x][y].obj.full then
-            --         fgTileName = fgTileName..'_f'
-            --     else
-            --         fgTileName = fgTileName..'_e'
-            --     end
-            -- end
 
             if bgTileName == 'wall' or bgTileName == 'backstone' or bgTileName == 'fence' or bgTileName == 'wooden_fence' then
                 bgTileName = bgTileName .. '_' .. bgMap[x][y].type
@@ -431,11 +404,6 @@ function Stage.drawMap(X, Y)
             if fgTileName == 'box' then
                 fgTileName = 'air'
             end
-            -- if fgTileName == 'spawn' then -- Заглушка пока нет тайла
-            --     fgTileName = 'air'
-            -- end
-            -- print('fg:'..fgTileName)
-            -- print('bg:'..bgTileName)
 
             Stage.drawTile(bgTileName, nx, ny)
 
@@ -505,10 +473,7 @@ function Stage.buildMap(bImg, fImg)
 
             -->fMap
             r, g, b = fData:getPixel(x, y)
-            -- print('r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b))
             color = chekColor(r, g, b, a)
-            -- print('color:'..color..' r:'..tostring(r)..' g:'..tostring(g)..' b:'..tostring(b)..' a:'..tostring(a))
-
             if color == 'dirt' or color == 'wood' or color == 'stone' or color == 'roof' then
                 fgMap[x][y] = { name = color }
                 world:add(fgMap[x][y], x * 16, y * 16, 16, 16)
@@ -524,7 +489,6 @@ function Stage.buildMap(bImg, fImg)
                 table.insert(objects, obj)
             end
             if color == 'enemy' then
-                -- print('new enemy')
                 fgMap[x][y] = { name = 'air' }
                 local enemy = enemys.newEnemy(x * unit, y * unit, Stage.width)
                 enemy:load()
@@ -555,7 +519,6 @@ function Stage.calculateCorners()
             local fBlockType = fgMap[x][y].name
             local bBlockType = bgMap[x][y].name
 
-            -- local str = string.sub(fBlockType, 1, 3)
 
             local fEnv = { l = 0, u = 0, d = 0, r = 0 }
 
