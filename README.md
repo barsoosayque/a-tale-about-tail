@@ -10,9 +10,7 @@ Little stealth-like game. Some kind of platformer, where you pass tasks by steal
 
 ### Screenshots
 
-![Screenshot from 2017-12-05 09-20-35.png](https://static.jam.vg/raw/473/9/z/cf1f.png) 
-
-![Screenshot from 2017-12-05 09-09-04.png](https://static.jam.vg/raw/473/9/z/cf21.png)
+![a-tale-about-tail.png](https://static.jam.vg/raw/473/9/z/d12d.png) 
 
 ### Controls
 
