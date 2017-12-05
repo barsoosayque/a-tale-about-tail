@@ -57,7 +57,7 @@ function Stage.clearWorld()
     introFile = nil
     introText = {}
     start = nil
-
+    
     for k, v in pairs(entities) do
         if v.name == 'player' and v.inWorld == true then
             world:remove(v)
@@ -69,7 +69,7 @@ function Stage.clearWorld()
 
     end
 
-    local max = table.maxn(entities)
+    local max = table.maxn(entities) 
     for k = 1, max do
         table.remove(entities)
     end
@@ -95,14 +95,14 @@ function Stage.clearWorld()
                 local name = fgMap[x][y].name
                 if name == 'dirt' or name == 'wood' or name == 'stone' or name == 'roof' or name == 'spawn' then
                     world:remove(fgMap[x][y])
-                end
+                end           
             end
         end
         world:remove(leftWall)
         world:remove(rightWall)
     end
 
-
+    
 
 end
 
@@ -114,8 +114,8 @@ local timer = {
 
 
 function Stage.load(bgImgFileName, fgImgFileName, description)
-    font16 = love.graphics.newImageFont("dat/fnt/font.png", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/.,:", 2)
-    font32 = love.graphics.newImageFont("dat/fnt/font.png", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/.,:", 2)
+    font16 = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 16)
+    font32 = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 32)
     Stage.clearWorld()
 
 
@@ -235,11 +235,11 @@ if intro == false then
 
             if entitie.name == 'enemy' then
                 local nextTileX = math.ceil(goalX / 16)
-                local nextTileY = math.ceil(goalY / 16)
+                local nextTileY = math.ceil((goalY + 13) / 16)
 
                 local bottomTile = fgMap[nextTileX][nextTileY + 1]
-                local nextTile = fgMap[nextTileX + 1][nextTileY]
-                local leftTile = fgMap[nextTileX + 1][nextTileY]
+                local nextTile = fgMap[nextTileX][nextTileY]
+                -- local rightTile = fgMap[nextTileX - 1][nextTileY]
                 -- local rightTile = fgMap[nextTileX - 1][nextTileY]
 
                 -- проверка, чтобы не упасть в пропасть и не упереться в стену
@@ -365,7 +365,7 @@ if intro == false then
         -- drawInterface(int_x, int_y)
     end)
 
-    love.graphics.print('Score: '..tostring(entities['player'].score)..'/'..tostring(maxScore), 0, 0)
+    love.graphics.print('Score: '..tostring(entities['player'].score)..'\\'..tostring(maxScore), 0, 0)
     love.graphics.print('Bag: '..tostring(entities['player'].bag), 0, 16)
 else
     love.graphics.scale(2, 2)

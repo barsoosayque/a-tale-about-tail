@@ -14,6 +14,19 @@ bgDelta = 0
 
 stg = {}
 lvl = 1
+lastLvl = 3
+
+function drawTitles()
+    love.graphics.scale(2, 2)
+    love.graphics.draw(last_bg, 0, 0)
+
+    -- love.graphics.draw(parallax_bg, 0, 0)
+    -- love.graphics.draw(canvas, 0, 0)
+    for i, str in ipairs(titlesText) do
+        love.graphics.print(str, 0, 32*(i - 1))
+    end
+end
+
 function love.load()
     music.load("song", "dusk", "dat/snd/dusk.xm")
     music.load("song", "shadow", "dat/snd/shadow.xm")
@@ -61,16 +74,44 @@ function love.load()
         stage.load(stg[1].b_name, stg[1].f_name, stg[1].description)
 
         love.update = function(dt)
-            local win = stage.update(dt)
+            if lvl == lastLvl then
+                -- drawTitles()
+            else
+                win = stage.update(dt)
+            end
             if win == true then
+                win = false
                 lvl = lvl + 1
-                if lvl == 3 then lvl = 1 end
-                stage.load(stg[lvl].b_name, stg[lvl].f_name, stg[lvl].description)
+                if lvl == lastLvl then 
+                    last_bg = love.graphics.newImage("dat/gph/bg.png")
+
+                    stage.clearWorld()
+                    titlesText = {}
+                    titles = love.filesystem.newFile('stg/end')
+                    titles:open("r")
+                    titles:read() -- whhaaaat без этого уходит в бесконечный цикл
+
+                    for line in titles:lines() do
+                        table.insert(titlesText, line)
+                    end
+                    titles:close()
+
+
+    
+                    font32 = love.graphics.newFont("dat/fnt/dsmysticora.ttf", 32)
+                    love.graphics.setFont(font32)
+                else
+                    stage.load(stg[lvl].b_name, stg[lvl].f_name, stg[lvl].description)
+                end
             end
         end
 
         love.draw = function()
-            stage.draw(0, 0)
+            if lvl == lastLvl then
+                drawTitles()
+            else
+                stage.draw(0, 0)
+            end
         end
     end
 end
