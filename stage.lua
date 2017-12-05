@@ -39,7 +39,7 @@ local start
 
 local maxScore = 0
 
-local font16, font32
+local font
 
 local win = false
 
@@ -114,8 +114,7 @@ local timer = {
 
 
 function Stage.load(bgImgFileName, fgImgFileName, description)
-    font16 = love.graphics.newImageFont("dat/fnt/font.png", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/.,:", 2)
-    font32 = love.graphics.newImageFont("dat/fnt/font.png", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/.,:", 2)
+    font = love.graphics.newImageFont("dat/fnt/font.png", " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/.,:", 2)
     Stage.clearWorld()
 
 
@@ -132,11 +131,10 @@ function Stage.load(bgImgFileName, fgImgFileName, description)
         -- print('read file')
         introFile:close()
         -- print('close file')
-        start = love.timer.getTime()
         -- print('get time')
-        love.graphics.setFont(font32)
+        love.graphics.setFont(font)
         -- print('set font')
-        
+
     end
 
     math.randomseed(os.time())
@@ -182,6 +180,8 @@ if intro == false then
     for _, entitie in pairs(entities) do
         entitie.update(entitie, dt)
 
+    if entitie.name ~= 'player' or (entitie.name == 'player' and entitie.ded == false) then
+
         entitie.speedY = entitie.speedY + 1800 * dt --300
         local goalX = entitie.x + entitie.speedX * dt
         local goalY = entitie.y + entitie.speedY * dt
@@ -197,17 +197,15 @@ if intro == false then
             if item.name == 'player' and name == 'enemy' then
                 -- print('ded')
 
-                if entitie.ded == false then
-                    entitie.die()
+                entitie.die()
 
-                    timer.t = 4
-                    timer.using = true
-                    timer.callback = function()
-                        entitie.ded = false
-                        Stage.reset()
-                        reset = true
-                        music.play("shadow")
-                    end
+                timer.t = 4
+                timer.using = true
+                timer.callback = function()
+                    entitie.ded = false
+                    Stage.reset()
+                    reset = true
+                    music.play("shadow")
                 end
                 -- print('--->px:'..tostring(entities['player'].x)..' py:'..tostring(entities['player'].y))
             end
@@ -234,17 +232,26 @@ if intro == false then
             end
 
             if entitie.name == 'enemy' then
-                local nextTileX = math.ceil(goalX / 16)
-                local nextTileY = math.ceil(goalY / 16)
+                local nextTileX = math.floor(goalX / 16)
+                local nextTileY = math.floor(goalY / 16) + 1
 
-                local bottomTile = fgMap[nextTileX][nextTileY + 1]
-                local nextTile = fgMap[nextTileX + 1][nextTileY]
-                local leftTile = fgMap[nextTileX + 1][nextTileY]
+                local leftBottom = fgMap[nextTileX][nextTileY + 1]
+                local rightBottom = fgMap[nextTileX+2][nextTileY + 1]
+                local leftDownTile = fgMap[nextTileX][nextTileY]
+                local leftUpTile = fgMap[nextTileX][nextTileY-1]
+                local rightDownTile = fgMap[nextTileX+2][nextTileY]
+                local rightUpTile = fgMap[nextTileX+2][nextTileY-1]
+
                 -- local rightTile = fgMap[nextTileX - 1][nextTileY]
 
                 -- проверка, чтобы не упасть в пропасть и не упереться в стену
                 -- if bottomTile.name == 'air' orx leftTile.name ~= 'air' or rightTile.name ~= 'air' then
-                if bottomTile.name == 'air' or nextTile.name ~= 'air' then
+                if (leftDownTile.name ~= 'air' and entitie.side == -1) or
+                    (leftUpTile.name ~= 'air' and entitie.side == -1) or
+                    (rightUpTile.name ~= 'air' and entitie.side == 1) or
+                    (rightDownTile.name ~= 'air' and entitie.side == 1) or
+                    leftBottom.name == 'air' or rightBottom.name == 'air' then
+
                     entitie.turnBack(entitie)
                 end
             end
@@ -266,6 +273,7 @@ if intro == false then
             entitie.y = actualY
         end
     end
+    end
 
     local cx = entities['player'].x + entities['player'].width / 2
     local cy = entities['player'].y + entities['player'].height / 2
@@ -276,10 +284,9 @@ if intro == false then
 else
 
 
-    if love.timer.getTime() - start > 5 or love.keyboard.isDown('space') then
+    if love.keyboard.isDown('space') then
         intro = false
-        love.graphics.setFont(font16)
-
+        love.graphics.setFont(font)
     end
 
 end
@@ -327,11 +334,12 @@ if intro == false then
         local par_x, par_y = camera:getPosition()
         _, _, par_w, par_h = camera:getWindow()
         _, _, wr_w, wr_h = camera:getWorld()
-        par_x = par_x - ((par_x + par_w) / wr_w * 160)
-        par_y = par_y - ((par_y + par_h) / wr_h * 160)
+        par_x = par_x - par_w / 4
+        par_y = par_y - par_h / 4
+
+        par_x = par_x - 160 * (par_x / (wr_w - par_w / 4))
+        par_y = par_y - 160 * (par_y / (wr_h - par_h / 4))
         love.graphics.draw(parallax_bg, par_x, par_y)
-
-
 
         -- Stage.drawMap(0, 0)
         love.graphics.draw(canvas)
@@ -365,16 +373,25 @@ if intro == false then
         -- drawInterface(int_x, int_y)
     end)
 
-    love.graphics.print('Score: '..tostring(entities['player'].score)..'/'..tostring(maxScore), 0, 0)
-    love.graphics.print('Bag: '..tostring(entities['player'].bag), 0, 16)
+    love.graphics.setColor( 48, 53, 53, 255 )
+    love.graphics.rectangle("fill", 0, 0, 640, 32)
+    love.graphics.setColor( 255, 255, 255, 255 )
+
+    love.graphics.print('Score: '..tostring(entities['player'].score)..'/'..tostring(maxScore), 32, 8)
+    love.graphics.print('Bag: '..tostring(entities['player'].bag), 352, 8)
 else
-    love.graphics.scale(2, 2)
-    love.graphics.draw(parallax_bg, 0, 0)
-    love.graphics.draw(canvas, 0, 0)
+    -- love.graphics.scale(2, 2)
+    -- love.graphics.draw(parallax_bg, 0, 0)
+    -- love.graphics.draw(canvas, 0, 0)
+    love.graphics.setColor( 34, 34, 34, 255 )
+    love.graphics.rectangle("fill", 0, 0, 640, 640)
+    love.graphics.setColor( 255, 255, 255, 255 )
+
     for i, str in ipairs(introText) do
-        love.graphics.print(str, 0, 32*(i - 1))
+        love.graphics.print(str, 64 + 0, 64 + 32*(i - 1))
     end
 
+    love.graphics.scale()
 end
 end
 

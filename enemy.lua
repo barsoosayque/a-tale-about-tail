@@ -55,7 +55,7 @@ function Enemy.newEnemy(x, y, w)
 
         img = nil,
         animations = {},
-        reset = function(self) 
+        reset = function(self)
             self.x = self.spawnX
             self.y = self.spawnY
         end,
@@ -99,11 +99,11 @@ function Enemy.newEnemy(x, y, w)
             anim:draw(self.img, x, y)
         end,
         update = function(self, dt)
-            if self.stepTick == Enemy.STEP_LIMIT then
-                self.side = -self.side
-                self.stepTick = 0
-            end
-            self.stepTick = self.stepTick + 1
+            -- if self.stepTick == Enemy.STEP_LIMIT then
+            --     self.side = -self.side
+            --     self.stepTick = 0
+            -- end
+            -- self.stepTick = self.stepTick + 1
             self:animationUpdate(dt)
         end,
         land = function()
@@ -112,7 +112,7 @@ function Enemy.newEnemy(x, y, w)
         end,
         turnBack = function(self)
             self.side = -self.side
-            self.stepTick = 0  
+            self.stepTick = 0
         end,
         filter = function(item, other)
             if other.name == 'stone' or other.name == 'dirt' or other.name == 'wood' then
@@ -123,7 +123,7 @@ function Enemy.newEnemy(x, y, w)
 
     }
     return enemy
-    
+
 end
 
 -- function Enemy.draw(x, y)

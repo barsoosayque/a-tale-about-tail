@@ -11,9 +11,10 @@ bgImage = love.graphics.newImage("dat/gph/menu_bg.png")
 bg = love.graphics.newCanvas(SCREEN_WIDTH + 128, SCREEN_HEIGHT + 128)
 bgAnimation = 0
 bgDelta = 0
-
+bigwin = false
 stg = {}
 lvl = 1
+
 function love.load()
     music.load("song", "dusk", "dat/snd/dusk.xm")
     music.load("song", "shadow", "dat/snd/shadow.xm")
@@ -26,7 +27,7 @@ function love.load()
     music.load("sfx", "pickup", "dat/sfx/pickup.xm")
 
 
-    stg[1] = {
+    stg[3] = {
         b_name = 'stg/st1/map_b.png',
         f_name = 'stg/st1/map_f.png',
         description = 'stg/st1/description'
@@ -35,6 +36,11 @@ function love.load()
         b_name = 'stg/st2/map_b.png',
         f_name = 'stg/st2/map_f.png',
         description = 'stg/st2/description'
+    }
+    stg[1] = {
+        b_name = 'stg/st3/map_b.png',
+        f_name = 'stg/st3/map_f.png',
+        description = 'stg/st3/description'
     }
 
     Menu.load()
@@ -64,8 +70,11 @@ function love.load()
             local win = stage.update(dt)
             if win == true then
                 lvl = lvl + 1
-                if lvl == 3 then lvl = 1 end
-                stage.load(stg[lvl].b_name, stg[lvl].f_name, stg[lvl].description)
+                if lvl == 4 then
+                    -- bigwind = true
+                else
+                    stage.load(stg[lvl].b_name, stg[lvl].f_name, stg[lvl].description)
+                end
             end
         end
 
@@ -76,20 +85,24 @@ function love.load()
 end
 
 function love.update(dt)
-    gui:update(dt)
-    bgDelta = bgDelta + dt
-    if bgDelta >= 0.03 then
-        bgAnimation = bgAnimation + 1
-        bgDelta = 0
-        if bgAnimation >= 128 then
-            bgAnimation = 0
+    -- if bigwind then
+        gui:update(dt)
+        bgDelta = bgDelta + dt
+        if bgDelta >= 0.03 then
+            bgAnimation = bgAnimation + 1
+            bgDelta = 0
+            if bgAnimation >= 128 then
+                bgAnimation = 0
+            end
         end
-    end
+    -- end
 end
 
 function love.draw()
-    love.graphics.draw(bg, bgAnimation - 128, bgAnimation - 128)
-    gui:draw()
+    -- if bigwind then
+        love.graphics.draw(bg, bgAnimation - 128, bgAnimation - 128)
+        gui:draw()
+    -- end
 end
 
 function love.mousepressed(x, y, button)

@@ -18,6 +18,7 @@ function Music.load(type, name, path)
 
 	if type == "sfx" then
 		effects[name] = love.audio.newSource(path, "static")
+		effects[name]:setVolume(0.40)
 	end
 end
 

@@ -103,6 +103,7 @@ function Player.die()
         Player.ded = true
         Player.speedX = 0
         Player.speedY = 0
+        Player.speed = 0
 
         require('music').play('catcher')
     end
@@ -115,9 +116,11 @@ function Player.update(self, dt)
     --     particleSystem:setEmissionRate(0)
     -- end
 
-    if Player.ded == false then
-        particleSystem:update(dt)
+    particleSystem:update(dt)
+    coinSystem:update(dt)
+    dedSystem:update(dt)
 
+    if Player.ded == false then
         if love.keyboard.isDown('left') then
             Player.speedX = -Player.speed
             run = 1
@@ -136,9 +139,6 @@ function Player.update(self, dt)
         end
 
         Player.animationUpdate(dt)
-    else
-        coinSystem:update(dt)
-        dedSystem:update(dt)
     end
 end
 

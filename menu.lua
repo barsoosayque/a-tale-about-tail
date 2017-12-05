@@ -30,6 +30,13 @@ function Menu.load()
     end
 
     music.play("dusk")
+
+    gui.style.labelfg = {255, 255, 255, 255}
+    gui.style.bg = {59, 50, 67, 255}
+    gui.style.fg = {232, 150, 52, 255} -- defaults to fg when absent
+    gui.style.default = {113, 79, 54, 255}
+    gui.style.hilite = {150, 101, 55, 255}
+    gui.style.focus = {80, 65, 93, 255}
 end
 
 function Menu.drawOptionsMenu()
@@ -44,7 +51,6 @@ function Menu.drawOptionsMenu()
     local btnBack = gui:button('Back', { x = 160, y = gui.style.unit * 8, w = 320, h = gui.style.unit })
 
     cbSound.value = music.songsEnabled
-    cbSound.style.labelfg = cbSound.style.fg
     cbSound.click = function(this)
         gui[this.elementtype].click(this)
 
@@ -65,7 +71,6 @@ function Menu.drawOptionsMenu()
     end
 
     cbEffects.value = music.effectsEnabled
-    cbEffects.style.labelfg = cbEffects.style.fg
     cbEffects.click = function(this)
         gui[this.elementtype].click(this)
 
