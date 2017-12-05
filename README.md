@@ -2,11 +2,11 @@
 
 ### There is always a thief and a grumpy old man
 
-Neverending tale about little mute fox, who apper to be Slipper, a thief. As always, the threat looms over the kingdom. This time, it's lots of golden coins. Save the world or just feed your family - today it doesn't really matter. Grab your trusty green sack and become one of the famous ghostlike invisibles of this world !
+Neverending tale about little mute fox, who apper to be Slipper, a thief. As always, the threat looms over the kingdom. This time, it's a lots of golden coins. Save the world or just feed your family - today it doesn't really matter. Grab your trusty green sack and become one of the famous ghostlike invisibles of the world !
 
 ### About
 
-Little stealth-like game. Some kind of platformer, where you pass tasks by stealing gold. Take coins and jewelry from chests and jars, and bring them to "the Green Sack". When there is no gold left -- you've complete your task. But watch out for grandpas !
+Little stealth-like game. Some kind of platformer, where you accomplish tasks by stealing gold. Take coins and jewelry from chests and jars, and bring them to "the Green Sack". When there is no gold left -- you've complete your task. But watch out for grandpas !
 
 ### Screenshots
 
