@@ -14,17 +14,20 @@ bgDelta = 0
 bigwin = false
 stg = {}
 lvl = 1
-lastLvl = 4
+lastLvl = 2
 
 function drawTitles()
-    love.graphics.scale(2, 2)
-    love.graphics.draw(last_bg, 0, 0)
+    love.graphics.draw(bg, bgAnimation - 128, bgAnimation - 128)
+    love.graphics.scale(2)
+    -- love.graphics.rectangle("fill", 0, 0, 640, 640)
 
-    -- love.graphics.draw(parallax_bg, 0, 0)
-    -- love.graphics.draw(canvas, 0, 0)
     for i, str in ipairs(titlesText) do
-        love.graphics.print(str, 0, 32*(i - 1))
+        love.graphics.setColor(232, 150, 52, 255)
+        love.graphics.print(str, 32, 32 + 32*(i - 1))
+        love.graphics.setColor( 255, 255, 255, 255 )
+        love.graphics.print(str, 31, 31 + 32*(i - 1))
     end
+    love.graphics.scale(1)
 end
 
 function love.load()
@@ -80,7 +83,14 @@ function love.load()
 
         love.update = function(dt)
             if lvl == lastLvl then
-                -- drawTitles()
+                bgDelta = bgDelta + dt
+                if bgDelta >= 0.03 then
+                    bgAnimation = bgAnimation + 1
+                    bgDelta = 0
+                    if bgAnimation >= 128 then
+                        bgAnimation = 0
+                    end
+                end
             else
                 win = stage.update(dt)
             end
@@ -91,6 +101,8 @@ function love.load()
                     last_bg = love.graphics.newImage("dat/gph/bg.png")
 
                     stage.clearWorld()
+                    require('player').ded = true
+                    music.play('dusk')
                     titlesText = {}
                     titles = love.filesystem.newFile('stg/end')
                     titles:open("r")
@@ -117,17 +129,15 @@ function love.load()
 end
 
 function love.update(dt)
-    -- if bigwind then
-        gui:update(dt)
-        bgDelta = bgDelta + dt
-        if bgDelta >= 0.03 then
-            bgAnimation = bgAnimation + 1
-            bgDelta = 0
-            if bgAnimation >= 128 then
-                bgAnimation = 0
-            end
+    gui:update(dt)
+    bgDelta = bgDelta + dt
+    if bgDelta >= 0.03 then
+        bgAnimation = bgAnimation + 1
+        bgDelta = 0
+        if bgAnimation >= 128 then
+            bgAnimation = 0
         end
-    -- end
+    end
 end
 
 function love.draw()
